@@ -31,7 +31,7 @@ export default function HomePage() {
       <NetworkMap />
       <IndustriesGrid />
       <DigitalVisibility />
-      <CaseStudies />
+      {/* <CaseStudies /> */}
       <InsightsSection />
       <CTASection />
     </>

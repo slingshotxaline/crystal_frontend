@@ -32,20 +32,20 @@ const QUICK_ACTIONS = [
       />
     ),
   },
-  {
-    label: 'Partner with Crystal',
-    href: '/partnership',
-    icon: (
-      <path
-        d="M8 12h1.5l2 2 2-2H15 M6 8h4l2 2 2-2h4v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-    ),
-  },
+  // {
+  //   label: 'Partner with Crystal',
+  //   href: '/partnership',
+  //   icon: (
+  //     <path
+  //       d="M8 12h1.5l2 2 2-2H15 M6 8h4l2 2 2-2h4v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8Z"
+  //       stroke="currentColor"
+  //       strokeWidth="1.6"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //       fill="none"
+  //     />
+  //   ),
+  // },
 ];
 
 export default function CTASection() {
@@ -120,7 +120,7 @@ export default function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
           transition={{ duration: 0.5, delay: 0.24 }}
-          className="mx-auto mt-8 grid max-w-2xl gap-3 sm:grid-cols-3"
+          className="mx-auto mt-8 grid max-w-2xl gap-3 sm:grid-cols-2"
         >
           {QUICK_ACTIONS.map((action, i) => (
             <motion.div
