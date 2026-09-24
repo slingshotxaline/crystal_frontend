@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { industries } from "@/data/industries";
 
@@ -12,36 +13,78 @@ const THEMES = [
     bg: "bg-sky-500",
     tint: "bg-sky-50",
     badge: "bg-sky-100 text-sky-600",
+    ring: "group-hover:ring-sky-400",
   },
   {
     groupHoverText: "group-hover:text-teal-600",
     bg: "bg-teal-500",
     tint: "bg-teal-50",
     badge: "bg-teal-100 text-teal-600",
+    ring: "group-hover:ring-teal-400",
   },
   {
     groupHoverText: "group-hover:text-violet-600",
     bg: "bg-violet-500",
     tint: "bg-violet-50",
     badge: "bg-violet-100 text-violet-600",
+    ring: "group-hover:ring-violet-400",
   },
   {
     groupHoverText: "group-hover:text-amber-600",
     bg: "bg-amber-500",
     tint: "bg-amber-50",
     badge: "bg-amber-100 text-amber-600",
+    ring: "group-hover:ring-amber-400",
   },
   {
     groupHoverText: "group-hover:text-pink-600",
     bg: "bg-pink-500",
     tint: "bg-pink-50",
     badge: "bg-pink-100 text-pink-600",
+    ring: "group-hover:ring-pink-400",
   },
   {
     groupHoverText: "group-hover:text-emerald-600",
     bg: "bg-emerald-500",
     tint: "bg-emerald-50",
     badge: "bg-emerald-100 text-emerald-600",
+    ring: "group-hover:ring-emerald-400",
+  },
+];
+
+// Matched to the industries by position (same order as the data file):
+// Fashion & Retail, FMCG, Industrial & Manufacturing, Automotive,
+// Healthcare, High Tech. Rows beyond this list fall back to the monogram badge.
+const IMAGES = [
+  {
+    src: "/assets/Home/Industries/industry1.webp",
+    alt: "Coats and garments on a retail clothing rack",
+    position: "object-center",
+  },
+  {
+    src: "/assets/Home/Industries/industry2.jpg",
+    alt: "Supermarket aisle stocked with fast-moving consumer goods",
+    position: "object-center",
+  },
+  {
+    src: "/assets/Home/Industries/industry3.webp",
+    alt: "Industrial plant with tall chimneys beside the coast",
+    position: "object-center",
+  },
+  {
+    src: "/assets/Home/Industries/industry4.webp",
+    alt: "Vehicles parked inside an automotive showroom",
+    position: "object-center",
+  },
+  {
+    src: "/assets/Home/Industries/industry5.jpg",
+    alt: "Doctor in a white coat holding a stethoscope",
+    position: "object-[50%_30%]",
+  },
+  {
+    src: "/assets/Home/Industries/industry6.jpg",
+    alt: "Precision laser machine in a high-tech manufacturing hall",
+    position: "object-center",
   },
 ];
 
@@ -85,6 +128,7 @@ export default function IndustriesGrid() {
         <div className="mt-10 divide-y divide-navy-100 border-y border-navy-100">
           {industries.map((industry, i) => {
             const theme = THEMES[i % THEMES.length];
+            const image = IMAGES[i];
             const number = String(i + 1).padStart(2, "0");
             const initial = industry.title.trim().charAt(0).toUpperCase();
 
@@ -121,18 +165,48 @@ export default function IndustriesGrid() {
                     {number}
                   </span>
 
-                  {/* Monogram badge */}
-                  <motion.span
-                    className={`relative z-10 hidden h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-extrabold sm:flex ${theme.badge}`}
-                    whileHover={
-                      prefersReducedMotion
-                        ? undefined
-                        : { scale: 1.12, rotate: -6 }
-                    }
-                    transition={{ duration: 0.25 }}
-                  >
-                    {initial}
-                  </motion.span>
+                  {image ? (
+                    /* Industry photo with monogram badge overlapping the corner */
+                    <div className="relative z-10 shrink-0">
+                      <div
+                        className={`relative h-20 w-24 overflow-hidden rounded-lg ring-2 ring-transparent transition-all duration-300 sm:h-40 sm:w-72 ${theme.ring}`}
+                      >
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          fill
+                          sizes="w-full h-full"
+                          className={`object-cover transition-transform duration-500 group-hover:scale-110 ${image.position}`}
+                        />
+                        <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/25 via-transparent to-transparent" />
+                      </div>
+
+                      <motion.span
+                        className={`absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-extrabold shadow-card sm:h-8 sm:w-8 sm:text-xs ${theme.badge}`}
+                        whileHover={
+                          prefersReducedMotion
+                            ? undefined
+                            : { scale: 1.15, rotate: -8 }
+                        }
+                        transition={{ duration: 0.25 }}
+                      >
+                        {initial}
+                      </motion.span>
+                    </div>
+                  ) : (
+                    /* Fallback when an industry has no image yet */
+                    <motion.span
+                      className={`relative z-10 hidden h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-extrabold sm:flex ${theme.badge}`}
+                      whileHover={
+                        prefersReducedMotion
+                          ? undefined
+                          : { scale: 1.12, rotate: -6 }
+                      }
+                      transition={{ duration: 0.25 }}
+                    >
+                      {initial}
+                    </motion.span>
+                  )}
 
                   <div className="relative z-10 min-w-0 flex-1">
                     <h3

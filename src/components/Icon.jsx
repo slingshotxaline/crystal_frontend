@@ -11,6 +11,7 @@ const paths = {
   arrowRight: 'M5 12h14M13 6l6 6-6 6',
   check: 'M20 6L9 17l-5-5',
   pin: 'M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+  plus: 'M12 5v14M5 12h14',
 };
 
 export default function Icon({ name, className = 'h-5 w-5', strokeWidth = 1.6 }) {

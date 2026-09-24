@@ -11,22 +11,22 @@ const STATS = [
     description:
       "Independent freight forwarder with continuous Bangladesh operating history.",
   },
-  {
-    value: "2",
-    label: "Bangladesh Offices",
-    description: "Dhaka head office and Chattogram branch support execution.",
-  },
+  // {
+  //   value: "2",
+  //   label: "Bangladesh Offices",
+  //   description: "Dhaka head office and Chattogram branch support execution.",
+  // },
   {
     value: "130+",
     label: "Team Members",
     description: "Experienced teams supporting freight and logistics delivery.",
   },
-  {
-    value: "T.O.P.S.",
-    label: "Global Agent Network",
-    description:
-      "Membership and trusted relationships connect Bangladesh to international markets.",
-  },
+  // {
+  //   value: "T.O.P.S.",
+  //   label: "Global Agent Network",
+  //   description:
+  //     "Membership and trusted relationships connect Bangladesh to international markets.",
+  // },
   {
     value: "Dhaka + CTG",
     label: "Facilities",
@@ -158,10 +158,10 @@ export default function TrustEvidence() {
           transition={{ duration: 0.55, delay: 0.05 }}
           className="mt-3 max-w-xl text-3xl font-bold text-navy-900 sm:text-4xl"
         >
-          Built on Bangladesh execution, connected internationally.
+         Built to Execute, Connected Globally
         </motion.h2>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-5 sm:grid-cols-1 lg:grid-cols-2">
           {STATS.map((stat, i) => (
             <StatCard
               key={stat.label}

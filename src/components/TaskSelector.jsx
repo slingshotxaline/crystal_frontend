@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import Icon from "./Icon";
 
@@ -9,6 +10,10 @@ const TASKS = [
     title: "Move urgent or high-value cargo by air",
     href: "/services/air-freight",
     icon: "plane",
+    image: {
+      src: "/assets/Home/Task/task1.jpg",
+      alt: "Cargo aircraft being loaded on the airport apron",
+    },
     theme: {
       badge: "bg-sky-100 text-sky-600",
       bar: "bg-sky-500",
@@ -22,6 +27,10 @@ const TASKS = [
     title: "Plan FCL, LCL or buyer consolidation by ocean",
     href: "/services/ocean-freight",
     icon: "ship",
+    image: {
+      src: "/assets/Home/Task/task2.webp",
+      alt: "Container port with stacked shipping containers and cranes",
+    },
     theme: {
       badge: "bg-teal-100 text-teal-600",
       bar: "bg-teal-500",
@@ -35,6 +44,10 @@ const TASKS = [
     title: "Combine modes for cost, time or capacity reasons",
     href: "/services/multimodal-logistics",
     icon: "route",
+    image: {
+      src: "/assets/Home/Task/task1.jpg",
+      alt: "Multimodal logistics with plane, ship and truck transport",
+    },
     theme: {
       badge: "bg-violet-100 text-violet-600",
       bar: "bg-violet-500",
@@ -48,6 +61,10 @@ const TASKS = [
     title: "Coordinate factory pickup, customs and inland delivery",
     href: "/services/inland-customs",
     icon: "truck",
+    image: {
+      src: "/assets/Home/Task/task2.webp",
+      alt: "Cargo truck collecting goods for inland delivery",
+    },
     theme: {
       badge: "bg-amber-100 text-amber-600",
       bar: "bg-amber-500",
@@ -61,6 +78,10 @@ const TASKS = [
     title: "Manage fashion cargo / GOH",
     href: "/services/fashion-goh",
     icon: "hanger",
+    image: {
+      src: "/assets/Home/Task/task1.jpg",
+      alt: "Garments on hangers ready for goods-on-hanger shipping",
+    },
     theme: {
       badge: "bg-pink-100 text-pink-600",
       bar: "bg-pink-500",
@@ -74,6 +95,10 @@ const TASKS = [
     title: "Plan oversized or complex cargo",
     href: "/services/project-logistics",
     icon: "crane",
+    image: {
+      src: "/assets/Home/Task/task2.webp",
+      alt: "Heavy-lift crane handling oversized project cargo",
+    },
     theme: {
       badge: "bg-emerald-100 text-emerald-600",
       bar: "bg-emerald-500",
@@ -161,7 +186,7 @@ export default function TaskSelector() {
               >
                 <Link
                   href={task.href}
-                  className={`focus-ring group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-2 border-navy-100 bg-white p-6 shadow-card transition-all duration-300 ${t.border} ${t.glow}`}
+                  className={`focus-ring group relative flex h-full flex-col overflow-hidden rounded-xl border-2 border-navy-100 bg-white p-6 shadow-card transition-all duration-300 ${t.border} ${t.glow}`}
                 >
                   {/* Top accent bar */}
                   <span
@@ -173,9 +198,10 @@ export default function TaskSelector() {
                     className={`pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full ${t.blob} blur-2xl transition-transform duration-500 group-hover:scale-125`}
                   />
 
-                  <div className="relative z-10">
+                  {/* Header row: icon badge (left) + arrow button (right) */}
+                  <div className="relative z-10 flex items-start justify-between">
                     <motion.span
-                      className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full ${t.badge}`}
+                      className={`flex h-11 w-11 items-center justify-center rounded-full ${t.badge}`}
                       whileHover={
                         prefersReducedMotion
                           ? undefined
@@ -185,20 +211,36 @@ export default function TaskSelector() {
                     >
                       <Icon name={task.icon} className="h-5 w-5" />
                     </motion.span>
-                    <h3 className="text-[15px] font-semibold leading-snug text-navy-900">
-                      {task.title}
-                    </h3>
+
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-navy-200 bg-white text-navy-800 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white ${t.arrow}`}
+                    >
+                      <Icon
+                        name="arrowRight"
+                        className="h-4 w-4"
+                        strokeWidth={2}
+                      />
+                    </span>
                   </div>
 
-                  <span
-                    className={`relative z-10 mt-6 flex h-9 w-9 items-center justify-center rounded-full border-2 border-navy-200 text-navy-800 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white ${t.arrow}`}
-                  >
-                    <Icon
-                      name="arrowRight"
-                      className="h-4 w-4"
-                      strokeWidth={2}
-                    />
-                  </span>
+                  {/* Title */}
+                  <h3 className="relative z-10 mt-4 flex-1 text-[15px] font-semibold leading-snug text-navy-900">
+                    {task.title}
+                  </h3>
+
+                  {/* Image below the title */}
+                  {task.image && (
+                    <div className="relative z-10 mt-5 aspect-[16/9] w-full overflow-hidden rounded-lg">
+                      <Image
+                        src={task.image.src}
+                        alt={task.image.alt}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/25 via-transparent to-transparent" />
+                    </div>
+                  )}
                 </Link>
               </motion.div>
             );

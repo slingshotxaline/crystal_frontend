@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const MILESTONES = ["Received", "Cleared", "In Transit", "Delivered"];
@@ -11,6 +12,10 @@ const TOOLS = [
   {
     title: "Shipment Tracking & Milestones",
     desc: "Shipment status and activity updates across the planned journey.",
+    image: {
+      src: "/assets/Home/Digital/digital1.jpg",
+      alt: "Container ship at sea carrying tracked cargo",
+    },
     preview: {
       kind: "rows",
       rows: [
@@ -23,6 +28,10 @@ const TOOLS = [
   {
     title: "Delay & Exception Alerts",
     desc: "Responsive exception communication helps teams act before disruption escalates.",
+    image: {
+      src: "/assets/Home/Digital/digital2.jpeg",
+      alt: "Customs inspection of shipping containers at a port",
+    },
     preview: {
       kind: "alerts",
       rows: [
@@ -34,6 +43,10 @@ const TOOLS = [
   {
     title: "Customer Shipment Access",
     desc: "Accessible status, history and key shipment references.",
+    image: {
+      src: "/assets/Home/Digital/tool3.jpg",
+      alt: "Person checking shipment status on a tablet in a warehouse",
+    },
     preview: {
       kind: "access",
       reference: "CE-10234",
@@ -43,6 +56,10 @@ const TOOLS = [
   {
     title: "Documents & Reporting",
     desc: "Digital shipping documents, invoices and statements.",
+    image: {
+      src: "/assets/Home/Digital/tool4.jpg",
+      alt: "Shipping documents and bill of lading on a desk",
+    },
     preview: {
       kind: "docs",
       rows: [
@@ -196,6 +213,18 @@ export default function DigitalVisibility() {
           transition={{ duration: 0.6 }}
           className="relative mt-10 overflow-hidden rounded-xl bg-navy-900 p-6 text-white sm:p-8"
         >
+          {/* Port photo background with navy overlay for text legibility */}
+          <div className="pointer-events-none absolute inset-0">
+            <Image
+              src="/assets/Home/Digital/digital-bg.jpg"
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 1100px, 100vw"
+              className="object-cover opacity-40"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-navy-900/60 via-navy-900/85 to-navy-900" />
+          </div>
+
           {/* Ambient scan grid */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -315,7 +344,7 @@ export default function DigitalVisibility() {
               })}
             </div>
 
-            <div className="mt-5 grid gap-6 rounded-lg border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-2 sm:p-6">
+            <div className="mt-5 grid gap-6 rounded-lg border border-white/10 bg-navy-900/60 p-5 backdrop-blur-sm sm:grid-cols-2 sm:p-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={TOOLS[activeTool].title}
@@ -324,6 +353,20 @@ export default function DigitalVisibility() {
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ duration: 0.25 }}
                 >
+                  {/* Tool photo */}
+                  {TOOLS[activeTool].image && (
+                    <div className="relative mb-4 aspect-[16/9] w-full overflow-hidden rounded-md border border-white/10">
+                      <Image
+                        src={TOOLS[activeTool].image.src}
+                        alt={TOOLS[activeTool].image.alt}
+                        fill
+                        sizes="(min-width: 640px) 45vw, 90vw"
+                        className="object-cover"
+                      />
+                      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/50 via-transparent to-transparent" />
+                    </div>
+                  )}
+
                   <h4 className="font-semibold">{TOOLS[activeTool].title}</h4>
                   <p className="mt-1.5 text-sm text-navy-100/70">
                     {TOOLS[activeTool].desc}

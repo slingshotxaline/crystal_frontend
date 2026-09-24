@@ -9,7 +9,7 @@ const COLUMNS = [
       { label: 'Multimodal Logistics', href: '/services/multimodal-logistics' },
       { label: 'Inland Transport & Customs', href: '/services/inland-customs' },
       { label: 'Project Logistics', href: '/services/project-logistics' },
-      { label: 'Fashion Logistics & GOH', href: '/services/fashion-goh' },
+      { label: 'Contract Logistics', href: '/services/fashion-goh' },
     ],
   },
   {
