@@ -204,7 +204,7 @@ export default function Hero() {
             </Link>
           </motion.div>
 
-          <motion.div
+          {/* <motion.div
             initial="hidden"
             animate="show"
             custom={5}
@@ -226,7 +226,7 @@ export default function Hero() {
                 {chip}
               </motion.span>
             ))}
-          </motion.div>
+          </motion.div> */}
 
           <motion.div
             initial="hidden"
@@ -384,7 +384,7 @@ export default function Hero() {
               fontWeight="700"
               letterSpacing="0.06em"
             >
-              BANGLADESH ORIGIN
+              ORIGIN
             </text>
             <text
               x="440"
