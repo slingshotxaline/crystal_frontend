@@ -53,7 +53,7 @@ export default function IndustryTemplate({ industry }) {
                     <Icon name={service.icon} className="h-4.5 w-4.5" />
                   </span>
                   <h3 className="font-bold text-navy-900">{service.title}</h3>
-                  <p className="mt-1.5 text-sm text-navy-400">{service.heroTagline}</p>
+                  <p className="mt-1.5 text-sm text-navy-400">{service.tagline}</p>
                 </Link>
               ))}
             </div>

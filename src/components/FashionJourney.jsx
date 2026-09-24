@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
 const STAGES = [
@@ -9,36 +10,60 @@ const STAGES = [
     title: "Raw Materials",
     desc: "Inbound materials and components",
     accent: "border-sky-400 text-sky-600",
+    image: {
+      src: "/assets/Home/Fashion/fashion1.jpg",
+      alt: "Rolls of fabric and raw materials ready for production",
+    },
   },
   {
     n: "02",
     title: "Factory Coordination",
     desc: "Production-ready handovers",
     accent: "border-teal-400 text-teal-600",
+    image: {
+      src: "/assets/Home/Fashion/fashion1.jpg",
+      alt: "Garment factory production line",
+    },
   },
   {
     n: "03",
     title: "Origin Consolidation",
     desc: "Cargo build and compliance",
     accent: "border-violet-400 text-violet-600",
+    image: {
+      src: "/assets/Home/Fashion/fashion1.jpg",
+      alt: "Warehouse team consolidating cartons between storage racks",
+    },
   },
   {
     n: "04",
     title: "Export Movement",
     desc: "Air, ocean or multimodal",
     accent: "border-amber-400 text-amber-600",
+    image: {
+      src: "/assets/Home/Fashion/fashion1.jpg",
+      alt: "Export cargo moving by air and ocean",
+    },
   },
   {
     n: "05",
     title: "Destination Services",
     desc: "Discharge, inland and DC",
     accent: "border-pink-400 text-pink-600",
+    image: {
+      src: "/assets/Home/Fashion/fashion1.jpg",
+      alt: "Distribution centre unloading and inland delivery",
+    },
   },
   {
     n: "06",
     title: "Store Delivery",
     desc: "Point-of-sale placement",
     accent: "border-emerald-400 text-emerald-600",
+    image: {
+      src: "/assets/Home/Fashion/fashion1.jpg",
+      alt: "Garments on rails in a retail store",
+    },
   },
 ];
 
@@ -76,6 +101,37 @@ function Node({ stage, i, prefersReducedMotion }) {
   );
 }
 
+// Stage photo. The parent needs the "group" class for the hover zoom.
+function StageImage({ image, aspect = "aspect-[4/3]", sizes, className = "" }) {
+  return (
+    <div
+      className={`relative w-full overflow-hidden rounded-lg border border-navy-100 shadow-card ${aspect} ${className}`}
+    >
+      <Image
+        src={image.src}
+        alt={image.alt}
+        fill
+        sizes={sizes}
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/20 via-transparent to-transparent" />
+    </div>
+  );
+}
+
+function StageText({ stage, textSize = "text-xs" }) {
+  return (
+    <>
+      <p className="text-[15px] font-bold leading-snug text-navy-900">
+        {stage.title}
+      </p>
+      <p className={`mt-1.5 leading-relaxed text-navy-400 ${textSize}`}>
+        {stage.desc}
+      </p>
+    </>
+  );
+}
+
 export default function FashionJourney() {
   const prefersReducedMotion = useReducedMotion();
 
@@ -94,7 +150,7 @@ export default function FashionJourney() {
           transition={{ duration: 0.5 }}
           className="text-xs font-semibold uppercase tracking-widest text-navy-400"
         >
-          Fashion Logistics
+          Contract Logistics
         </motion.p>
 
         <motion.h2
@@ -121,7 +177,7 @@ export default function FashionJourney() {
 
         {/* Desktop / large screens: connected zigzag timeline */}
         <div className="mt-16 hidden lg:block">
-          <div className="grid grid-cols-6 grid-rows-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <div className="grid grid-cols-6 grid-rows-[1fr_auto_1fr]">
             {/* Connecting line, spans the node row */}
             <div className="relative col-span-6 row-start-2 h-px">
               <div className="absolute inset-0 bg-navy-100" />
@@ -137,8 +193,8 @@ export default function FashionJourney() {
             {STAGES.map((stage, i) => {
               const isTop = i % 2 === 0;
               return (
-                <div key={stage.n} className={`contents`}>
-                  {/* Top slot */}
+                <div key={stage.n} className="contents">
+                  {/* Top slot: image above, text next to the node */}
                   <div
                     className={`row-start-1 ${COL_START[i]} flex items-end justify-center px-2 pb-6`}
                   >
@@ -152,14 +208,14 @@ export default function FashionJourney() {
                           duration: 0.5,
                           ease: "easeOut",
                         }}
-                        className="relative max-w-[10rem] text-center"
+                        className="group relative w-full max-w-[40rem] text-center"
                       >
-                        <p className="text-[15px] font-bold leading-snug text-navy-900">
-                          {stage.title}
-                        </p>
-                        <p className="mt-1.5 text-xs leading-relaxed text-navy-400">
-                          {stage.desc}
-                        </p>
+                        <StageImage
+                          image={stage.image}
+                          sizes="160px"
+                          className="mb-3"
+                        />
+                        <StageText stage={stage} />
                       </motion.div>
                     )}
                   </div>
@@ -175,7 +231,7 @@ export default function FashionJourney() {
                     />
                   </div>
 
-                  {/* Bottom slot */}
+                  {/* Bottom slot: text next to the node, image below */}
                   <div
                     className={`row-start-3 ${COL_START[i]} flex items-start justify-center px-2 pt-6`}
                   >
@@ -189,14 +245,14 @@ export default function FashionJourney() {
                           duration: 0.5,
                           ease: "easeOut",
                         }}
-                        className="relative max-w-[10rem] text-center"
+                        className="group relative w-full max-w-[40rem] text-center"
                       >
-                        <p className="text-[15px] font-bold leading-snug text-navy-900">
-                          {stage.title}
-                        </p>
-                        <p className="mt-1.5 text-xs leading-relaxed text-navy-400">
-                          {stage.desc}
-                        </p>
+                        <StageText stage={stage} />
+                        <StageImage
+                          image={stage.image}
+                          sizes="160px"
+                          className="mt-3"
+                        />
                       </motion.div>
                     )}
                   </div>
@@ -221,7 +277,7 @@ export default function FashionJourney() {
             />
           </div>
 
-          <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-10">
+          <div className="flex flex-col gap-10 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-12">
             {STAGES.map((stage, i) => (
               <motion.div
                 key={stage.n}
@@ -229,7 +285,7 @@ export default function FashionJourney() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
-                className="relative z-10 flex items-start gap-4 sm:block sm:pl-0"
+                className="group relative z-10 flex items-start gap-4 sm:block sm:pl-0"
               >
                 <span className="sm:hidden">
                   <Node
@@ -245,13 +301,14 @@ export default function FashionJourney() {
                     prefersReducedMotion={prefersReducedMotion}
                   />
                 </div>
-                <div>
-                  <p className="text-[15px] font-bold leading-snug text-navy-900">
-                    {stage.title}
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-navy-400">
-                    {stage.desc}
-                  </p>
+                <div className="min-w-0 flex-1">
+                  <StageText stage={stage} textSize="text-sm" />
+                  <StageImage
+                    image={stage.image}
+                    aspect="aspect-[16/9]"
+                    sizes="(min-width: 640px) 45vw, 90vw"
+                    className="mt-4"
+                  />
                 </div>
               </motion.div>
             ))}
@@ -268,7 +325,7 @@ export default function FashionJourney() {
             href="/services/fashion-goh"
             className="focus-ring group mt-12 inline-flex items-center gap-2 rounded-md border border-navy-900 px-6 py-3 text-sm font-semibold text-navy-900 transition-colors duration-300 hover:bg-navy-900 hover:text-white"
           >
-            Explore Fashion Logistics
+           Explore Contract Logistics
             <span className="transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>
