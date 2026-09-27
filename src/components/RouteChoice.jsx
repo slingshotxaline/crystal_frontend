@@ -379,13 +379,13 @@ export default function RouteChoice() {
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.96 }}
                   className={`focus-ring relative rounded-full px-3.5 py-2 text-xs font-semibold transition-colors sm:px-4 ${
-                    isActive ? "text-white" : "text-navy-800 hover:bg-navy-100"
+                    isActive ? "text-black" : "text-navy-800 hover:bg-navy-100 hover:text-black"
                   }`}
                 >
                   {isActive ? (
                     <motion.span
                       layoutId="route-choice-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-navy-900"
+                      className="absolute inset-0 -z-10 rounded-full bg-navy-100 "
                       transition={{
                         type: "spring",
                         stiffness: 380,
@@ -393,7 +393,7 @@ export default function RouteChoice() {
                       }}
                     />
                   ) : (
-                    <span className="absolute inset-0 -z-10 rounded-full bg-white" />
+                    <span className="absolute inset-0 -z-10 rounded-full  bg-white" />
                   )}
                   {c.label}
                 </motion.button>

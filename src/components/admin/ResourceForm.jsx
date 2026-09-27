@@ -2,12 +2,22 @@
 
 import { useState } from 'react';
 
+const MULTILINE_TYPES = ['textarea', 'list', 'pairList', 'qaList'];
+
 function toFormState(fields, item) {
   const state = {};
   fields.forEach((f) => {
     const raw = item?.[f.key];
     if (f.type === 'list') {
       state[f.key] = Array.isArray(raw) ? raw.join('\n') : '';
+    } else if (f.type === 'pairList') {
+      state[f.key] = Array.isArray(raw)
+        ? raw.map((r) => `${r.label || ''} | ${r.slug || ''}`).join('\n')
+        : '';
+    } else if (f.type === 'qaList') {
+      state[f.key] = Array.isArray(raw)
+        ? raw.map((r) => `${r.question || ''} | ${r.answer || ''}`).join('\n')
+        : '';
     } else if (f.type === 'checkbox') {
       state[f.key] = !!raw;
     } else {
@@ -26,6 +36,24 @@ function toPayload(fields, state) {
         .split('\n')
         .map((line) => line.trim())
         .filter(Boolean);
+    } else if (f.type === 'pairList') {
+      payload[f.key] = value
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const [label, slug] = line.split('|').map((s) => s.trim());
+          return { label: label || '', slug: slug || '' };
+        });
+    } else if (f.type === 'qaList') {
+      payload[f.key] = value
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const [question, answer] = line.split('|').map((s) => s.trim());
+          return { question: question || '', answer: answer || '' };
+        });
     } else if (f.type === 'number') {
       payload[f.key] = value === '' ? undefined : Number(value);
     } else {
@@ -33,6 +61,13 @@ function toPayload(fields, state) {
     }
   });
   return payload;
+}
+
+function fieldHint(type) {
+  if (type === 'pairList') return 'One per line, formatted as: Label | slug';
+  if (type === 'qaList') return 'One per line, formatted as: Question | Answer';
+  if (type === 'list') return 'One item per line';
+  return null;
 }
 
 export default function ResourceForm({ config, item, onCancel, onSubmit, submitting }) {
@@ -76,13 +111,16 @@ export default function ResourceForm({ config, item, onCancel, onSubmit, submitt
                     {f.label}
                     {f.required && <span className="text-crimson"> *</span>}
                   </label>
-                  {f.type === 'textarea' || f.type === 'list' ? (
+                  {fieldHint(f.type) && (
+                    <p className="mb-1.5 text-xs text-navy-400">{fieldHint(f.type)}</p>
+                  )}
+                  {MULTILINE_TYPES.includes(f.type) ? (
                     <textarea
                       required={f.required}
-                      rows={f.type === 'list' ? 4 : 3}
+                      rows={f.type === 'textarea' ? 3 : 5}
                       value={state[f.key]}
                       onChange={(e) => handleChange(f.key, e.target.value)}
-                      className="w-full rounded-md border border-navy-200 px-4 py-2.5 text-sm focus:border-crimson focus:outline-none focus:ring-1 focus:ring-crimson"
+                      className="w-full rounded-md border border-navy-200 px-4 py-2.5 font-mono text-sm focus:border-crimson focus:outline-none focus:ring-1 focus:ring-crimson"
                     />
                   ) : f.type === 'select' ? (
                     <select

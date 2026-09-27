@@ -1,11 +1,14 @@
 import IndustriesGrid from '@/components/IndustriesGrid';
+import { getIndustries } from '@/lib/content';
 
 export const metadata = {
   title: 'Industries',
   description: 'Fashion & Retail, FMCG, Industrial, Automotive, Healthcare and High Tech logistics from Crystal Express.',
 };
 
-export default function IndustriesOverviewPage() {
+export default async function IndustriesOverviewPage() {
+  const industries = await getIndustries();
+
   return (
     <>
       <section className="bg-navy-900 py-16 text-white sm:py-20">
@@ -18,7 +21,7 @@ export default function IndustriesOverviewPage() {
           </p>
         </div>
       </section>
-      <IndustriesGrid />
+      <IndustriesGrid industries={industries} />
     </>
   );
 }

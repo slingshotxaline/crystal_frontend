@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { industries } from "@/data/industries";
+import { industries as staticIndustries } from "@/data/industries";
 
 // Cycled by index so the list stays colorful regardless of how many industries
 // the data file defines, without hardcoding per-slug themes.
@@ -88,8 +88,15 @@ const IMAGES = [
   },
 ];
 
-export default function IndustriesGrid() {
+/**
+ * @param {{ industries?: Array }} props - Optional list fetched server-side
+ * from the CMS (see lib/content.js). Falls back to the static data file
+ * when no prop is passed, so existing usages keep working unchanged.
+ */
+export default function IndustriesGrid({ industries: industriesProp } = {}) {
   const prefersReducedMotion = useReducedMotion();
+  const industries =
+    industriesProp && industriesProp.length ? industriesProp : staticIndustries;
 
   return (
     <section className="relative overflow-hidden bg-cream py-16 sm:py-20">

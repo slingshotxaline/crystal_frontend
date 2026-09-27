@@ -20,43 +20,51 @@ const STATS = [
   { value: "99%", label: "On-time dispatch" },
 ];
 
-// Each route is a cubic bezier from the Bangladesh origin to a destination node.
-// Control points double as data for both the static <path> and the sampled marker animation.
+// Each route is a cubic bezier from the Bangladesh origin to a "Gateway" node.
+// From the gateway, a second straight-ish leg continues on to the final
+// "Destination" node. Control points double as data for both the static
+// <path> and the sampled marker animation.
 const ROUTES = [
   {
     start: { x: 60, y: 300 },
     cp1: { x: 180, y: 260 },
     cp2: { x: 260, y: 120 },
-    end: { x: 380, y: 60 },
+    end: { x: 380, y: 60 }, // gateway
     destination: { x: 470, y: 20 },
     color: "#dc2430",
     delay: 0,
     duration: 5.5,
     muted: false,
+    dashed: true,
   },
   {
     start: { x: 60, y: 300 },
     cp1: { x: 160, y: 280 },
     cp2: { x: 260, y: 220 },
-    end: { x: 360, y: 190 },
+    end: { x: 360, y: 190 }, // gateway
     destination: { x: 470, y: 150 },
-    color: "#3fa9f5",
+    color: "#dc2430",
     delay: 0.8,
     duration: 6.2,
     muted: false,
+    dashed: false,
   },
   {
     start: { x: 60, y: 300 },
     cp1: { x: 160, y: 320 },
     cp2: { x: 260, y: 350 },
-    end: { x: 360, y: 330 },
+    end: { x: 360, y: 330 }, // gateway
     destination: { x: 470, y: 300 },
     color: "rgba(255,255,255,0.35)",
     delay: 1.6,
     duration: 7,
     muted: true,
+    dashed: true,
   },
 ];
+
+// Light slate line used for every "gateway -> destination" leg.
+const LEG_COLOR = "rgba(148,163,184,0.5)";
 
 function bezierPoint(t, p0, p1, p2, p3) {
   const mt = 1 - t;
@@ -254,14 +262,6 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
           className="relative mx-auto aspect-[520/360] w-full max-w-xl"
         >
-          <div className="absolute right-0 top-0 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-navy-900/70 px-3 py-1.5 text-[11px] font-semibold text-navy-100/85 backdrop-blur">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            Live shipment tracking
-          </div>
-
           <svg
             viewBox="0 0 520 360"
             className="h-full w-full overflow-visible"
@@ -313,24 +313,31 @@ export default function Hero() {
 
             {ROUTES.map((r, i) => {
               const d = `M${r.start.x} ${r.start.y} C ${r.cp1.x} ${r.cp1.y}, ${r.cp2.x} ${r.cp2.y}, ${r.end.x} ${r.end.y}`;
+              const legD = `M${r.end.x} ${r.end.y} L ${r.destination.x} ${r.destination.y}`;
               const points = routePoints[i];
+              const firstLegDelay = 0.5 + r.delay * 0.35;
+              const secondLegDelay = firstLegDelay + 1.3;
+              const nodeDelay = firstLegDelay + 1.1;
+
               return (
                 <g key={i}>
+                  {/* Origin -> Gateway curve */}
                   <motion.path
                     d={d}
                     fill="none"
                     stroke={r.color}
                     strokeWidth={r.muted ? 1.5 : 2}
-                    strokeDasharray={r.muted ? "5 5" : "0"}
+                    strokeDasharray={r.dashed ? "7 6" : "0"}
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
                     transition={{
                       duration: 1.4,
-                      delay: 0.5 + r.delay * 0.35,
+                      delay: firstLegDelay,
                       ease: "easeInOut",
                     }}
                   />
 
+                  {/* Traveling glow dot along the origin -> gateway curve */}
                   {!r.muted && !prefersReducedMotion && (
                     <motion.circle
                       r={4}
@@ -351,26 +358,100 @@ export default function Hero() {
                     />
                   )}
 
-                  <motion.circle
-                    cx={r.end.x}
-                    cy={r.end.y}
-                    r={5}
-                    fill="#0f1f33"
-                    stroke="white"
+                  {/* Gateway -> Destination leg */}
+                  <motion.path
+                    d={legD}
+                    fill="none"
+                    stroke={LEG_COLOR}
                     strokeWidth={1.5}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.6 + r.delay * 0.35 }}
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{
+                      duration: 0.9,
+                      delay: secondLegDelay,
+                      ease: "easeInOut",
+                    }}
                   />
-                  <motion.circle
-                    cx={r.destination.x}
-                    cy={r.destination.y}
-                    r={5}
-                    fill="#1f9d58"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.8 + r.delay * 0.35 }}
-                  />
+
+                  {/* Gateway node: icon inside a circle + label */}
+                  <motion.g
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: nodeDelay, duration: 0.35 }}
+                  >
+                    <g transform={`translate(${r.end.x}, ${r.end.y})`}>
+                      <circle
+                        r={9}
+                        fill="#0f1f33"
+                        stroke="white"
+                        strokeWidth={1.5}
+                      />
+                      <path
+                        d="M-3.2,-1.2 A4 4 0 0 1 3.2,-1.2"
+                        stroke="white"
+                        strokeWidth={1.3}
+                        fill="none"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M2.4,-2.6 L3.4,-1.1 L1.7,-0.6"
+                        stroke="white"
+                        strokeWidth={1.3}
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M3.2,1.2 A4 4 0 0 1 -3.2,1.2"
+                        stroke="white"
+                        strokeWidth={1.3}
+                        fill="none"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M-2.4,2.6 L-3.4,1.1 L-1.7,0.6"
+                        stroke="white"
+                        strokeWidth={1.3}
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </g>
+                    <text
+                      x={r.end.x + 14}
+                      y={r.end.y + 4}
+                      fill="rgba(255,255,255,0.85)"
+                      fontSize="11"
+                      fontWeight="600"
+                    >
+                      Gateway
+                    </text>
+                  </motion.g>
+
+                  {/* Destination node + label */}
+                  <motion.g
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: secondLegDelay + 0.5, duration: 0.35 }}
+                  >
+                    <circle
+                      cx={r.destination.x}
+                      cy={r.destination.y}
+                      r={5}
+                      fill="#1f9d58"
+                    />
+                    <text
+                      x={r.destination.x - 12}
+                      y={r.destination.y + 4}
+                      fill="#7fd6a1"
+                      fontSize="10"
+                      fontWeight="700"
+                      letterSpacing="0.06em"
+                      textAnchor="end"
+                    >
+                      DESTINATION
+                    </text>
+                  </motion.g>
                 </g>
               );
             })}
@@ -385,17 +466,6 @@ export default function Hero() {
               letterSpacing="0.06em"
             >
               ORIGIN
-            </text>
-            <text
-              x="440"
-              y="10"
-              fill="#7fd6a1"
-              fontSize="10"
-              fontWeight="700"
-              letterSpacing="0.06em"
-              textAnchor="end"
-            >
-              DESTINATION
             </text>
           </svg>
         </motion.div>

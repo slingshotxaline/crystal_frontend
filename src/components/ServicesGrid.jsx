@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import Icon from "./Icon";
-import { services } from "@/data/services";
+import { services as staticServices } from "@/data/services";
 
 // Cycled by index so the grid stays colorful regardless of how many
 // services the data file defines, without hardcoding per-slug themes.
@@ -446,8 +446,15 @@ const FALLBACK_LAYOUT = {
   Content: StackedCard,
 };
 
-export default function ServicesGrid() {
+/**
+ * @param {{ services?: Array }} props - Optional list fetched server-side
+ * from the CMS (see lib/content.js). Falls back to the static data file
+ * when no prop is passed, so existing usages keep working unchanged.
+ */
+export default function ServicesGrid({ services: servicesProp } = {}) {
   const prefersReducedMotion = useReducedMotion();
+  const services =
+    servicesProp && servicesProp.length ? servicesProp : staticServices;
 
   return (
     <section className="relative overflow-hidden bg-cream-100 py-16 sm:py-20">

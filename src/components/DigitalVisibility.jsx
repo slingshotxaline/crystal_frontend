@@ -259,14 +259,6 @@ export default function DigitalVisibility() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 1, delay: 0.3, ease: "easeInOut" }}
             />
-            {!prefersReducedMotion && (
-              <motion.span
-                className="absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-crimson shadow-[0_0_10px_2px_rgba(220,36,48,0.6)]"
-                initial={{ left: "0%", opacity: 0 }}
-                animate={{ left: `${fillFraction * 100}%`, opacity: [0, 1, 1] }}
-                transition={{ duration: 1.2, delay: 0.4, ease: "easeInOut" }}
-              />
-            )}
             {MILESTONES.map((m, i) => {
               const isDone = i <= ACTIVE_UP_TO;
               const isCurrent = i === ACTIVE_UP_TO;
