@@ -138,12 +138,19 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
             const image = IMAGES[i];
             const number = String(i + 1).padStart(2, "0");
             const initial = industry.title.trim().charAt(0).toUpperCase();
+            // Rows 2, 4, 6 (index 1, 3, 5) zigzag: image on the right,
+            // sliding in from the right instead of rising from below.
+            const isReversed = i % 2 === 1;
 
             return (
               <motion.div
                 key={industry.slug}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={
+                  isReversed ? { opacity: 0, x: 48 } : { opacity: 0, y: 18 }
+                }
+                whileInView={
+                  isReversed ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }
+                }
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{
                   delay: (i % 8) * 0.05,
@@ -153,21 +160,29 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
               >
                 <Link
                   href={`/industries/${industry.slug}`}
-                  className="focus-ring group relative flex items-center gap-4 overflow-hidden py-6 sm:gap-6 sm:py-7"
+                  className={`focus-ring group relative flex items-center gap-4 overflow-hidden py-6 sm:gap-6 sm:py-7 ${
+                    isReversed ? "flex-row-reverse" : ""
+                  }`}
                 >
-                  {/* Hover background sweep */}
+                  {/* Hover background sweep (direction mirrors row order) */}
                   <span
-                    className={`pointer-events-none absolute inset-0 -translate-x-full ${theme.tint} transition-transform duration-500 ease-out group-hover:translate-x-0`}
+                    className={`pointer-events-none absolute inset-0 ${
+                      isReversed ? "translate-x-full" : "-translate-x-full"
+                    } ${theme.tint} transition-transform duration-500 ease-out group-hover:translate-x-0`}
                   />
-                  {/* Left accent bar */}
+                  {/* Accent bar (left for normal rows, right for reversed) */}
                   <span
-                    className={`absolute left-0 top-0 h-full w-0.5 origin-top scale-y-0 ${theme.bg} transition-transform duration-300 group-hover:scale-y-100`}
+                    className={`absolute top-0 h-full w-0.5 origin-top scale-y-0 ${theme.bg} transition-transform duration-300 group-hover:scale-y-100 ${
+                      isReversed ? "right-0" : "left-0"
+                    }`}
                   />
 
-                  {/* Ghost number */}
+                  {/* Ghost number (mirrors to the opposite corner on reversed rows) */}
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-2 bottom-0 select-none text-6xl font-extrabold text-navy-900/[0.04] sm:text-7xl"
+                    className={`pointer-events-none absolute bottom-0 select-none text-6xl font-extrabold text-navy-900/[0.04] sm:text-7xl ${
+                      isReversed ? "-left-2" : "-right-2"
+                    }`}
                   >
                     {number}
                   </span>
@@ -189,7 +204,9 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
                       </div>
 
                       <motion.span
-                        className={`absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-extrabold shadow-card sm:h-8 sm:w-8 sm:text-xs ${theme.badge}`}
+                        className={`absolute -bottom-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-extrabold shadow-card sm:h-8 sm:w-8 sm:text-xs ${theme.badge} ${
+                          isReversed ? "-left-2" : "-right-2"
+                        }`}
                         whileHover={
                           prefersReducedMotion
                             ? undefined
@@ -215,13 +232,21 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
                     </motion.span>
                   )}
 
-                  <div className="relative z-10 min-w-0 flex-1">
+                  <div
+                    className={`relative z-10 min-w-0 flex-1 ${
+                      isReversed ? "sm:text-right" : ""
+                    }`}
+                  >
                     <h3
                       className={`text-[15px] font-bold text-navy-900 transition-colors duration-300 sm:text-lg ${theme.groupHoverText}`}
                     >
                       {industry.title}
                     </h3>
-                    <p className="mt-1.5 max-w-md text-sm leading-relaxed text-navy-400">
+                    <p
+                      className={`mt-1.5 max-w-md text-sm leading-relaxed text-navy-400 ${
+                        isReversed ? "sm:ml-auto" : ""
+                      }`}
+                    >
                       {industry.summary}
                     </p>
                   </div>
@@ -229,7 +254,7 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
                   <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-navy-200 text-navy-600 transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-navy-900 group-hover:text-navy-900">
                     <svg
                       viewBox="0 0 16 16"
-                      className="h-3.5 w-3.5"
+                      className={`h-3.5 w-3.5 ${isReversed ? "rotate-180" : ""}`}
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={1.8}

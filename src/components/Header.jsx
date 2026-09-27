@@ -43,7 +43,7 @@ const NAV = [
   // { label: 'Network', href: '/network' },
   { label: 'Digital', href: '/digital' },
   { label: 'Insights', href: '/insights' },
-  { label: 'About Crystal', href: '/about' },
+  { label: 'About', href: '/about' },
 ];
 
 // Flattened version of NAV used for the mobile drawer, so the two-column
