@@ -347,14 +347,14 @@ function ArchCard({ service, theme, reduce }) {
           />
         </div>
         <div className="flex flex-1 flex-col items-center px-2 pb-2 pt-8 text-center">
-          <h3 className="text-[15px] font-bold text-white">{service.title}</h3>
-          <p className="mt-1 text-xs font-semibold text-amber-300">
+          <h3 className="text-[15px] font-bold text-black">{service.title}</h3>
+          <p className="mt-1 text-xs font-semibold text-red-500">
             {service.tagline}
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-white/65">
+          <p className="mt-2 text-sm leading-relaxed text-black">
             {service.cardDescription}
           </p>
-          <Cta className="mt-auto pt-4 text-white" />
+          <Cta className="mt-auto pt-4 text-black" />
         </div>
       </div>
     </>
@@ -442,7 +442,7 @@ const LAYOUTS = {
   },
   "value-added-services": {
     span: "lg:col-span-2",
-    link: "border-navy-900 bg-navy-900",
+    link: "border-navy-900",
     Content: ArchCard,
   },
   warehousing: {
