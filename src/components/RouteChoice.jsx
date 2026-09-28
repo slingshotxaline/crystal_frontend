@@ -385,7 +385,7 @@ export default function RouteChoice() {
                   {isActive ? (
                     <motion.span
                       layoutId="route-choice-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-navy-100 "
+                      className="absolute inset-0 -z-10 rounded-full bg-red-100 border border-red-500"
                       transition={{
                         type: "spring",
                         stiffness: 380,

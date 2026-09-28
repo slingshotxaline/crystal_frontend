@@ -151,7 +151,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-crimson"
           >
             <Radar className="h-3.5 w-3.5" aria-hidden="true" />
-            Bangladesh Freight Forwarding
+            Global Freight Forwarding
           </motion.div>
 
           <h1 className="mt-4 text-[2.1rem] font-extrabold leading-[1.12] sm:text-5xl">
@@ -184,7 +184,7 @@ export default function Hero() {
           >
             Tell us what must move, when it needs to arrive and what the cargo
             requires. Crystal will assess the practical options and coordinate
-            the agreed plan from Bangladesh origin onward.
+            the agreed plan from origin to final destination.
           </motion.p>
 
           <motion.div
@@ -236,7 +236,7 @@ export default function Hero() {
             ))}
           </motion.div> */}
 
-          <motion.div
+          {/* <motion.div
             initial="hidden"
             animate="show"
             custom={6}
@@ -253,7 +253,7 @@ export default function Hero() {
                 </p>
               </div>
             ))}
-          </motion.div>
+          </motion.div> */}
         </div>
 
         <motion.div

@@ -1,17 +1,55 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Icon from './Icon';
-import QuoteForm from './QuoteForm';
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import Icon from "./Icon";
+import QuoteForm from "./QuoteForm";
+
+/**
+ * Hero image is a real <img>. `sources` is a list of URLs (any of
+ * jpg/jpeg/png/webp/avif). If one fails to load, the next is tried.
+ * If all fail, bg-navy-900 shows underneath.
+ */
+function HeroBackground({ sources }) {
+  const [index, setIndex] = useState(0);
+  const imgRef = useRef(null);
+
+  const next = () => setIndex((i) => i + 1);
+
+  // Catches images that already failed before React hydrated
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) next();
+  }, [index]);
+
+  const src = sources[index];
+  if (!src) return null;
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      key={src}
+      ref={imgRef}
+      src={src}
+      alt=""
+      fetchPriority="high"
+      onError={next}
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+  );
+}
 
 function Breadcrumb({ title }) {
   return (
     <p className="text-sm text-navy-100/70">
-      <Link href="/" className="hover:text-white">Home</Link>
-      {' / '}
-      <Link href="/services" className="hover:text-white">Services</Link>
-      {' / '}
+      <Link href="/" className="hover:text-white">
+        Home
+      </Link>
+      {" / "}
+      <Link href="/services" className="hover:text-white">
+        Services
+      </Link>
+      {" / "}
       <span className="text-navy-100">{title}</span>
     </p>
   );
@@ -29,7 +67,7 @@ function FaqItem({ question, answer }) {
         <span className="font-bold text-navy-900">{question}</span>
         <Icon
           name="plus"
-          className={`h-4 w-4 shrink-0 text-crimson transition-transform ${open ? 'rotate-45' : ''}`}
+          className={`h-4 w-4 shrink-0 text-crimson transition-transform ${open ? "rotate-45" : ""}`}
           strokeWidth={2.4}
         />
       </button>
@@ -44,7 +82,9 @@ function Sidebar({ service }) {
       <div className="rounded-lg border border-navy-100 bg-white p-6">
         {service.relatedServices?.length > 0 && (
           <div>
-            <h3 className="text-sm font-bold text-navy-900">Related services</h3>
+            <h3 className="text-sm font-bold text-navy-900">
+              Related services
+            </h3>
             <div className="mt-3 flex flex-col gap-2">
               {service.relatedServices.map((s) => (
                 <Link
@@ -61,7 +101,9 @@ function Sidebar({ service }) {
 
         {service.relatedIndustries?.length > 0 && (
           <div className="mt-6">
-            <h3 className="text-sm font-bold text-navy-900">Related industries</h3>
+            <h3 className="text-sm font-bold text-navy-900">
+              Related industries
+            </h3>
             <div className="mt-3 flex flex-col gap-2">
               {service.relatedIndustries.map((ind) => (
                 <Link
@@ -87,22 +129,37 @@ function Sidebar({ service }) {
   );
 }
 
-export default function ServiceTemplate({ service }) {
+export default function ServiceTemplate({ service, heroSources }) {
   return (
     <>
       {/* Hero */}
-      <section className="bg-navy-900 py-14 text-white sm:py-16">
-        <div className="container-content">
+      <section className="relative overflow-hidden bg-navy-900 py-14 text-white sm:py-40">
+        <HeroBackground key={heroSources[0]} sources={heroSources} />
+
+        {/* Overlay for text contrast */}
+        <div className="absolute inset-0 bg-navy-900/70" />
+
+        <div className="container-content relative z-10">
           <Breadcrumb title={service.title} />
-          <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-crimson">{service.category}</p>
-          <h1 className="mt-3 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">{service.headline}</h1>
+          <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-crimson">
+            {service.category}
+          </p>
+          <h1 className="mt-3 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
+            {service.headline}
+          </h1>
           <p className="mt-4 max-w-2xl text-navy-100/80">{service.subhead}</p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="#enquiry" className="focus-ring rounded-md bg-crimson px-6 py-3 text-sm font-semibold text-white hover:bg-crimson-700">
+            <Link
+              href="#enquiry"
+              className="focus-ring rounded-md bg-crimson px-6 py-3 text-sm font-semibold text-white hover:bg-crimson-700"
+            >
               {service.primaryCta}
             </Link>
-            <Link href="#enquiry" className="focus-ring rounded-md border border-white/30 px-6 py-3 text-sm font-semibold text-white hover:border-white">
+            <Link
+              href="#enquiry"
+              className="focus-ring rounded-md border border-white/30 px-6 py-3 text-sm font-semibold text-white hover:border-white"
+            >
               {service.secondaryCta}
             </Link>
           </div>
@@ -135,10 +192,14 @@ export default function ServiceTemplate({ service }) {
             {/* Capabilities */}
             {service.capabilities?.length > 0 && (
               <div className="mt-10">
-                <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">Capabilities</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
+                  Capabilities
+                </p>
                 <div className="mt-4 divide-y divide-navy-100 border-t border-navy-100">
                   {service.capabilities.map((cap) => (
-                    <p key={cap} className="py-3 text-navy-700">{cap}</p>
+                    <p key={cap} className="py-3 text-navy-700">
+                      {cap}
+                    </p>
                   ))}
                 </div>
               </div>
@@ -161,14 +222,14 @@ export default function ServiceTemplate({ service }) {
                   ))}
                 </div>
 
-                {service.proofNote && (
+                {/* {service.proofNote && (
                   <div className="mt-5 rounded-md border border-dashed border-navy-300 bg-cream-100 p-4">
                     <p className="text-sm text-navy-500">
                       <span className="font-bold text-navy-700">Proof &amp; conversion: </span>
                       {service.proofNote}
                     </p>
                   </div>
-                )}
+                )} */}
               </div>
             )}
 
@@ -180,27 +241,39 @@ export default function ServiceTemplate({ service }) {
                 </p>
                 <div className="mt-4 border-t border-navy-100">
                   {service.faqs.map((faq) => (
-                    <FaqItem key={faq.question} question={faq.question} answer={faq.answer} />
+                    <FaqItem
+                      key={faq.question}
+                      question={faq.question}
+                      answer={faq.answer}
+                    />
                   ))}
                 </div>
               </div>
             )}
           </div>
 
-          <Sidebar service={service} />
+          {/* <Sidebar service={service} /> */}
         </div>
       </section>
 
       {/* Contextual quote form */}
       <section id="enquiry" className="bg-cream-100 py-16 sm:py-20">
         <div className="container-content max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">Next Step</p>
-          <h2 className="mt-3 text-2xl font-bold text-navy-900 sm:text-3xl">{service.primaryCta}</h2>
+          <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
+            Next Step
+          </p>
+          <h2 className="mt-3 text-2xl font-bold text-navy-900 sm:text-3xl">
+            {service.primaryCta}
+          </h2>
           <p className="mt-3 text-navy-400">
-            Share the details and Crystal will confirm the practical option within one business day.
+            Share the details and Crystal will confirm the practical option
+            within one business day.
           </p>
           <div className="mt-6">
-            <QuoteForm source="general_quote" title={`${service.title} Enquiry`} />
+            <QuoteForm
+              source="general_quote"
+              title={`${service.title} Enquiry`}
+            />
           </div>
         </div>
       </section>

@@ -28,7 +28,7 @@ const STATS = [
   //     "Membership and trusted relationships connect Bangladesh to international markets.",
   // },
   {
-    value: "Dhaka + CTG",
+    value: "Key",
     label: "Facilities",
     description:
       "Dedicated air-freight warehouse and Chattogram CFS capability.",
@@ -141,7 +141,7 @@ export default function TrustEvidence() {
       </div>
 
       <div className="container-content relative">
-        <motion.p
+        {/* <motion.p
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -149,7 +149,7 @@ export default function TrustEvidence() {
           className="text-xs font-semibold uppercase tracking-widest text-navy-400"
         >
           Bangladesh Capability &amp; Evidence
-        </motion.p>
+        </motion.p> */}
 
         <motion.h2
           initial={{ opacity: 0, y: 16 }}

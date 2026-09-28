@@ -30,7 +30,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <TaskSelector />
+      {/* <TaskSelector /> */}
       <TrustEvidence />
       <ServicesGrid services={services} />
       <RouteChoice />

@@ -77,6 +77,9 @@ const COL_START = [
   "col-start-6",
 ];
 
+// Fixed pixel width for the desktop zigzag images. Bump this up/down to resize.
+const DESKTOP_IMAGE_WIDTH = 260;
+
 function Node({ stage, i, prefersReducedMotion }) {
   return (
     <motion.div
@@ -136,7 +139,7 @@ export default function FashionJourney() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden bg-cream py-16 sm:py-20">
+    <section className="relative bg-cream py-16 sm:py-20">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-crimson/5 blur-3xl sm:h-80 sm:w-80" />
         <div className="absolute -right-16 bottom-0 h-56 w-56 rounded-full bg-violet-400/10 blur-3xl sm:h-72 sm:w-72" />
@@ -177,7 +180,7 @@ export default function FashionJourney() {
 
         {/* Desktop / large screens: connected zigzag timeline */}
         <div className="mt-16 hidden lg:block">
-          <div className="grid grid-cols-6 grid-rows-[1fr_auto_1fr]">
+          <div className="grid grid-cols-6 grid-rows-[1fr_auto_1fr] overflow-visible">
             {/* Connecting line, spans the node row */}
             <div className="relative col-span-6 row-start-2 h-px">
               <div className="absolute inset-0 bg-navy-100" />
@@ -208,11 +211,12 @@ export default function FashionJourney() {
                           duration: 0.5,
                           ease: "easeOut",
                         }}
-                        className="group relative w-full max-w-[40rem] text-center"
+                        className="group relative mx-auto text-center"
+                        style={{ width: DESKTOP_IMAGE_WIDTH, maxWidth: "none" }}
                       >
                         <StageImage
                           image={stage.image}
-                          sizes="160px"
+                          sizes={`${DESKTOP_IMAGE_WIDTH}px`}
                           className="mb-3"
                         />
                         <StageText stage={stage} />
@@ -245,12 +249,13 @@ export default function FashionJourney() {
                           duration: 0.5,
                           ease: "easeOut",
                         }}
-                        className="group relative w-full max-w-[40rem] text-center"
+                        className="group relative mx-auto text-center"
+                        style={{ width: DESKTOP_IMAGE_WIDTH, maxWidth: "none" }}
                       >
                         <StageText stage={stage} />
                         <StageImage
                           image={stage.image}
-                          sizes="160px"
+                          sizes={`${DESKTOP_IMAGE_WIDTH}px`}
                           className="mt-3"
                         />
                       </motion.div>
@@ -325,7 +330,7 @@ export default function FashionJourney() {
             href="/services/fashion-goh"
             className="focus-ring group mt-12 inline-flex items-center gap-2 rounded-md border border-navy-900 px-6 py-3 text-sm font-semibold text-navy-900 transition-colors duration-300 hover:bg-navy-900 hover:text-white"
           >
-           Explore Contract Logistics
+            Explore Contract Logistics
             <span className="transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>
