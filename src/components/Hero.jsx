@@ -154,13 +154,13 @@ export default function Hero() {
             Global Freight Forwarding
           </motion.div>
 
-          <h1 className="mt-4 text-[2.1rem] font-extrabold leading-[1.12] sm:text-5xl">
+          <h1 className="mt-4 text-[2.1rem] font-extrabold leading-[1.2] sm:text-5xl">
             <motion.span
               initial="hidden"
               animate="show"
               custom={1}
               variants={fadeUp}
-              className="block overflow-hidden"
+              className="block overflow-hidden py-1.5"
             >
               The right route,
             </motion.span>

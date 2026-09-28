@@ -38,7 +38,7 @@ export default async function HomePage() {
       <Facilities />
       <NetworkMap />
       <IndustriesGrid industries={industries} />
-      <DigitalVisibility />
+      {/* <DigitalVisibility /> */}
       {/* <CaseStudies /> */}
       <InsightsSection />
       <CTASection />

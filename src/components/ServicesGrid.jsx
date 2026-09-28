@@ -82,22 +82,35 @@ const cardVariants = {
 const IMAGE_EXTENSIONS = ["webp", "jpg", "jpeg", "png"];
 
 function Photo({ service, sizes }) {
-  const [extIndex, setExtIndex] = useState(0);
-  const ext = IMAGE_EXTENSIONS[extIndex];
+  const [index, setIndex] = useState(0);
 
-  // No matching file found: plain placeholder so the card doesn't break
-  if (!ext) {
+  // Hero image from the static file (the backend can't override it)
+  const staticHero = staticServices.find(
+    (s) => s.slug === service.slug,
+  )?.heroImage;
+
+  const sources = [
+    ...IMAGE_EXTENSIONS.map(
+      (ext) => `/assets/Home/Services/${service.slug}.${ext}`,
+    ),
+    ...(staticHero ? [staticHero] : []),
+  ];
+
+  const src = sources[index];
+
+  // Nothing found: plain placeholder so the card doesn't break
+  if (!src) {
     return <span className="absolute inset-0 bg-navy-100" />;
   }
 
   return (
     <Image
-      key={ext}
-      src={`/assets/Home/Services/${service.slug}.${ext}`}
+      key={src}
+      src={src}
       alt=""
       fill
       sizes={sizes}
-      onError={() => setExtIndex((i) => i + 1)}
+      onError={() => setIndex((i) => i + 1)}
       className="object-cover transition-transform duration-700 group-hover:scale-105"
     />
   );
@@ -447,14 +460,30 @@ const FALLBACK_LAYOUT = {
 };
 
 /**
+ * Static services always show (in the order defined in the data file).
+ * CMS data, matched by slug, overrides their fields, and services that
+ * exist only in the CMS are added at the end. This way the grid never
+ * loses cards just because the backend returned a partial list.
+ */
+function mergeServices(cms, fallback) {
+  if (!cms?.length) return fallback;
+  const cmsBySlug = new Map(cms.map((s) => [s.slug, s]));
+  const merged = fallback.map((s) => ({
+    ...s,
+    ...(cmsBySlug.get(s.slug) || {}),
+  }));
+  const extras = cms.filter((s) => !fallback.some((f) => f.slug === s.slug));
+  return [...merged, ...extras];
+}
+
+/**
  * @param {{ services?: Array }} props - Optional list fetched server-side
- * from the CMS (see lib/content.js). Falls back to the static data file
- * when no prop is passed, so existing usages keep working unchanged.
+ * from the CMS (see lib/content.js). Merged with the static data file,
+ * so existing usages keep working unchanged.
  */
 export default function ServicesGrid({ services: servicesProp } = {}) {
   const prefersReducedMotion = useReducedMotion();
-  const services =
-    servicesProp && servicesProp.length ? servicesProp : staticServices;
+  const services = mergeServices(servicesProp, staticServices);
 
   return (
     <section className="relative overflow-hidden bg-cream-100 py-16 sm:py-20">
