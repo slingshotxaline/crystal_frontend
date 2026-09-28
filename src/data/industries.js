@@ -23,7 +23,7 @@ export const industries = [
       'Product condition monitoring in transit',
       'Distribution coordination to multiple destinations',
     ],
-    relatedServices: ['ocean-freight', 'inland-customs', 'container-freight-station'],
+    relatedServices: ['ocean-freight', 'inland-customs', 'warehousing'],
   },
   {
     slug: 'industrial',
