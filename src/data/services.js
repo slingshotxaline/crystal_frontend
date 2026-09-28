@@ -1,16 +1,15 @@
 /**
  * Service content for /services and /services/[slug]. Shape mirrors
  * the backend Service model (see backend/src/models/Service.js) plus
- * the fields the new detail-page template needs: heroImage (the hero
- * banner background image), controls (the "what this helps you
+ * the fields the new detail-page template needs: heroImage (optional
+ * hero banner override), controls (the "what this helps you
  * control" tags), capabilities, supportSteps (the 5-step "how we
  * support the shipment" list), proofNote, faqs, and related
  * services/industries as {label, slug} pairs.
  *
- * heroImage paths point at /public/images/services/. Drop the
- * matching file in at that path (or swap in a CMS/CDN URL) — the
- * ServiceTemplate hero section falls back to a solid navy background
- * if the image is missing.
+ * heroImage is optional. If it is missing, ServiceTemplate uses
+ * /images/services/{slug}-hero.jpg, and then falls back to
+ * /images/services/default-hero.jpg.
  *
  * Renames per latest content review:
  * - "Fashion Logistics & GOH" -> "Contract Logistics" (slug kept as
@@ -179,7 +178,7 @@ export const services = [
     icon: "route",
     title: "Multimodal Logistics",
     category: "MULTIMODAL LOGISTICS",
-    heroImage: "/images/services/multimodal-logistics-hero.jpg",
+    heroImage: "/assets/Services/multimodal.webp",
     tagline: "Combine modes when cost, time or capacity require another route",
     cardDescription:
       "Sea-air, air-sea and other combinations shaped around the shipment.",
@@ -254,7 +253,7 @@ export const services = [
     icon: "truck",
     title: "Inland Transport & Customs",
     category: "INLAND AND CUSTOMS",
-    heroImage: "/images/services/inland-customs-hero.jpg",
+    heroImage: "/assets/Services/inland.jpg",
     tagline: "Coordinate factory pickup, customs and inland delivery",
     cardDescription:
       "First-mile, gateway and final-mile movement kept aligned with the schedule.",
@@ -331,7 +330,7 @@ export const services = [
     icon: "crane",
     title: "Project Logistics",
     category: "PROJECT LOGISTICS",
-    heroImage: "/images/services/project-logistics-hero.jpg",
+    heroImage: "/assets/Services/projectlogistics.webp",
     tagline: "Plan oversized or complex cargo",
     cardDescription:
       "Route survey, equipment, permits and lift control for non-standard cargo.",
@@ -411,7 +410,7 @@ export const services = [
     icon: "hanger",
     title: "Contract Logistics",
     category: "CONTRACT LOGISTICS",
-    heroImage: "/images/services/fashion-goh-hero.jpg",
+    heroImage: "/assets/Services/fashion.webp",
     tagline: "Manage fashion cargo / GOH",
     cardDescription:
       "A coordinated apparel journey from factory readiness to export movement.",
@@ -487,7 +486,7 @@ export const services = [
     icon: "tag",
     title: "Value Added Service & GOH",
     category: "VALUE ADDED SERVICE & GOH",
-    heroImage: "/images/services/value-added-services-hero.jpg",
+    heroImage: "/assets/Services/valueadded.jpg",
     tagline: "Prepare, inspect or label cargo before dispatch",
     cardDescription: "Inspection, packing & quality control, GOH handling.",
     headline: "Prepare the cargo for the next requirement.",
@@ -566,7 +565,7 @@ export const services = [
     icon: "warehouse",
     title: "Warehousing & Container",
     category: "WAREHOUSING & CONTAINER",
-    heroImage: "/images/services/warehousing-hero.jpg",
+    heroImage: "/assets/Services/warehousing.jpg",
     tagline: "Stage, consolidate or build export cargo at origin",
     cardDescription: "Storage, staging, receiving, and consolidation.",
     headline:

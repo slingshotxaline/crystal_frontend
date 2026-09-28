@@ -1,9 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "./Icon";
 import QuoteForm from "./QuoteForm";
+
+/**
+ * Hero image is a real <img>. `sources` is a list of URLs (any of
+ * jpg/jpeg/png/webp/avif). If one fails to load, the next is tried.
+ * If all fail, bg-navy-900 shows underneath.
+ */
+function HeroBackground({ sources }) {
+  const [index, setIndex] = useState(0);
+  const imgRef = useRef(null);
+
+  const next = () => setIndex((i) => i + 1);
+
+  // Catches images that already failed before React hydrated
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) next();
+  }, [index]);
+
+  const src = sources[index];
+  if (!src) return null;
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      key={src}
+      ref={imgRef}
+      src={src}
+      alt=""
+      fetchPriority="high"
+      onError={next}
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+  );
+}
 
 function Breadcrumb({ title }) {
   return (
@@ -95,15 +129,13 @@ function Sidebar({ service }) {
   );
 }
 
-export default function ServiceTemplate({ service }) {
+export default function ServiceTemplate({ service, heroSources }) {
   return (
     <>
-      
       {/* Hero */}
-      <section
-        className="relative bg-navy-900 py-14 text-white sm:py-16 bg-cover bg-center"
-        style={{ backgroundImage: `url(${service.heroImage})` }}
-      >
+      <section className="relative overflow-hidden bg-navy-900 py-14 text-white sm:py-40">
+        <HeroBackground key={heroSources[0]} sources={heroSources} />
+
         {/* Overlay for text contrast */}
         <div className="absolute inset-0 bg-navy-900/70" />
 
