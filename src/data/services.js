@@ -7,9 +7,12 @@
  * support the shipment" list), proofNote, faqs, and related
  * services/industries as {label, slug} pairs.
  *
- * heroImage is optional. If it is missing, ServiceTemplate uses
- * /images/services/{slug}-hero.jpg, and then falls back to
- * /images/services/default-hero.jpg.
+ * heroImage is optional. The extension is ignored (webp/jpg/jpeg/png/avif
+ * are all tried). Without it, /images/services/{slug}-hero is used, then
+ * the default hero image.
+ *
+ * capabilityImages: two photos shown next to the capability cards, as
+ * [{ src, caption }, { src, caption }]. Extension is ignored too.
  *
  * Renames per latest content review:
  * - "Fashion Logistics & GOH" -> "Contract Logistics" (slug kept as
@@ -27,6 +30,16 @@ export const services = [
     title: "Air Freight",
     category: "AIR FREIGHT",
     heroImage: "/assets/Services/air-cargo.jpg",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/air-freight1.webp",
+        caption: "Uplift & loading",
+      },
+      {
+        src: "/assets/Services/capabilities/Air-freight2.jpg",
+        caption: "Proactive communication",
+      },
+    ],
     tagline: "Move urgent or high-value cargo by air",
     cardDescription:
       "Consolidation, direct uplift and special-handling options matched to urgency.",
@@ -102,6 +115,16 @@ export const services = [
     title: "Ocean Freight",
     category: "OCEAN FREIGHT",
     heroImage: "/assets/Services/oceancargo.jpg",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/ocean-freight1.jpg",
+        caption: "Container build",
+      },
+      {
+        src: "/assets/Services/capabilities/oceanf2.jpg",
+        caption: "Sailing coordination",
+      },
+    ],
     tagline: "Plan FCL, LCL or buyer consolidation by ocean",
     cardDescription:
       "Container options matched to shipment volume, timing and schedule.",
@@ -179,6 +202,16 @@ export const services = [
     title: "Multimodal Logistics",
     category: "MULTIMODAL LOGISTICS",
     heroImage: "/assets/Services/multimodal.webp",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/multimodal1.jpg",
+        caption: "Gateway transfer",
+      },
+      {
+        src: "/assets/Services/capabilities/multimodal2.webp",
+        caption: "Route planning",
+      },
+    ],
     tagline: "Combine modes when cost, time or capacity require another route",
     cardDescription:
       "Sea-air, air-sea and other combinations shaped around the shipment.",
@@ -254,6 +287,16 @@ export const services = [
     title: "Inland Transport & Customs",
     category: "INLAND AND CUSTOMS",
     heroImage: "/assets/Services/inland.jpg",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/inland1.jpg",
+        caption: "Factory pickup",
+      },
+      {
+        src: "/assets/Services/capabilities/inland2.jpg",
+        caption: "Final-mile delivery",
+      },
+    ],
     tagline: "Coordinate factory pickup, customs and inland delivery",
     cardDescription:
       "First-mile, gateway and final-mile movement kept aligned with the schedule.",
@@ -331,6 +374,16 @@ export const services = [
     title: "Project Logistics",
     category: "PROJECT LOGISTICS",
     heroImage: "/assets/Services/projectlogistics.webp",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/logistics1.jpeg",
+        caption: "Heavy lift",
+      },
+      {
+        src: "/assets/Services/capabilities/logistics2.png",
+        caption: "Route and site survey",
+      },
+    ],
     tagline: "Plan oversized or complex cargo",
     cardDescription:
       "Route survey, equipment, permits and lift control for non-standard cargo.",
@@ -411,6 +464,16 @@ export const services = [
     title: "Contract Logistics",
     category: "CONTRACT LOGISTICS",
     heroImage: "/assets/Services/fashion.webp",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/contractLogistics1.jpeg",
+        caption: "Garments on hanger",
+      },
+      {
+        src: "/assets/Services/capabilities/contractLogistics2.webp",
+        caption: "Buyer consolidation",
+      },
+    ],
     tagline: "Manage fashion cargo / GOH",
     cardDescription:
       "A coordinated apparel journey from factory readiness to export movement.",
@@ -487,6 +550,16 @@ export const services = [
     title: "Value Added Service & GOH",
     category: "VALUE ADDED SERVICE & GOH",
     heroImage: "/assets/Services/valueadded.jpg",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/valueadded1.jpg",
+        caption: "Inspection and checks",
+      },
+      {
+        src: "/assets/Services/capabilities/valueadded2.webp",
+        caption: "Labelling and packing",
+      },
+    ],
     tagline: "Prepare, inspect or label cargo before dispatch",
     cardDescription: "Inspection, packing & quality control, GOH handling.",
     headline: "Prepare the cargo for the next requirement.",
@@ -566,6 +639,16 @@ export const services = [
     title: "Warehousing & Container",
     category: "WAREHOUSING & CONTAINER",
     heroImage: "/assets/Services/warehousing.jpg",
+    capabilityImages: [
+      {
+        src: "/assets/Services/capabilities/warehousing1.webp",
+        caption: "Receiving and storage",
+      },
+      {
+        src: "/assets/Services/capabilities/warehousing2.webp",
+        caption: "Container build",
+      },
+    ],
     tagline: "Stage, consolidate or build export cargo at origin",
     cardDescription: "Storage, staging, receiving, and consolidation.",
     headline:
