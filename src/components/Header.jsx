@@ -78,7 +78,14 @@ const NAV = [
     ],
   },
   // { label: 'Network', href: '/network' },
-  { label: "Digital", href: "/digital" },
+  {
+    label: "Digital",
+    href: "/digital",
+    children: [
+      { label: "Digital Overview", href: "/digital" },
+      { label: "PO Management", href: "/digital/po-management" },
+    ],
+  },
   { label: "Insights", href: "/insights" },
   { label: "About", href: "/about" },
 ];
