@@ -193,7 +193,7 @@ export default function Header() {
           aria-label="Crystal Express home"
         >
           <Image
-            src="/assets/logo/logo 3.svg"
+            src="/assets/logo/Crystal_Express_Logo.svg"
             alt="Crystal Express"
             width={100}
             height={100}

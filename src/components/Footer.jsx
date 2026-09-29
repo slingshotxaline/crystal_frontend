@@ -56,7 +56,7 @@ export default function Footer() {
             aria-label="Crystal Express home"
           >
             <Image
-              src="/assets/logo/logo 4.svg"
+              src="/assets/logo/Crystal_Express_Logo white.svg"
               alt="Crystal Express"
               width={100}
               height={100}
