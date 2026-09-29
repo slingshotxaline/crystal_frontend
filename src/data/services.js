@@ -29,7 +29,7 @@ export const services = [
     icon: "plane",
     title: "Air Freight",
     category: "AIR FREIGHT",
-    heroImage: "/assets/Services/air-cargo.jpg",
+    heroImage: "/assets/Services/air1.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/air-freight1.webp",
@@ -114,7 +114,7 @@ export const services = [
     icon: "ship",
     title: "Ocean Freight",
     category: "OCEAN FREIGHT",
-    heroImage: "/assets/Services/oceancargo.jpg",
+    heroImage: "/assets/Services/ocean1.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/ocean-freight1.jpg",
@@ -204,11 +204,11 @@ export const services = [
     heroImage: "/assets/Services/multimodal.webp",
     capabilityImages: [
       {
-        src: "/assets/Services/capabilities/multimodal1.jpg",
+        src: "/assets/Services/capabilities/multi11.jpg",
         caption: "Gateway transfer",
       },
       {
-        src: "/assets/Services/capabilities/multimodal2.webp",
+        src: "/assets/Services/capabilities/multi21.jpg",
         caption: "Route planning",
       },
     ],
@@ -286,7 +286,7 @@ export const services = [
     icon: "truck",
     title: "Inland Transport & Customs",
     category: "INLAND AND CUSTOMS",
-    heroImage: "/assets/Services/inland.jpg",
+    heroImage: "/assets/Services/inland11.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/inland1.jpg",
@@ -638,14 +638,14 @@ export const services = [
     icon: "warehouse",
     title: "Warehousing & Container",
     category: "WAREHOUSING & CONTAINER",
-    heroImage: "/assets/Services/warehousing.jpg",
+    heroImage: "/assets/Services/wearhouse1.jpg",
     capabilityImages: [
       {
-        src: "/assets/Services/capabilities/warehousing1.webp",
+        src: "/assets/Services/capabilities/waerhousecap1.avif",
         caption: "Receiving and storage",
       },
       {
-        src: "/assets/Services/capabilities/warehousing2.webp",
+        src: "/assets/Services/capabilities/waehousecap21.jpeg",
         caption: "Container build",
       },
     ],

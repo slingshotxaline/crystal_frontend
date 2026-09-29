@@ -18,7 +18,7 @@ import { industries as staticIndustries } from "@/data/industries";
 // every supported format (webp/jpg/jpeg/png/avif) is tried too.
 const INDUSTRY_HEROES = {
   "fashion-retail": "/assets/Industries/fashion-retail.webp",
-  fmcg: "/assets/Industries/fmcg.jpg",
+  fmcg: "/assets/Industries/fmcg11.jpg",
   industrial: "/assets/Industries/industry3.webp",
   automotive: "/assets/Industries/automotive.jpg",
   healthcare: "/assets/Industries/healthcare.jpg",
