@@ -36,7 +36,7 @@ export default async function HomePage() {
       <RouteChoice />
       <FashionJourney />
       <Facilities />
-      <NetworkMap />
+      {/* <NetworkMap /> */}
       <IndustriesGrid industries={industries} />
       {/* <DigitalVisibility /> */}
       {/* <CaseStudies /> */}
