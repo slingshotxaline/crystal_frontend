@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { submitEnquiry } from "@/lib/api";
 import { ENQUIRY } from "./content";
-import { Reveal } from "./ui";
+import { Reveal } from "./UI";
+
 
 const EASE = [0.22, 1, 0.36, 1];
 

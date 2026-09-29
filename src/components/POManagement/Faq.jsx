@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { FAQ } from "./content";
-import { SectionHeading, Stagger, StaggerItem } from "./ui";
+import { SectionHeading, Stagger, StaggerItem } from "./UI";
 
 export default function Faq() {
   const reduce = useReducedMotion();

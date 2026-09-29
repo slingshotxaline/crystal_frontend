@@ -10,7 +10,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { WORKFLOW, VALUE } from "./content";
-import { SectionHeading, Stagger, StaggerItem, Icon } from "./ui";
+import { SectionHeading, Stagger, StaggerItem, Icon } from "./UI";
 
 const EASE = [0.22, 1, 0.36, 1];
 
