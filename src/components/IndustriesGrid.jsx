@@ -88,6 +88,123 @@ const IMAGES = [
   },
 ];
 
+/* ------------------------------------------------------------------
+ * Continuous background: kept low-contrast on the light cream so the
+ * list stays easy to read. Same motifs used elsewhere on the site
+ * (drifting dots, floating colour blobs, flowing lines) so this
+ * section feels part of the same system. Stops for visitors who
+ * prefer reduced motion.
+ * ---------------------------------------------------------------- */
+const BG_LINES = [
+  {
+    d: "M -20 90 C 260 10, 520 180, 800 90 S 1280 10, 1500 100",
+    color: "#0ea5e9",
+    dash: "8 10",
+    speed: 2.6,
+  },
+  {
+    d: "M -20 260 C 280 180, 540 360, 820 260 S 1260 190, 1500 270",
+    color: "#8b5cf6",
+    dash: "2 12",
+    speed: 3.2,
+  },
+  {
+    d: "M -20 430 C 260 350, 560 520, 840 420 S 1260 360, 1500 450",
+    color: "#f472b6",
+    dash: "12 8",
+    speed: 3,
+  },
+];
+
+function IndustriesBackground({ reduce }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      {/* drifting dot grid */}
+      <motion.div
+        className="absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(100,116,139,0.3) 1.5px, transparent 1.5px)",
+          backgroundSize: "28px 28px",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at 50% 30%, black 20%, transparent 78%)",
+          maskImage:
+            "radial-gradient(ellipse at 50% 30%, black 20%, transparent 78%)",
+        }}
+        animate={
+          reduce ? undefined : { backgroundPosition: ["0px 0px", "28px 28px"] }
+        }
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* floating colour blobs */}
+      <motion.div
+        className="absolute -left-24 top-0 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl sm:h-96 sm:w-96"
+        animate={reduce ? undefined : { x: [0, 60, 0], y: [0, 34, 0] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute right-0 top-1/3 h-64 w-64 rounded-full bg-violet-300/20 blur-3xl sm:h-80 sm:w-80"
+        animate={reduce ? undefined : { x: [0, -48, 0], y: [0, 30, 0] }}
+        transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute -left-10 bottom-0 h-60 w-60 rounded-full bg-amber-300/15 blur-3xl sm:h-72 sm:w-72"
+        animate={reduce ? undefined : { x: [0, 44, 0], y: [0, -30, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* flowing dashed lines crossing the width */}
+      <svg
+        viewBox="0 0 1440 540"
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full opacity-50"
+      >
+        {BG_LINES.map((l, i) => (
+          <g key={i}>
+            <path
+              d={l.d}
+              fill="none"
+              stroke={l.color}
+              strokeOpacity="0.12"
+              strokeWidth="1.5"
+              vectorEffect="non-scaling-stroke"
+            />
+            <motion.path
+              d={l.d}
+              fill="none"
+              stroke={l.color}
+              strokeOpacity="0.32"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeDasharray={l.dash}
+              vectorEffect="non-scaling-stroke"
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      strokeDashoffset: [
+                        0,
+                        -l.dash.split(" ").reduce((a, n) => a + Number(n), 0),
+                      ],
+                    }
+              }
+              transition={{
+                duration: l.speed,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
 /**
  * @param {{ industries?: Array }} props - Optional list fetched server-side
  * from the CMS (see lib/content.js). Falls back to the static data file
@@ -100,6 +217,8 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
 
   return (
     <section className="relative overflow-hidden bg-cream py-16 sm:py-20">
+      <IndustriesBackground reduce={prefersReducedMotion} />
+
       <div className="container-content relative">
         <motion.p
           initial={{ opacity: 0, y: 12 }}

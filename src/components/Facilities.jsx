@@ -22,15 +22,235 @@ const POINTS = [
   },
 ];
 
+/* ------------------------------------------------------------------
+ * Continuous background: everything loops forever, kept low-contrast
+ * against the dark navy so the text and photo stay easy to read.
+ *   - drifting dot grid (depth)
+ *   - a slow-turning conic glow behind the whole section (premium sheen)
+ *   - three moving colour glows (crimson, sky, amber)
+ *   - flowing dashed lines crossing the width, echoing the route motif
+ *     used elsewhere on the site but in the facility's own palette
+ *   - two scanning light beams, crossing at different speeds/directions
+ *   - small particles drifting upward with soft pulsing rings
+ * Stops for visitors who prefer reduced motion.
+ * ---------------------------------------------------------------- */
+const BG_LINES = [
+  {
+    d: "M -20 100 C 260 20, 520 200, 800 100 S 1280 20, 1500 120",
+    color: "#dc2430",
+    dash: "8 10",
+    speed: 2.6,
+  },
+  {
+    d: "M -20 260 C 280 180, 540 360, 820 260 S 1260 200, 1500 280",
+    color: "#38bdf8",
+    dash: "2 12",
+    speed: 3.2,
+  },
+  {
+    d: "M -20 420 C 260 340, 560 500, 840 410 S 1260 360, 1500 440",
+    color: "#fbbf24",
+    dash: "12 8",
+    speed: 3,
+  },
+];
+
+const PARTICLES = [
+  { left: "6%", size: 7, dur: 20, delay: 0 },
+  { left: "16%", size: 5, dur: 25, delay: 5 },
+  { left: "26%", size: 9, dur: 18, delay: 9 },
+  { left: "37%", size: 6, dur: 23, delay: 2 },
+  { left: "48%", size: 5, dur: 27, delay: 12 },
+  { left: "58%", size: 8, dur: 19, delay: 6 },
+  { left: "68%", size: 6, dur: 24, delay: 15 },
+  { left: "78%", size: 9, dur: 21, delay: 3 },
+  { left: "88%", size: 6, dur: 26, delay: 10 },
+];
+
+function FacilitiesBackground({ reduce }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      {/* slow-turning conic glow, a soft premium sheen behind everything */}
+      {!reduce && (
+        <motion.div
+          className="absolute left-1/2 top-1/2 h-[60rem] w-[60rem] -translate-x-1/2 -translate-y-1/2 opacity-25"
+          style={{
+            background:
+              "conic-gradient(from 0deg, transparent 0deg, rgba(220,36,48,0.35) 40deg, transparent 100deg, rgba(56,189,248,0.3) 200deg, transparent 260deg, rgba(251,191,36,0.25) 320deg, transparent 360deg)",
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 36, repeat: Infinity, ease: "linear" }}
+        />
+      )}
+
+      {/* drifting dot grid */}
+      <motion.div
+        className="absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.14) 1.5px, transparent 1.5px)",
+          backgroundSize: "30px 30px",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at 50% 40%, black 20%, transparent 78%)",
+          maskImage:
+            "radial-gradient(ellipse at 50% 40%, black 20%, transparent 78%)",
+        }}
+        animate={
+          reduce ? undefined : { backgroundPosition: ["0px 0px", "30px 30px"] }
+        }
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* moving glows */}
+      <motion.div
+        className="absolute -left-20 top-0 h-72 w-72 rounded-full bg-crimson/15 blur-3xl sm:h-96 sm:w-96"
+        animate={reduce ? undefined : { x: [0, 60, 0], y: [0, 34, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-sky-500/15 blur-3xl sm:h-80 sm:w-80"
+        animate={reduce ? undefined : { x: [0, -48, 0], y: [0, -28, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute left-1/2 top-1/3 h-56 w-56 rounded-full bg-amber-400/10 blur-3xl sm:h-72 sm:w-72"
+        animate={reduce ? undefined : { x: [0, 40, 0], y: [0, -36, 0] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* flowing dashed lines crossing the whole width */}
+      <svg
+        viewBox="0 0 1440 540"
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full opacity-70"
+      >
+        {BG_LINES.map((l, i) => (
+          <g key={i}>
+            <path
+              d={l.d}
+              fill="none"
+              stroke={l.color}
+              strokeOpacity="0.12"
+              strokeWidth="1.5"
+              vectorEffect="non-scaling-stroke"
+            />
+            <motion.path
+              d={l.d}
+              fill="none"
+              stroke={l.color}
+              strokeOpacity="0.4"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeDasharray={l.dash}
+              vectorEffect="non-scaling-stroke"
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      strokeDashoffset: [
+                        0,
+                        -l.dash.split(" ").reduce((a, n) => a + Number(n), 0),
+                      ],
+                    }
+              }
+              transition={{
+                duration: l.speed,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          </g>
+        ))}
+      </svg>
+
+      {/* two scanning light beams, different speeds and directions */}
+      {!reduce && (
+        <>
+          <motion.div
+            className="absolute inset-y-0 left-0 w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.09] to-transparent"
+            initial={{ x: "-140%" }}
+            animate={{ x: "500%" }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "linear",
+              repeatDelay: 2.5,
+            }}
+          />
+          <motion.div
+            className="absolute inset-y-0 right-0 w-1/5 skew-x-12 bg-gradient-to-l from-transparent via-sky-300/[0.08] to-transparent"
+            initial={{ x: "140%" }}
+            animate={{ x: "-500%" }}
+            transition={{
+              duration: 14,
+              repeat: Infinity,
+              ease: "linear",
+              repeatDelay: 4,
+            }}
+          />
+        </>
+      )}
+
+      {/* particles drifting upward, each with a soft pulsing ring */}
+      {!reduce &&
+        PARTICLES.map((p, i) => (
+          <span
+            key={i}
+            className="absolute"
+            style={{ left: p.left, bottom: "-5%" }}
+          >
+            <motion.span
+              className="absolute rounded-sm border border-white/25 bg-white/5"
+              style={{ width: p.size, height: p.size }}
+              initial={{ y: "0%", opacity: 0, rotate: 0 }}
+              animate={{
+                y: "-118vh",
+                opacity: [0, 0.7, 0.7, 0],
+                rotate: 90,
+              }}
+              transition={{
+                duration: p.dur,
+                repeat: Infinity,
+                ease: "linear",
+                delay: p.delay,
+              }}
+            />
+            <motion.span
+              className="absolute rounded-full border border-crimson/30"
+              style={{
+                width: p.size * 3,
+                height: p.size * 3,
+                left: -p.size,
+                top: -p.size,
+              }}
+              initial={{ y: "0%", opacity: 0, scale: 0.6 }}
+              animate={{
+                y: "-118vh",
+                opacity: [0, 0.35, 0.35, 0],
+                scale: [0.6, 1.4, 1.4, 0.6],
+              }}
+              transition={{
+                duration: p.dur,
+                repeat: Infinity,
+                ease: "linear",
+                delay: p.delay + 0.6,
+              }}
+            />
+          </span>
+        ))}
+    </div>
+  );
+}
+
 export default function Facilities() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="relative overflow-hidden bg-navy-900 py-16 text-white sm:py-20">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-20 top-0 h-72 w-72 rounded-full bg-crimson/10 blur-3xl sm:h-96 sm:w-96" />
-        <div className="absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-sky-500/10 blur-3xl sm:h-80 sm:w-80" />
-      </div>
+      <FacilitiesBackground reduce={prefersReducedMotion} />
 
       <div className="container-content relative">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
