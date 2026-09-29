@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export const metadata = {
   title: "About Crystal Express",
   description:
@@ -174,8 +176,19 @@ export default function AboutPage() {
   return (
     <>
       {/* HERO */}
-      <section className="bg-navy-900 py-16 text-white sm:py-20">
-        <div className="container-content">
+      <section className="relative overflow-hidden bg-navy-900 py-20 text-white sm:py-40">
+        <Image
+          src="/assets/About/aboutbanner.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Dark overlay keeps the text readable on any photo */}
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-navy-900/30" />
+
+        <div className="container-content relative z-10">
           <p className="text-xs text-navy-100/60">Home / About</p>
           <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-crimson">
             About Crystal Express

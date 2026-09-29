@@ -351,7 +351,7 @@ export default function Facilities() {
           >
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
               <Image
-                src="/assets/Home/Facilities/facilities.jpg"
+                src="/assets/Home/Facilities/facilities1.jpg"
                 alt="Container ships alongside quay cranes at a port terminal"
                 fill
                 sizes="(min-width: 1024px) 45vw, 90vw"
