@@ -272,6 +272,7 @@ function SplitCard({ service, theme, reduce }) {
 function LeafCard({ service, theme, reduce }) {
   return (
     <div className="flex flex-1 flex-col p-4">
+       <TopBar theme={theme} />
       <div className="relative">
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-bl-xl rounded-br-[3rem] rounded-tl-[3rem] rounded-tr-xl">
           <Photo service={service} sizes="(min-width: 1024px) 50vw, 100vw" />
@@ -373,9 +374,9 @@ function MirrorCard({ service, theme, reduce }) {
       <div className="relative min-h-[14rem] flex-1 lg:[clip-path:polygon(0_0,100%_0,86%_100%,0_100%)]">
         <Photo service={service} sizes="(min-width: 1024px) 40vw, 100vw" />
         <span className="absolute inset-0 bg-gradient-to-t from-navy-900/25 via-transparent to-transparent" />
-        <span className="absolute left-4 top-5 rounded-full bg-navy-900/70 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
+        {/* <span className="absolute left-4 top-5 rounded-full bg-navy-900/70 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
           {service.category}
-        </span>
+        </span> */}
       </div>
       <div className="relative z-10 flex flex-col justify-center p-6 sm:p-8 lg:w-[55%] lg:shrink-0">
         <Badge service={service} theme={theme} reduce={reduce} />
