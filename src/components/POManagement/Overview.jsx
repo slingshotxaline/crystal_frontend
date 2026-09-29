@@ -11,7 +11,8 @@ import {
   useSpring,
 } from "framer-motion";
 import { OVERVIEW, SCOPE, PO_IMAGES } from "./content";
-import { Reveal, Stagger, StaggerItem, SectionHeading, Icon } from "./ui";
+import { Icon, Reveal, SectionHeading, Stagger, StaggerItem } from "./UI";
+
 
 const EASE = [0.22, 1, 0.36, 1];
 
