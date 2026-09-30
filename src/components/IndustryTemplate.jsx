@@ -227,11 +227,11 @@ function ConsiderationPhoto({ sources, caption, position = "center" }) {
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/10 to-transparent" />
-      {caption && (
+      {/* {caption && (
         <p className="absolute bottom-4 left-5 right-5 text-xs font-bold uppercase tracking-wide text-white">
           {caption}
         </p>
-      )}
+      )} */}
     </div>
   );
 }

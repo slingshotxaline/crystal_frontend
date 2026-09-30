@@ -291,7 +291,7 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
                   />
                   {/* Accent bar (left for normal rows, right for reversed) */}
                   <span
-                    className={`absolute top-0 h-full w-0.5 origin-top scale-y-0 ${theme.bg} transition-transform duration-300 group-hover:scale-y-100 ${
+                    className={`absolute top-0 h-full w-0.5 origin-top scale-y-0 ${theme.bg} transition-transform duration-300 group-hover:scale-y-100  ${
                       isReversed ? "right-0" : "left-0"
                     }`}
                   />
@@ -370,7 +370,7 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
                     </p>
                   </div>
 
-                  <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-navy-200 text-navy-600 transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-navy-900 group-hover:text-navy-900">
+                  <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-navy-200 text-navy-600 transition-all duration-300 group-hover:translate-x-0.3 group-hover:border-navy-900 group-hover:text-navy-900">
                     <svg
                       viewBox="0 0 16 16"
                       className={`h-3.5 w-3.5 ${isReversed ? "rotate-180" : ""}`}

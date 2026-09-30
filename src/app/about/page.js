@@ -178,7 +178,7 @@ export default function AboutPage() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-navy-900 py-20 text-white sm:py-40">
         <Image
-          src="/assets/About/aboutbanner.jpg"
+          src="/assets/About/aboutBanner2.jpg"
           alt=""
           fill
           priority
