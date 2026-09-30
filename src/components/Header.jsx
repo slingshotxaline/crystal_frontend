@@ -52,7 +52,7 @@ const NAV = [
         },
         // Merged: Warehousing + Container Freight Station -> one page.
         {
-          label: "Warehousing & Container",
+          label: "Warehousing & CFS",
           desc: "Storage, staging, receiving, and consolidation",
           href: "/services/warehousing",
         },

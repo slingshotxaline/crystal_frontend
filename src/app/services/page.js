@@ -16,11 +16,11 @@ export default async function ServicesOverviewPage() {
       <section
         className="relative bg-navy-900 bg-cover bg-center py-16 text-white sm:py-40"
         style={{
-          backgroundImage: 'url("/assets/Services/serviceOverview.webp")',
+          backgroundImage: 'url("/assets/Services/serviceOverview2.webp")',
         }}
       >
         {/* Overlay for text contrast */}
-        <div className="absolute inset-0 bg-navy-900/70" />
+        <div className="absolute inset-0 bg-navy-900/85" />
 
         <div className="container-content relative z-10">
           <p className="text-sm text-navy-100/70">

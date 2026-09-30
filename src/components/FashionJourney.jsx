@@ -38,7 +38,7 @@ const STAGES = [
     bar: "bg-teal-400",
     num: "text-teal-600",
     image: {
-      src: "/assets/Home/Fashion/fashionCoordination.jpg",
+      src: "/assets/Home/Fashion/fashionCoordination2.jpg",
       alt: "Garment factory production line",
     },
   },
@@ -50,7 +50,7 @@ const STAGES = [
     bar: "bg-violet-400",
     num: "text-violet-600",
     image: {
-      src: "/assets/Home/Fashion/fashionOrigin.jpg",
+      src: "/assets/Home/Fashion/fashionOrigin2.jpg",
       alt: "Warehouse team consolidating cartons between storage racks",
     },
   },

@@ -141,10 +141,48 @@ export const ENQUIRY = {
     "Your message could not be sent. Please try again or use the contact details on our",
 };
 
+
+
 // Optional photography. Leave a slot as null until the selected image is
 // approved. Text is never baked into photos. Example once approved:
 // hero: { src: '/images/po-management/hero.webp', width: 2400, height: 1029 }
 export const PO_IMAGES = {
-  hero: { src: "/assets/Digital/pobanner.webp", width: 2400, height: 1029 },
-  overview: null, // { src, width: 1600, height: 1200, alt: 'Separate palletised carton groups arranged in a freight staging area.' }
+  hero: { src: "/assets/Digital/pobanner2.jpg", width: 2400, height: 1029 },
+   overview: {
+    src: "/assets/Digital/posec1.jpg",   // file goes in /public/images/
+    alt: "Purchase order documents and a buyer reviewing orders",
+    width: 1600,
+    height: 686,
+    caption: "Purchase order documents and a buyer reviewing orders", // optional
+  },
+  workflow: [
+    {
+      src: "/assets/Digital/poworkflow1.jpg",
+      alt: "Cargo being packed at a warehouse",
+      width: 800,
+      height: 600,
+      caption: "Cargo being packed at a warehouse",
+    },
+    {
+    src: "/assets/Digital/poworkflow2.jpg",
+      alt: "Containers being loaded at port",
+      width: 800,
+      height: 600,
+      caption: "Containers being loaded at port",
+    },
+    {
+    src: "/assets/Digital/poworkflow3.jpg",
+      alt: "Shipment handover to a freight truck",
+      width: 800,
+      height: 600,
+      caption: "Shipment handover to a freight truck",
+    },
+  ],
+  faq: {
+   src: "/assets/Digital/pofaqoverimage.jpg",
+    alt: "Air and ocean freight moving cargo worldwide",
+    width: 1600,
+    height: 686,
+    caption: "Air and ocean freight moving cargo worldwide",
+  },
 };

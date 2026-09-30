@@ -18,11 +18,11 @@ import { industries as staticIndustries } from "@/data/industries";
 // every supported format (webp/jpg/jpeg/png/avif) is tried too.
 const INDUSTRY_HEROES = {
   "fashion-retail": "/assets/Industries/fashion-retail.webp",
-  fmcg: "/assets/Industries/fmcg11.jpg",
+  fmcg: "/assets/Industries/fmcg21.jpg",
   industrial: "/assets/Industries/industry3.webp",
   automotive: "/assets/Industries/automotive.jpg",
-  healthcare: "/assets/Industries/healthcare.jpg",
-  "high-tech": "/assets/Industries/industry6.jpg",
+  healthcare: "/assets/Industries/healthcare11.jpg",
+  "high-tech": "/assets/Industries/hightechbanner.jpg",
 };
 
 // Used for any industry without its own entry above.
@@ -501,7 +501,7 @@ export default function IndustryTemplate({ industry }) {
         </section>
       )}
 
-      <section className="bg-cream py-14 sm:py-16">
+      {/* <section className="bg-cream py-14 sm:py-16">
         <div className="container-content">
           <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
             Practical Example
@@ -519,7 +519,7 @@ export default function IndustryTemplate({ industry }) {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section id="enquiry" className="bg-cream-100 py-16 sm:py-20">
         <div className="container-content max-w-2xl">

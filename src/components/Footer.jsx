@@ -11,6 +11,15 @@ const COLUMNS = [
       { label: "Inland Transport & Customs", href: "/services/inland-customs" },
       { label: "Project Logistics", href: "/services/project-logistics" },
       { label: "Contract Logistics", href: "/services/fashion-goh" },
+      {
+        label: "Warehousing & CFS",
+        href: "/services/warehousing",
+      },
+
+      {
+        label: "Value Added Service & GOH",
+        href: "/services/value-added-services",
+      },
     ],
   },
   {

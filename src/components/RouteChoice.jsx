@@ -469,23 +469,12 @@ export default function RouteChoice() {
                   aria-selected={isActive}
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => setActive(c.id)}
-                  className={`focus-ring relative rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
+                  className={`focus-ring rounded-full border px-4 py-2 text-xs font-semibold transition-colors duration-200 ${
                     isActive
-                      ? "border-transparent text-navy-900"
+                      ? "border-crimson bg-red-100 text-navy-900"
                       : "border-white/20 text-white/75 hover:border-white/50 hover:text-white"
                   }`}
                 >
-                  {isActive && (
-                    <motion.span
-                      layoutId="route-choice-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-white"
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
-                  )}
                   {c.label}
                 </button>
               );

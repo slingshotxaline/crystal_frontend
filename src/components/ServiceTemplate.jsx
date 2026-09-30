@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   motion,
   useMotionTemplate,
@@ -12,8 +13,17 @@ import Icon from "./Icon";
 import QuoteForm from "./QuoteForm";
 import { services as staticServices } from "@/data/services";
 
+/* ------------------------------------------------------------------
+ * Default image for the "How we support the shipment" section.
+ * Used when a service has no `supportImage` in services.js, or when
+ * that file fails to load.
+ * Put your file in /public and change this path to match.
+ * e.g. /public/assets/Services/support-steps.jpg
+ * ---------------------------------------------------------------- */
+const STEPS_IMAGE = "/assets/Services/support-steps.jpg";
+
 /**
- * Hero image is a real <img>. `sources` is a list of URLs (any of
+ * Hero image uses next/image. `sources` is a list of URLs (any of
  * jpg/jpeg/png/webp/avif). If one fails to load, the next is tried.
  * If all fail, bg-navy-900 shows underneath.
  */
@@ -33,15 +43,38 @@ function HeroBackground({ sources }) {
   if (!src) return null;
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       key={src}
       ref={imgRef}
       src={src}
       alt=""
-      fetchPriority="high"
+      fill
+      priority
+      sizes="100vw"
       onError={next}
-      className="absolute inset-0 h-full w-full object-cover"
+      className="object-cover"
+    />
+  );
+}
+
+/**
+ * Left image of "How we support the shipment". Each service can set its
+ * own `supportImage` in services.js. If it fails to load, the default
+ * STEPS_IMAGE is shown instead.
+ */
+function SupportImage({ src, alt }) {
+  const [current, setCurrent] = useState(src);
+
+  return (
+    <Image
+      src={current}
+      alt={alt}
+      fill
+      sizes="(min-width: 1024px) 50vw, 100vw"
+      onError={() => {
+        if (current !== STEPS_IMAGE) setCurrent(STEPS_IMAGE);
+      }}
+      className="object-cover transition-transform duration-700 group-hover:scale-105"
     />
   );
 }
@@ -77,15 +110,15 @@ function CapabilityPhoto({ sources, caption, position = "center" }) {
   return (
     <div className="group relative aspect-[3/2] overflow-hidden rounded-2xl bg-navy-900 shadow-lg">
       {src && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           key={src}
           ref={imgRef}
           src={src}
           alt=""
-          loading="lazy"
+          fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           onError={next}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
           style={{ objectPosition: position }}
         />
       )}
@@ -550,6 +583,14 @@ function Sidebar({ service }) {
 export default function ServiceTemplate({ service, heroSources }) {
   const reduce = useReducedMotion();
 
+  // Per-service image for "How we support the shipment".
+  // Read from the static file (same as capabilityImages), then the service
+  // object, then the default image.
+  const supportImage =
+    staticServices.find((s) => s.slug === service.slug)?.supportImage ||
+    service.supportImage ||
+    STEPS_IMAGE;
+
   return (
     <>
       {/* Hero */}
@@ -625,21 +666,52 @@ export default function ServiceTemplate({ service, heroSources }) {
         {/* Steps + FAQ (no bg color, so the animation shows through) */}
         <section className="relative z-10 pb-14 pt-4 sm:pb-16">
           <div className="container-content">
-            {/* How we support the shipment */}
+            {/* How we support the shipment: image left (different per service), steps right */}
             {service.supportSteps?.length > 0 && (
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
                   How we support the shipment
                 </p>
-                <div className="mt-4 divide-y divide-navy-100 border-t border-navy-100">
-                  {service.supportSteps.map((step, i) => (
-                    <div key={step} className="flex items-start gap-4 py-3.5">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-navy-300 bg-white/80 text-xs font-bold text-navy-700">
-                        {i + 1}
-                      </span>
-                      <p className="text-navy-700">{step}</p>
-                    </div>
-                  ))}
+
+                <div className="mt-4 grid items-stretch gap-8 lg:grid-cols-2">
+                  {/* Left: service image */}
+                  <motion.div
+                    initial={reduce ? false : { opacity: 0, x: -32 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    className="group relative min-h-[20rem] overflow-hidden rounded-2xl bg-navy-900 shadow-lg"
+                  >
+                    <SupportImage
+                      key={supportImage}
+                      src={supportImage}
+                      alt={`${service.title} shipment support`}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent" />
+                  </motion.div>
+
+                  {/* Right: steps */}
+                  <div className="divide-y divide-navy-100 border-t border-navy-100">
+                    {service.supportSteps.map((step, i) => (
+                      <motion.div
+                        key={step}
+                        initial={reduce ? false : { opacity: 0, x: 24 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, margin: "-40px" }}
+                        transition={{
+                          delay: i * 0.08,
+                          duration: 0.45,
+                          ease: "easeOut",
+                        }}
+                        className="flex items-start gap-4 py-3.5"
+                      >
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-navy-300 bg-white/80 text-xs font-bold text-navy-700">
+                          {i + 1}
+                        </span>
+                        <p className="text-navy-700">{step}</p>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* {service.proofNote && (

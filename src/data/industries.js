@@ -99,11 +99,11 @@ export const industries = [
     ],
     sectionImages: [
       {
-        src: "/assets/Industries/capabilities/automotive1.jpg",
+        src: "/assets/Industries/capabilities/automotive11.jpeg",
         caption: "Factory readiness",
       },
       {
-        src: "/assets/Industries/capabilities/automotive2.jpg",
+        src: "/assets/Industries/capabilities/automotive21.jpg",
         caption: "Buyer consolidation",
       },
     ],
@@ -123,13 +123,14 @@ export const industries = [
     ],
     sectionImages: [
       {
-        src: "/assets/Industries/capabilities/healthcare1.jpg",
+        src: "/assets/Industries/capabilities/healthcare111.jpg",
         caption: "Factory readiness",
       },
       {
-        src: "/assets/Industries/capabilities/healthcare2.webp",
+        src: "/assets/Industries/capabilities/caphealthcare2.jpg",
         caption: "Buyer consolidation",
       },
+      
     ],
     relatedServices: ["air-freight", "value-added-services"],
   },

@@ -29,7 +29,7 @@ export const services = [
     icon: "plane",
     title: "Air Freight",
     category: "AIR FREIGHT",
-    heroImage: "/assets/Services/air1.jpg",
+    heroImage: "/assets/Services/air11.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/air-freight1.webp",
@@ -40,6 +40,7 @@ export const services = [
         caption: "Proactive communication",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/airsupport.jpg",
     tagline: "Move urgent or high-value cargo by air",
     cardDescription:
       "Consolidation, direct uplift and special-handling options matched to urgency.",
@@ -114,7 +115,7 @@ export const services = [
     icon: "ship",
     title: "Ocean Freight",
     category: "OCEAN FREIGHT",
-    heroImage: "/assets/Services/ocean1.jpg",
+    heroImage: "/assets/Services/capabilities/oceanf2.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/ocean-freight1.jpg",
@@ -125,6 +126,7 @@ export const services = [
         caption: "Sailing coordination",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/oceansupport.jpg",
     tagline: "Plan FCL, LCL or buyer consolidation by ocean",
     cardDescription:
       "Container options matched to shipment volume, timing and schedule.",
@@ -201,7 +203,7 @@ export const services = [
     icon: "route",
     title: "Multimodal Logistics",
     category: "MULTIMODAL LOGISTICS",
-    heroImage: "/assets/Services/multimodal.webp",
+    heroImage: "/assets/Services/multimodal11.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/multi11.jpg",
@@ -212,6 +214,7 @@ export const services = [
         caption: "Route planning",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/multisupport.jpg",
     tagline: "Combine modes when cost, time or capacity require another route",
     cardDescription:
       "Sea-air, air-sea and other combinations shaped around the shipment.",
@@ -297,6 +300,7 @@ export const services = [
         caption: "Final-mile delivery",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/inlandsupport.jpg",
     tagline: "Coordinate factory pickup, customs and inland delivery",
     cardDescription:
       "First-mile, gateway and final-mile movement kept aligned with the schedule.",
@@ -373,7 +377,7 @@ export const services = [
     icon: "crane",
     title: "Project Logistics",
     category: "PROJECT LOGISTICS",
-    heroImage: "/assets/Services/projectlogistics.webp",
+    heroImage: "/assets/Services/projectlogistics111.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/logistics1.jpeg",
@@ -384,6 +388,7 @@ export const services = [
         caption: "Route and site survey",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/logisticsupport.jpg",
     tagline: "Plan oversized or complex cargo",
     cardDescription:
       "Route survey, equipment, permits and lift control for non-standard cargo.",
@@ -463,7 +468,7 @@ export const services = [
     icon: "hanger",
     title: "Contract Logistics",
     category: "CONTRACT LOGISTICS",
-    heroImage: "/assets/Services/fashion.webp",
+    heroImage: "/assets/Services/contractlogistic.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/contractLogistics1.jpeg",
@@ -474,6 +479,7 @@ export const services = [
         caption: "Buyer consolidation",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/contractsupport.jpg",
     tagline: "Manage fashion cargo / GOH",
     cardDescription:
       "A coordinated apparel journey from factory readiness to export movement.",
@@ -549,7 +555,7 @@ export const services = [
     icon: "tag",
     title: "Value Added Service & GOH",
     category: "VALUE ADDED SERVICE & GOH",
-    heroImage: "/assets/Services/valueadded.jpg",
+    heroImage: "/assets/Services/valueadded11.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/valueadded1.jpg",
@@ -560,6 +566,7 @@ export const services = [
         caption: "Labelling and packing",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/valueaddedsupport.jpg",
     tagline: "Prepare, inspect or label cargo before dispatch",
     cardDescription: "Inspection, packing & quality control, GOH handling.",
     headline: "Prepare the cargo for the next requirement.",
@@ -636,8 +643,8 @@ export const services = [
     // Slug kept as 'warehousing'; 'container-freight-station' retired.
     slug: "warehousing",
     icon: "warehouse",
-    title: "Warehousing & Container",
-    category: "WAREHOUSING & CONTAINER",
+    title: "Warehousing & CFS",
+    category: "WAREHOUSING & CFS",
     heroImage: "/assets/Services/wearhouse1.jpg",
     capabilityImages: [
       {
@@ -649,6 +656,7 @@ export const services = [
         caption: "Container build",
       },
     ],
+    supportImage: "/assets/Services/Supporttheshipment/wearhousesupport.jpg",
     tagline: "Stage, consolidate or build export cargo at origin",
     cardDescription: "Storage, staging, receiving, and consolidation.",
     headline:
