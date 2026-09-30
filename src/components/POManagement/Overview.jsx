@@ -242,7 +242,7 @@ function FlowDiagram() {
       y={0}
       className="relative overflow-hidden rounded-2xl bg-cream-100 p-4 sm:p-6"
     >
-      {PO_IMAGES.overview && (
+      {/* {PO_IMAGES.overview && (
         <Image
           src={PO_IMAGES.overview.src}
           alt={PO_IMAGES.overview.alt}
@@ -251,7 +251,7 @@ function FlowDiagram() {
           loading="lazy"
           className="relative mb-5 aspect-[4/3] w-full rounded-xl object-cover"
         />
-      )}
+      )} */}
 
       <div
         onMouseMove={onMove}
@@ -496,7 +496,11 @@ function FlowDiagram() {
   );
 }
 
+
+
 export function Overview() {
+
+    const img = PO_IMAGES.overview;
   return (
     <section
       className="relative overflow-hidden bg-white py-16 sm:py-20"
@@ -524,9 +528,27 @@ export function Overview() {
         </div>
         <FlowDiagram />
       </div>
+
+      <section className="pt-16 sm:pt-20" aria-label="Purchase order overview image ">
+        <div className="container-content">
+          <figure className="relative overflow-hidden rounded-2xl border border-navy-100 bg-white">
+            <Image
+              src={img.src}
+              alt={img.alt}
+              width={img.width}
+              height={img.height}
+              sizes="(min-width: 1024px) 1100px, 100vw"
+              className="aspect-[21/9] w-full object-cover"
+            />
+         
+          </figure>
+        </div>
+      </section>
     </section>
   );
 }
+
+
 
 /** Selectable activity card: cursor spotlight, 3D tilt, floating icon,
  *  accent bar, and an animated check when selected. */

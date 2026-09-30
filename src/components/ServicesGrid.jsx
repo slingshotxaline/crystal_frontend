@@ -78,28 +78,20 @@ const cardVariants = {
 
 /* ---------- Shared pieces ---------- */
 
-// Tried in this order until one loads: /public/assets/Home/Services/<slug>.<ext>
-const IMAGE_EXTENSIONS = ["webp", "jpg", "jpeg", "png"];
-
+// Uses the service's heroImage from /data/services.js.
+// The merged service (static data + CMS override) is checked first,
+// then the static file as a backup.
 function Photo({ service, sizes }) {
-  const [index, setIndex] = useState(0);
+  const [failed, setFailed] = useState(false);
 
-  // Hero image from the static file (the backend can't override it)
   const staticHero = staticServices.find(
     (s) => s.slug === service.slug,
   )?.heroImage;
 
-  const sources = [
-    ...IMAGE_EXTENSIONS.map(
-      (ext) => `/assets/Home/Services/${service.slug}.${ext}`,
-    ),
-    ...(staticHero ? [staticHero] : []),
-  ];
+  const src = service.heroImage || staticHero;
 
-  const src = sources[index];
-
-  // Nothing found: plain placeholder so the card doesn't break
-  if (!src) {
+  // Nothing found or image failed to load: plain placeholder so the card doesn't break
+  if (!src || failed) {
     return <span className="absolute inset-0 bg-navy-100" />;
   }
 
@@ -110,7 +102,7 @@ function Photo({ service, sizes }) {
       alt=""
       fill
       sizes={sizes}
-      onError={() => setIndex((i) => i + 1)}
+      onError={() => setFailed(true)}
       className="object-cover transition-transform duration-700 group-hover:scale-105"
     />
   );
@@ -272,7 +264,7 @@ function SplitCard({ service, theme, reduce }) {
 function LeafCard({ service, theme, reduce }) {
   return (
     <div className="flex flex-1 flex-col p-4">
-       <TopBar theme={theme} />
+      <TopBar theme={theme} />
       <div className="relative">
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-bl-xl rounded-br-[3rem] rounded-tl-[3rem] rounded-tr-xl">
           <Photo service={service} sizes="(min-width: 1024px) 50vw, 100vw" />
@@ -334,7 +326,7 @@ function ArchCard({ service, theme, reduce }) {
   return (
     <>
       <TopBar theme={theme} />
-      <div className="flex flex-1 flex-col p-4 pt-5">
+      <div className="flex flex-1 flex-col p-4 pt-2">
         <div className="relative">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-b-lg rounded-t-[5rem] border border-white/10">
             <Photo service={service} sizes="(min-width: 1024px) 33vw, 100vw" />
@@ -443,7 +435,7 @@ const LAYOUTS = {
   },
   "value-added-services": {
     span: "lg:col-span-2",
-    link: "border-navy-900",
+    link: "border-navy-100",
     Content: ArchCard,
   },
   warehousing: {
@@ -513,7 +505,16 @@ export default function ServicesGrid({ services: servicesProp } = {}) {
           transition={{ duration: 0.55, delay: 0.05 }}
           className="mt-3 max-w-xl text-3xl font-bold text-navy-900 sm:text-4xl"
         >
-          Choose the movement. Connect the handovers.
+          Choose the movement.
+        </motion.h2>
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.55, delay: 0.05 }}
+          className="max-w-xl text-3xl font-bold text-navy-900 sm:text-4xl"
+        >
+          Connect the handovers.
         </motion.h2>
 
         <motion.p

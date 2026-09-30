@@ -1,17 +1,41 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FAQ } from "./content";
+import { FAQ, PO_IMAGES } from "./content";
 import { SectionHeading, Stagger, StaggerItem } from "./UI";
 
 export default function Faq() {
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(null);
+  const img = PO_IMAGES.faq;
 
   return (
     <section className="bg-white py-16 sm:py-20" aria-labelledby="faq-title">
       <div className="container-content max-w-3xl">
+        {/* image above the FAQ */}
+        {img?.src && (
+          <figure className="relative mb-12 overflow-hidden rounded-2xl border border-navy-100 bg-cream-100 sm:mb-16">
+            <Image
+              src={img.src}
+              alt={img.alt}
+              width={img.width}
+              height={img.height}
+              sizes="(min-width: 768px) 768px, 100vw"
+              loading="lazy"
+              className="aspect-[16/9] w-full object-cover sm:aspect-[21/9]"
+            />
+            {/* {img.caption && (
+              <figcaption className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-auto">
+                <span className="inline-block max-w-full truncate rounded-full border border-navy-100 bg-white/90 px-2.5 py-1 text-[11px] text-navy-500 backdrop-blur">
+                  {img.caption}
+                </span>
+              </figcaption>
+            )} */}
+          </figure>
+        )}
+
         <SectionHeading title={FAQ.title} />
 
         <Stagger className="mt-8 space-y-3" stagger={0.08}>

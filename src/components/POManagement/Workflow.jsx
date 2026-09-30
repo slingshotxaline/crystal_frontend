@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
@@ -9,7 +10,7 @@ import {
   useScroll,
   useSpring,
 } from "framer-motion";
-import { WORKFLOW, VALUE } from "./content";
+import { WORKFLOW, VALUE, PO_IMAGES } from "./content";
 import { SectionHeading, Stagger, StaggerItem, Icon } from "./UI";
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -159,6 +160,40 @@ function Step({ step, index }) {
   );
 }
 
+/** Three static images shown under the workflow steps.
+ *  1 column on phones, 3 columns from `sm` (640px) up. */
+function WorkflowImages() {
+  const images = PO_IMAGES.workflow;
+  if (!images?.length) return null;
+
+  return (
+    <ul className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
+      {images.map((img) => (
+        <li key={img.src}>
+          <figure className="relative overflow-hidden rounded-xl border border-navy-100 bg-cream-100">
+            <Image
+              src={img.src}
+              alt={img.alt}
+              width={img.width}
+              height={img.height}
+              sizes="(min-width: 640px) 33vw, 100vw"
+              loading="lazy"
+              className="aspect-[4/3] w-full object-cover"
+            />
+            {/* {img.caption && (
+              <figcaption className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-auto">
+                <span className="inline-block max-w-full truncate rounded-full border border-navy-100 bg-white/90 px-2.5 py-1 text-[11px] text-navy-500 backdrop-blur">
+                  {img.caption}
+                </span>
+              </figcaption>
+            )} */}
+          </figure>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function Workflow() {
   const reduce = useReducedMotion();
   const listRef = useRef(null);
@@ -214,6 +249,9 @@ export function Workflow() {
             <Step key={step.title} step={step} index={i} />
           ))}
         </ol>
+
+        {/* images under the flow */}
+        <WorkflowImages />
       </div>
     </section>
   );

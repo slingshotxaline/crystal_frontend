@@ -160,7 +160,7 @@ export default function Hero() {
               animate="show"
               custom={1}
               variants={fadeUp}
-              className="block overflow-hidden py-1.5"
+              className="block overflow-hidden pb-1.5"
             >
               The right route,
             </motion.span>
@@ -169,9 +169,18 @@ export default function Hero() {
               animate="show"
               custom={2}
               variants={fadeUp}
+              className="block overflow-hidden1.5"
+            >
+              managed from the 
+            </motion.span>
+            <motion.span
+              initial="hidden"
+              animate="show"
+              custom={2}
+              variants={fadeUp}
               className="block overflow-hidden"
             >
-              managed from the first handover.
+              first handover.
             </motion.span>
           </h1>
 
