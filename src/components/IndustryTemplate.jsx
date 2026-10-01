@@ -401,7 +401,7 @@ function WhatShapesTheRoute({ industry, reduce }) {
           What Shapes the Route
         </p>
         <h2 className="mt-3 text-2xl font-bold text-navy-900 sm:text-3xl">
-          Considerations specific to {industry.title.toLowerCase()}.
+          Considerations specific to {industry.title}.
         </h2>
 
         <div className="relative mt-8 grid gap-5 lg:grid-cols-[minmax(0,1.5fr),minmax(0,1fr)]">

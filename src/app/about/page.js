@@ -165,10 +165,10 @@ const careerValues = [
 const sectionNav = [
   { href: "#our-role", label: "Our Role" },
   { href: "#our-story", label: "Our Story" },
-  { href: "#our-approach", label: "Our Approach" },
-  { href: "#leadership", label: "Leadership" },
-  { href: "#group-ecosystem", label: "Group Ecosystem" },
-  { href: "#affiliations", label: "Affiliations" },
+  { href: "#mission", label: "Mission" },
+  { href: "#vision ", label: "Vision " },
+  // { href: "#group-ecosystem", label: "Group Ecosystem" },
+  // { href: "#affiliations", label: "Affiliations" },
   { href: "#careers", label: "Careers" },
 ];
 
@@ -224,7 +224,7 @@ export default function AboutPage() {
 
       {/* OUR ROLE / OUR STORY + TIMELINE + SIDEBAR FACTS */}
       <section className="bg-cream py-16 sm:py-20">
-        <div className="container-content grid gap-10 lg:grid-cols-[1fr_320px]">
+        <div className="container-content grid gap-10 lg:grid-cols-1">
           <div>
             <div id="our-role">
               <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
@@ -284,7 +284,7 @@ export default function AboutPage() {
           </div>
 
           {/* SIDEBAR */}
-          <aside className="h-fit rounded-lg border border-navy-100 bg-white p-6 lg:sticky lg:top-20">
+          {/* <aside className="h-fit rounded-lg border border-navy-100 bg-white p-6 lg:sticky lg:top-20">
             <h2 className="font-bold text-navy-900">Company facts</h2>
             <ul className="mt-4 space-y-3 text-sm">
               {companyFacts.map((fact) => (
@@ -308,17 +308,17 @@ export default function AboutPage() {
                 Group Ecosystem
               </a>
             </div>
-          </aside>
+          </aside> */}
         </div>
       </section>
 
       {/* LEADERSHIP */}
-      <section
+      {/* <section
         id="leadership"
         className="bg-navy-900 py-16 text-white sm:py-20"
       >
         <div className="container-content">
-          {/* <p className="text-xs text-navy-100/60">Home / About / Leadership</p> */}
+          
           <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-crimson">
             Leadership
           </p>
@@ -330,9 +330,9 @@ export default function AboutPage() {
             across freight, facilities and customer service.
           </p>
         </div>
-      </section>
+      </section> */}
 
-      <section className="bg-cream py-16 sm:py-20">
+      {/* <section className="bg-cream py-16 sm:py-20">
         <div className="container-content grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {leadership.map((person) => (
             <div
@@ -352,17 +352,15 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* GROUP ECOSYSTEM */}
-      <section
+      {/* <section
         id="group-ecosystem"
         className="bg-navy-900 py-16 text-white sm:py-20"
       >
         <div className="container-content">
-          {/* <p className="text-xs text-navy-100/60">
-            Home / About / Group Ecosystem
-          </p> */}
+         
           <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-crimson">
             Group Ecosystem
           </p>
@@ -375,9 +373,9 @@ export default function AboutPage() {
             which entity will contract, operate and communicate.
           </p>
         </div>
-      </section>
+      </section> */}
 
-      <section className="bg-cream-100 py-16 sm:py-20">
+      {/* <section className="bg-cream-100 py-16 sm:py-20">
         <div className="container-content grid gap-4 sm:grid-cols-2">
           {groupEntities.map((entity) => (
             <div
@@ -394,10 +392,10 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* AFFILIATIONS & COMPLIANCE */}
-      <section
+      {/* <section
         id="affiliations"
         className="bg-navy-900 py-16 text-white sm:py-20"
       >
@@ -451,7 +449,7 @@ export default function AboutPage() {
             Request Credential Information
           </button>
         </div>
-      </section>
+      </section> */}
 
       {/* CAREERS */}
       <section id="careers" className="bg-navy-900 py-16 text-white sm:py-20">

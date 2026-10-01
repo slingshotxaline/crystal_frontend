@@ -84,6 +84,7 @@ const NAV = [
     children: [
       { label: "Digital Overview", href: "/digital" },
       { label: "PO Management", href: "/digital/po-management" },
+      { label: "Track Shipment", href: "/tracking" },
     ],
   },
   { label: "Insights", href: "/insights" },
