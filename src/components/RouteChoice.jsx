@@ -73,12 +73,72 @@ const COMBOS = [
   },
 ];
 
-/* Each mode has its own line colour, dash pattern and vehicle, so the
- * diagram shows the mode without needing to read a label. */
-const MODES = {
-  air: { name: "Air", color: "#ffffff", dash: "1 9", cycle: 10 },
-  sea: { name: "Ocean", color: "#7dd3fc", dash: "10 7", cycle: 17 },
-  land: { name: "Road", color: "#fcd34d", dash: "14 6", cycle: 20 },
+/* ------------------------------------------------------------------
+ * Themes. "dark" is the original navy look, "light" is for white/cream
+ * pages. Line colours change too, since white/pale lines would be
+ * invisible on a light background.
+ * ---------------------------------------------------------------- */
+const THEMES = {
+  dark: {
+    section: "bg-navy-900 text-white",
+    heading: "text-white",
+    body: "text-white/70",
+    muted: "text-white/55",
+    pillIdle:
+      "border-white/20 text-white/75 hover:border-white/50 hover:text-white",
+    pillActive: "border-crimson bg-red-100 text-navy-900",
+    title: "text-white",
+    desc: "text-white/85",
+    detail: "text-white/60",
+    card: "border-white/10 bg-white/[0.04] backdrop-blur-sm",
+    legendBorder: "border-white/10",
+    legendText: "text-white/80",
+    legendStrong: "text-white",
+    note: "text-white/45",
+    nodeLabel: "text-white/85",
+    nodeFill: "#0f1f3d",
+    nodeStroke: "#ffffff",
+    grid: "rgba(255,255,255,0.06)",
+    glowA: "bg-crimson/20",
+    glowB: "bg-sky-400/15",
+    ambientOpacity: "opacity-60",
+    modes: {
+      air: { name: "Air", color: "#ffffff", dash: "1 9", cycle: 10 },
+      sea: { name: "Ocean", color: "#7dd3fc", dash: "10 7", cycle: 17 },
+      land: { name: "Road", color: "#fcd34d", dash: "14 6", cycle: 20 },
+    },
+    ambient: ["#7dd3fc", "#ffffff", "#fcd34d"],
+  },
+  light: {
+    section: "bg-gradient-to-b from-white via-sky-50/60 to-white text-navy-900",
+    heading: "text-navy-900",
+    body: "text-navy-700",
+    muted: "text-navy-400",
+    pillIdle:
+      "border-navy-200 text-navy-700 hover:border-navy-400 hover:text-navy-900",
+    pillActive: "border-crimson bg-red-100 text-navy-900",
+    title: "text-navy-900",
+    desc: "text-navy-800",
+    detail: "text-navy-400",
+    card: "border-sky-100 bg-white shadow-xl shadow-sky-900/5",
+    legendBorder: "border-navy-100",
+    legendText: "text-navy-700",
+    legendStrong: "text-navy-900",
+    note: "text-navy-400",
+    nodeLabel: "text-navy-700",
+    nodeFill: "#ffffff",
+    nodeStroke: "#0f1f3d",
+    grid: "rgba(15,31,61,0.06)",
+    glowA: "bg-crimson/10",
+    glowB: "bg-sky-400/15",
+    ambientOpacity: "opacity-70",
+    modes: {
+      air: { name: "Air", color: "#0f1f3d", dash: "1 9", cycle: 10 },
+      sea: { name: "Ocean", color: "#0284c7", dash: "10 7", cycle: 17 },
+      land: { name: "Road", color: "#d97706", dash: "14 6", cycle: 20 },
+    },
+    ambient: ["#0284c7", "#0f1f3d", "#d97706"],
+  },
 };
 
 /* ------------------------------------------------------------------
@@ -134,33 +194,27 @@ function Glyph({ mode, color }) {
 }
 
 /* ------------------------------------------------------------------
- * Background: everything here loops forever, quietly.
- * 1. a lat/long grid that pans diagonally
- * 2. long dashed routes with vehicles travelling along them
- * 3. two soft glows that drift
+ * Section background: everything here loops forever, quietly.
  * ---------------------------------------------------------------- */
 const AMBIENT_ROUTES = [
   {
     d: "M -40 620 C 260 420, 520 700, 820 500 S 1300 360, 1480 460",
-    color: "#7dd3fc",
     dur: 26,
     dash: "10 8",
   },
   {
     d: "M -40 220 C 300 80, 560 320, 900 180 S 1300 120, 1480 260",
-    color: "#ffffff",
     dur: 32,
     dash: "2 10",
   },
   {
     d: "M 200 860 C 420 640, 760 760, 1000 560 S 1360 620, 1480 700",
-    color: "#fcd34d",
     dur: 38,
     dash: "14 8",
   },
 ];
 
-function AnimatedBackground({ reduce }) {
+function AnimatedBackground({ reduce, theme }) {
   return (
     <div
       className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -170,8 +224,7 @@ function AnimatedBackground({ reduce }) {
       <motion.div
         className="absolute inset-0"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+          backgroundImage: `linear-gradient(${theme.grid} 1px, transparent 1px), linear-gradient(90deg, ${theme.grid} 1px, transparent 1px)`,
           backgroundSize: "56px 56px",
           WebkitMaskImage:
             "radial-gradient(ellipse at 60% 45%, black 25%, transparent 78%)",
@@ -184,58 +237,61 @@ function AnimatedBackground({ reduce }) {
         transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* 2. Long routes with travelling vehicles */}
+      {/* 2. Long routes with travelling dots */}
       <svg
         viewBox="0 0 1440 800"
         preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full opacity-60"
+        className={`absolute inset-0 h-full w-full ${theme.ambientOpacity}`}
       >
-        {AMBIENT_ROUTES.map((r, i) => (
-          <g key={i}>
-            <path
-              d={r.d}
-              fill="none"
-              stroke={r.color}
-              strokeOpacity="0.08"
-              strokeWidth="1.5"
-            />
-            <motion.path
-              d={r.d}
-              fill="none"
-              stroke={r.color}
-              strokeOpacity="0.28"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeDasharray={r.dash}
-              animate={
-                reduce
-                  ? undefined
-                  : { strokeDashoffset: [0, -parseInt(r.dash, 10) * 4] }
-              }
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            />
-            {!reduce && (
-              <circle r="3.5" fill={r.color} fillOpacity="0.8">
-                <animateMotion
-                  dur={`${r.dur}s`}
-                  repeatCount="indefinite"
-                  path={r.d}
-                  begin={`-${i * 9}s`}
-                />
-              </circle>
-            )}
-          </g>
-        ))}
+        {AMBIENT_ROUTES.map((r, i) => {
+          const color = theme.ambient[i];
+          return (
+            <g key={i}>
+              <path
+                d={r.d}
+                fill="none"
+                stroke={color}
+                strokeOpacity="0.08"
+                strokeWidth="1.5"
+              />
+              <motion.path
+                d={r.d}
+                fill="none"
+                stroke={color}
+                strokeOpacity="0.28"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeDasharray={r.dash}
+                animate={
+                  reduce
+                    ? undefined
+                    : { strokeDashoffset: [0, -parseInt(r.dash, 10) * 4] }
+                }
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              />
+              {!reduce && (
+                <circle r="3.5" fill={color} fillOpacity="0.8">
+                  <animateMotion
+                    dur={`${r.dur}s`}
+                    repeatCount="indefinite"
+                    path={r.d}
+                    begin={`-${i * 9}s`}
+                  />
+                </circle>
+              )}
+            </g>
+          );
+        })}
       </svg>
 
       {/* 3. Drifting glows */}
       <motion.div
-        className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-crimson/20 blur-3xl sm:h-96 sm:w-96"
+        className={`absolute -left-24 top-10 h-72 w-72 rounded-full ${theme.glowA} blur-3xl sm:h-96 sm:w-96`}
         animate={reduce ? undefined : { x: [0, 60, 0], y: [0, 30, 0] }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-sky-400/15 blur-3xl sm:h-80 sm:w-80"
+        className={`absolute -right-20 bottom-0 h-64 w-64 rounded-full ${theme.glowB} blur-3xl sm:h-80 sm:w-80`}
         animate={reduce ? undefined : { x: [0, -50, 0], y: [0, -28, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -244,9 +300,117 @@ function AnimatedBackground({ reduce }) {
 }
 
 /* ------------------------------------------------------------------
+ * Backdrop for the diagram card (light variant only).
+ * gradient + drifting glows + dot grid + spinning globe lines + waves
+ * ---------------------------------------------------------------- */
+const WAVE_PATH = "M -80 345 q 40 -16 80 0" + " t 80 0".repeat(11);
+
+function DiagramBackdrop({ reduce }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
+    >
+      {/* base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-amber-50" />
+
+      {/* drifting glows */}
+      <motion.div
+        className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-sky-300/30 blur-3xl"
+        animate={reduce ? undefined : { x: [0, 40, 0], y: [0, 24, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute -bottom-12 -right-10 h-56 w-56 rounded-full bg-amber-200/40 blur-3xl"
+        animate={reduce ? undefined : { x: [0, -36, 0], y: [0, -20, 0] }}
+        transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* dot grid, fading toward the edges */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(15,31,61,0.16) 1px, transparent 1px)",
+          backgroundSize: "18px 18px",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at 50% 40%, black 20%, transparent 75%)",
+          maskImage:
+            "radial-gradient(ellipse at 50% 40%, black 20%, transparent 75%)",
+        }}
+      />
+
+      <svg
+        viewBox="0 0 600 400"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+      >
+        <defs>
+          <clipPath id="rc-globe">
+            <circle cx="300" cy="190" r="185" />
+          </clipPath>
+        </defs>
+
+        {/* globe: meridians "rotate" by squeezing and widening */}
+        <g
+          fill="none"
+          stroke="#0284c7"
+          strokeOpacity="0.14"
+          strokeWidth="1"
+          clipPath="url(#rc-globe)"
+        >
+          <circle cx="300" cy="190" r="185" strokeOpacity="0.2" />
+          <motion.ellipse
+            cx="300"
+            cy="190"
+            ry="185"
+            initial={{ rx: 150 }}
+            animate={reduce ? undefined : { rx: [150, 20, 150] }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.ellipse
+            cx="300"
+            cy="190"
+            ry="185"
+            initial={{ rx: 80 }}
+            animate={reduce ? undefined : { rx: [80, 175, 80] }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <path d="M 100 190 H 500" />
+          <path d="M 120 120 Q 300 90 480 120" />
+          <path d="M 120 260 Q 300 290 480 260" />
+          <path d="M 170 65 Q 300 50 430 65" />
+          <path d="M 170 315 Q 300 330 430 315" />
+        </g>
+
+        {/* waves along the bottom. The static offset sits on the <g> so
+            it doesn't clash with the animated transform on the path. */}
+        {[0, 1].map((i) => (
+          <g key={i} transform={`translate(0 ${i * 16})`}>
+            <motion.path
+              d={WAVE_PATH}
+              fill="none"
+              stroke="#0284c7"
+              strokeOpacity={i === 0 ? 0.22 : 0.12}
+              strokeWidth="1.5"
+              animate={reduce ? undefined : { x: [0, -160] }}
+              transition={{
+                duration: i === 0 ? 9 : 13,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------
  * Route diagram for the active combination
  * ---------------------------------------------------------------- */
-function RouteDiagram({ combo, reduce }) {
+function RouteDiagram({ combo, reduce, theme }) {
   const legs = [
     { from: NODES[0], to: NODES[1], mode: combo.modes[0] },
     { from: NODES[1], to: NODES[2], mode: combo.modes[1] },
@@ -263,11 +427,10 @@ function RouteDiagram({ combo, reduce }) {
         aria-label={`${combo.label} route: ${combo.stages.join(", ")}`}
       >
         {legs.map((leg, i) => {
-          const m = MODES[leg.mode];
+          const m = theme.modes[leg.mode];
           const first = i === 0;
           return (
             <g key={i}>
-              {/* faint solid underlay so the path always reads */}
               <path
                 d={leg.d}
                 fill="none"
@@ -275,7 +438,6 @@ function RouteDiagram({ combo, reduce }) {
                 strokeOpacity="0.16"
                 strokeWidth="2"
               />
-              {/* flowing dashes */}
               <motion.path
                 d={leg.d}
                 fill="none"
@@ -330,6 +492,7 @@ function RouteDiagram({ combo, reduce }) {
 
         {NODES.map((n, i) => {
           const isTransfer = i === 1;
+          const stroke = isTransfer ? "#dc2430" : theme.nodeStroke;
           return (
             <g key={i}>
               {!reduce && (
@@ -338,7 +501,7 @@ function RouteDiagram({ combo, reduce }) {
                   cy={n.y}
                   r="8"
                   fill="none"
-                  stroke={isTransfer ? "#dc2430" : "#ffffff"}
+                  stroke={stroke}
                   strokeWidth="1.5"
                   animate={{ r: [8, 22], opacity: [0.6, 0] }}
                   transition={{
@@ -353,8 +516,8 @@ function RouteDiagram({ combo, reduce }) {
                 cx={n.x}
                 cy={n.y}
                 r="7"
-                fill="#0f1f3d"
-                stroke={isTransfer ? "#dc2430" : "#ffffff"}
+                fill={theme.nodeFill}
+                stroke={stroke}
                 strokeWidth="3.5"
                 initial={{ scale: 0.3, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -375,7 +538,7 @@ function RouteDiagram({ combo, reduce }) {
       {NODES.map((n, i) => (
         <span
           key={i}
-          className="absolute -translate-x-1/2 text-center text-[11px] font-semibold leading-tight text-white/85 sm:text-xs"
+          className={`absolute -translate-x-1/2 text-center text-[11px] font-semibold leading-tight sm:text-xs ${theme.nodeLabel}`}
           style={{
             left: `${(n.x / VB_W) * 100}%`,
             top: `${((n.y + 18) / VB_H) * 100}%`,
@@ -388,11 +551,13 @@ function RouteDiagram({ combo, reduce }) {
   );
 }
 
-function Legend({ combo }) {
+function Legend({ combo, theme }) {
   return (
-    <ul className="mt-6 grid gap-2 border-t border-white/10 pt-5 sm:grid-cols-2">
+    <ul
+      className={`mt-6 grid gap-2 border-t pt-5 sm:grid-cols-2 ${theme.legendBorder}`}
+    >
       {combo.modes.map((mode, i) => {
-        const m = MODES[mode];
+        const m = theme.modes[mode];
         return (
           <li key={i} className="flex items-center gap-3">
             <svg
@@ -402,8 +567,8 @@ function Legend({ combo }) {
             >
               <Glyph mode={mode} color={m.color} />
             </svg>
-            <span className="text-sm text-white/80">
-              <span className="font-semibold text-white">
+            <span className={`text-sm ${theme.legendText}`}>
+              <span className={`font-semibold ${theme.legendStrong}`}>
                 {combo.stages[i === 0 ? 1 : 3]}
               </span>{" "}
               by {m.name.toLowerCase()}
@@ -417,8 +582,10 @@ function Legend({ combo }) {
 
 /* ------------------------------------------------------------------
  * Section
+ * variant: "dark" (navy, default) | "light" (white/cream pages)
  * ---------------------------------------------------------------- */
-export default function RouteChoice() {
+export default function RouteChoice({ variant = "dark" }) {
+  const theme = THEMES[variant] || THEMES.dark;
   const [active, setActive] = useState(COMBOS[0].id);
   const reduce = useReducedMotion();
   const activeIndex = COMBOS.findIndex((c) => c.id === active);
@@ -432,23 +599,27 @@ export default function RouteChoice() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-navy-900 py-16 text-white sm:py-20 lg:py-24">
-      <AnimatedBackground reduce={reduce} />
+    <section
+      className={`relative overflow-hidden py-16 sm:py-20 lg:py-24 ${theme.section}`}
+    >
+      <AnimatedBackground reduce={reduce} theme={theme} />
 
       <div className="container-content relative grid gap-10 px-4 sm:px-6 lg:grid-cols-[1fr,1.1fr] lg:items-center lg:gap-14">
         {/* Left: copy and mode picker */}
         <div>
-          <h2 className="max-w-lg text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl">
+          <h2
+            className={`max-w-lg text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl ${theme.heading}`}
+          >
             One shipment can have more than one workable path.
           </h2>
 
-          <p className="mt-4 max-w-md text-sm text-white/70 sm:text-base">
+          <p className={`mt-4 max-w-md text-sm sm:text-base ${theme.body}`}>
             We compare the agreed priorities, confirm the operational conditions
             and coordinate the selected route across origin, transfer and
             destination partners.
           </p>
 
-          <p className="mt-4 max-w-md text-sm text-white/55">
+          <p className={`mt-4 max-w-md text-sm ${theme.muted}`}>
             Select a mode combination to see when it typically adds value.
             Routing and transit times are shipment-specific and subject to
             operational conditions, so we do not publish fixed transit times.
@@ -470,9 +641,7 @@ export default function RouteChoice() {
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => setActive(c.id)}
                   className={`focus-ring rounded-full border px-4 py-2 text-xs font-semibold transition-colors duration-200 ${
-                    isActive
-                      ? "border-crimson bg-red-100 text-navy-900"
-                      : "border-white/20 text-white/75 hover:border-white/50 hover:text-white"
+                    isActive ? theme.pillActive : theme.pillIdle
                   }`}
                 >
                   {c.label}
@@ -491,9 +660,11 @@ export default function RouteChoice() {
               transition={{ duration: 0.25, ease: "easeOut" }}
               className="mt-7 max-w-md border-l-2 border-crimson pl-5"
             >
-              <h3 className="text-lg font-bold">{combo.label}</h3>
-              <p className="mt-2 text-white/85">{combo.description}</p>
-              <p className="mt-2 text-sm text-white/60">{combo.detail}</p>
+              <h3 className={`text-lg font-bold ${theme.title}`}>
+                {combo.label}
+              </h3>
+              <p className={`mt-2 ${theme.desc}`}>{combo.description}</p>
+              <p className={`mt-2 text-sm ${theme.detail}`}>{combo.detail}</p>
               <p className="mt-3 text-xs font-semibold text-crimson">
                 Subject to operational conditions
               </p>
@@ -502,24 +673,30 @@ export default function RouteChoice() {
         </div>
 
         {/* Right: live route */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-sm sm:p-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={combo.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <RouteDiagram combo={combo} reduce={reduce} />
-              <Legend combo={combo} />
-            </motion.div>
-          </AnimatePresence>
+        <div
+          className={`relative overflow-hidden rounded-2xl border p-5 sm:p-8 ${theme.card}`}
+        >
+          {variant === "light" && <DiagramBackdrop reduce={reduce} />}
 
-          <p className="mt-5 text-xs italic text-white/45">
-            Diagram is illustrative. Actual gateways and transit legs are
-            confirmed per shipment.
-          </p>
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={combo.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <RouteDiagram combo={combo} reduce={reduce} theme={theme} />
+                <Legend combo={combo} theme={theme} />
+              </motion.div>
+            </AnimatePresence>
+
+            <p className={`mt-5 text-xs italic ${theme.note}`}>
+              Diagram is illustrative. Actual gateways and transit legs are
+              confirmed per shipment.
+            </p>
+          </div>
         </div>
       </div>
     </section>

@@ -29,7 +29,7 @@ export const services = [
     icon: "plane",
     title: "Air Freight",
     category: "AIR FREIGHT",
-    heroImage: "/assets/Services/air11.jpg",
+    heroImage: "/assets/Services/air21.jpg",
     capabilityImages: [
       {
         src: "/assets/Services/capabilities/air-freight1.webp",
@@ -40,7 +40,7 @@ export const services = [
         caption: "Proactive communication",
       },
     ],
-    supportImage: "/assets/Services/Supporttheshipment/airsupport.jpg",
+    supportImage: "/assets/Services/Supporttheshipment/airsupport2.jpg",
     tagline: "Move urgent or high-value cargo by air",
     cardDescription:
       "Consolidation, direct uplift and special-handling options matched to urgency.",
@@ -126,7 +126,7 @@ export const services = [
         caption: "Sailing coordination",
       },
     ],
-    supportImage: "/assets/Services/Supporttheshipment/oceansupport.jpg",
+    supportImage: "/assets/Services/Supporttheshipment/oceansupport2.jpg",
     tagline: "Plan FCL, LCL or buyer consolidation by ocean",
     cardDescription:
       "Container options matched to shipment volume, timing and schedule.",

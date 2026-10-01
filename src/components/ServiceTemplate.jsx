@@ -11,7 +11,14 @@ import {
 } from "framer-motion";
 import Icon from "./Icon";
 import QuoteForm from "./QuoteForm";
+import RouteChoice from "./RouteChoice";
 import { services as staticServices } from "@/data/services";
+
+/* ------------------------------------------------------------------
+ * Only this service gets the RouteChoice section.
+ * Must match the slug in services.js exactly.
+ * ---------------------------------------------------------------- */
+const ROUTE_CHOICE_SLUG = "multimodal-logistics";
 
 /* ------------------------------------------------------------------
  * Default image for the "How we support the shipment" section.
@@ -123,11 +130,11 @@ function CapabilityPhoto({ sources, caption, position = "center" }) {
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/10 to-transparent" />
-      {caption && (
+      {/* {caption && (
         <p className="absolute bottom-4 left-5 right-5 text-xs font-bold uppercase tracking-wide text-white">
           {caption}
         </p>
-      )}
+      )} */}
     </div>
   );
 }
@@ -602,7 +609,7 @@ export default function ServiceTemplate({ service, heroSources }) {
 
         <div className="container-content relative z-10">
           <Breadcrumb title={service.title} />
-          <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-crimson">
+          <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-white">
             {service.category}
           </p>
           <h1 className="mt-3 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
@@ -627,7 +634,7 @@ export default function ServiceTemplate({ service, heroSources }) {
         </div>
       </section>
 
-      {/* Capabilities + Steps + FAQ share one animated background */}
+      {/* Capabilities + Route choice + Steps + FAQ share one animated background */}
       <div className="relative overflow-hidden bg-cream">
         <CapabilitiesBackground reduce={reduce} />
 
@@ -663,8 +670,17 @@ export default function ServiceTemplate({ service, heroSources }) {
           </div>
         </section>
 
+        {/* Route choice: Multimodal Logistics only.
+            White background. For cream, change THEMES.light.section in
+            RouteChoice.jsx to "bg-cream text-navy-900". */}
+        {service.slug === ROUTE_CHOICE_SLUG && (
+          <div className="relative z-10">
+            <RouteChoice variant="light" />
+          </div>
+        )}
+
         {/* Steps + FAQ (no bg color, so the animation shows through) */}
-        <section className="relative z-10 pb-14 pt-4 sm:pb-16">
+        <section className="relative z-10 pb-14 pt-14 sm:pb-16">
           <div className="container-content">
             {/* How we support the shipment: image left (different per service), steps right */}
             {service.supportSteps?.length > 0 && (
