@@ -454,7 +454,7 @@ export default function IndustryTemplate({ industry }) {
         <div className="absolute inset-0 bg-navy-900/70" />
 
         <div className="container-content relative z-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-crimson">
+          <p className="text-xs font-semibold uppercase tracking-widest text-white">
             {industry.title}
           </p>
           <h1 className="mt-3 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">

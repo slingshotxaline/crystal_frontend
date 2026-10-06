@@ -22,10 +22,19 @@ const NAV = [
       { label: 'Careers / Jobs', href: '/admin/jobs' },
     ],
   },
+  {
+    section: 'Settings',
+    items: [
+      // adminOnly items are hidden for editor / viewer roles.
+      { label: 'Users & Roles', href: '/admin/users', adminOnly: true },
+      { label: 'My Account', href: '/admin/account' },
+    ],
+  },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ user }) {
   const pathname = usePathname();
+  const isAdmin = user?.role === 'admin';
 
   return (
     <aside className="hidden w-64 shrink-0 border-r border-navy-100 bg-white lg:block">
@@ -37,27 +46,31 @@ export default function AdminSidebar() {
       </div>
 
       <nav className="space-y-6 px-4 py-6">
-        {NAV.map((group) => (
-          <div key={group.section}>
-            <p className="px-2 text-[11px] font-bold uppercase tracking-wider text-navy-300">{group.section}</p>
-            <div className="mt-2 space-y-0.5">
-              {group.items.map((item) => {
-                const active = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`focus-ring block rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-                      active ? 'bg-navy-900 text-white' : 'text-navy-700 hover:bg-cream-100'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
+        {NAV.map((group) => {
+          const items = group.items.filter((item) => !item.adminOnly || isAdmin);
+          if (items.length === 0) return null;
+          return (
+            <div key={group.section}>
+              <p className="px-2 text-[11px] font-bold uppercase tracking-wider text-navy-300">{group.section}</p>
+              <div className="mt-2 space-y-0.5">
+                {items.map((item) => {
+                  const active = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`focus-ring block rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                        active ? 'bg-navy-900 text-white' : 'text-navy-700 hover:bg-cream-100'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </nav>
     </aside>
   );
