@@ -165,8 +165,7 @@ const careerValues = [
 const sectionNav = [
   { href: "#our-role", label: "Our Role" },
   { href: "#our-story", label: "Our Story" },
-  { href: "#mission", label: "Mission" },
-  { href: "#vision ", label: "Vision " },
+  { href: "#vision", label: "Vision" },
   // { href: "#group-ecosystem", label: "Group Ecosystem" },
   // { href: "#affiliations", label: "Affiliations" },
   { href: "#careers", label: "Careers" },
@@ -450,6 +449,238 @@ export default function AboutPage() {
           </button>
         </div>
       </section> */}
+
+      {/* MISSION */}
+      <section
+        id="mission"
+        className="relative scroll-mt-16 overflow-hidden bg-navy-900 py-20 text-white sm:py-28"
+      >
+        <style>{`
+          /* ---------- continuous background loops ---------- */
+          @keyframes mvFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-40px) scale(1.15); } }
+          @keyframes mvFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-40px,30px) scale(1.2); } }
+          @keyframes mvSpin { to { transform: rotate(360deg); } }
+          @keyframes mvSpinRev { to { transform: rotate(-360deg); } }
+          @keyframes mvGridMove { to { background-position: 48px 48px; } }
+          @keyframes mvDash { to { stroke-dashoffset: -200; } }
+          @keyframes mvBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+          @keyframes mvPulse { 0% { transform: scale(.8); opacity: .7; } 100% { transform: scale(2.4); opacity: 0; } }
+
+          .mv-orb   { animation: mvFloat 12s ease-in-out infinite; }
+          .mv-orb2  { animation: mvFloat2 15s ease-in-out infinite; }
+          .mv-spin  { animation: mvSpin 40s linear infinite; }
+          .mv-spin2 { animation: mvSpinRev 60s linear infinite; }
+          .mv-grid  { animation: mvGridMove 6s linear infinite; }
+          .mv-dash  { stroke-dasharray: 8 12; animation: mvDash 6s linear infinite; }
+          .mv-bob   { animation: mvBob 6s ease-in-out infinite; }
+          .mv-ping  { animation: mvPulse 2.4s ease-out infinite; }
+
+          /* ---------- scroll-in animations ---------- */
+          @keyframes mvFadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+          @keyframes mvSlideL { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+          @keyframes mvSlideR { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: none; } }
+          @keyframes mvZoom { from { transform: scale(1.3); } to { transform: scale(1); } }
+          @keyframes mvGrow { from { width: 0; } to { width: 4rem; } }
+
+          @supports (animation-timeline: view()) {
+            .mv-up     { animation: mvFadeUp linear both; animation-timeline: view(); animation-range: entry 0% entry 55%; }
+            .mv-inL    { animation: mvSlideL linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+            .mv-inR    { animation: mvSlideR linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+            .mv-zoom   { animation: mvZoom linear both;   animation-timeline: view(); animation-range: entry 0% cover 50%; }
+            .mv-grow   { animation: mvGrow linear both;   animation-timeline: view(); animation-range: entry 20% entry 80%; }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .mv-orb, .mv-orb2, .mv-spin, .mv-spin2, .mv-grid, .mv-dash, .mv-bob, .mv-ping,
+            .mv-up, .mv-inL, .mv-inR, .mv-zoom, .mv-grow { animation: none !important; }
+          }
+        `}</style>
+
+        {/* LIVE BACKGROUND */}
+        <div className="pointer-events-none absolute inset-0">
+          {/* moving grid */}
+          <div
+            className="mv-grid absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage:
+                "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
+          />
+          {/* floating glow orbs */}
+          <div className="mv-orb absolute -left-24 top-10 h-72 w-72 rounded-full bg-crimson/25 blur-3xl" />
+          <div className="mv-orb2 absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
+          {/* rotating rings */}
+          <div className="mv-spin absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full border border-dashed border-white/15" />
+          <div className="mv-spin2 absolute -right-24 -top-24 h-[360px] w-[360px] rounded-full border border-white/10" />
+          {/* animated shipping route */}
+          <svg
+            className="absolute inset-x-0 bottom-0 h-40 w-full opacity-40"
+            viewBox="0 0 1200 160"
+            preserveAspectRatio="none"
+          >
+            <path
+              id="mvRouteA"
+              d="M0 120 C 200 20, 400 20, 600 90 S 1000 160, 1200 40"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="mv-dash text-crimson"
+            />
+            <circle r="5" className="fill-white">
+              <animateMotion dur="9s" repeatCount="indefinite">
+                <mpath href="#mvRouteA" />
+              </animateMotion>
+            </circle>
+          </svg>
+        </div>
+
+        <div className="container-content relative z-10 grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* IMAGE */}
+          <div className="mv-inL relative">
+            <div className="mv-bob relative">
+              <div className="absolute -bottom-4 -left-4 h-full w-full rounded-lg border-2 border-crimson" />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-2xl">
+                <Image
+                  src="/assets/About/mission.jpg"
+                  alt="Crystal Express team coordinating cargo operations"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="mv-zoom object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent" />
+              </div>
+              {/* pulsing live dot */}
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center">
+                <span className="mv-ping absolute h-5 w-5 rounded-full bg-crimson" />
+                <span className="relative h-3 w-3 rounded-full bg-crimson" />
+              </span>
+            </div>
+          </div>
+
+          {/* TEXT */}
+          <div className="mv-up">
+            <p className="text-xs font-semibold uppercase tracking-widest text-crimson">
+              Our Mission
+            </p>
+            <span className="mv-grow mt-3 block h-1 w-16 rounded-full bg-crimson" />
+            <h2 className="mt-4 max-w-xl text-3xl font-bold sm:text-4xl">
+              Every shipment moves with reliability, visibility and care.
+            </h2>
+            <p className="mt-4 max-w-xl leading-relaxed text-navy-100/80">
+              To deliver flexible, end-to-end logistics solutions through local
+              expertise, global partnerships, technology, and responsive
+              execution—ensuring every shipment moves with reliability,
+              visibility, and care.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {[
+                "Local Expertise",
+                "Global Partnerships",
+                "Technology",
+                "Responsive",
+              ].map((word) => (
+                <span
+                  key={word}
+                  className="rounded-full border border-white/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide transition hover:bg-white hover:text-navy-900"
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* VISION */}
+      <section
+        id="vision"
+        className="relative scroll-mt-16 overflow-hidden bg-cream-100 py-20 sm:py-28"
+      >
+        {/* LIVE BACKGROUND */}
+        <div className="pointer-events-none absolute inset-0">
+          <div
+            className="mv-grid absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage:
+                "linear-gradient(#0b1b3a 1px, transparent 1px), linear-gradient(90deg, #0b1b3a 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
+          />
+          <div className="mv-orb2 absolute -right-24 top-10 h-72 w-72 rounded-full bg-crimson/15 blur-3xl" />
+          <div className="mv-orb absolute -left-20 bottom-0 h-80 w-80 rounded-full bg-navy-900/10 blur-3xl" />
+          <div className="mv-spin2 absolute -left-40 -top-40 h-[480px] w-[480px] rounded-full border border-dashed border-navy-900/15" />
+          <div className="mv-spin absolute -left-24 -top-24 h-[360px] w-[360px] rounded-full border border-navy-900/10" />
+          <svg
+            className="absolute inset-x-0 bottom-0 h-40 w-full opacity-40"
+            viewBox="0 0 1200 160"
+            preserveAspectRatio="none"
+          >
+            <path
+              id="mvRouteB"
+              d="M1200 120 C 1000 20, 800 20, 600 90 S 200 160, 0 40"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="mv-dash text-crimson"
+            />
+            <circle r="5" className="fill-navy-900">
+              <animateMotion dur="10s" repeatCount="indefinite">
+                <mpath href="#mvRouteB" />
+              </animateMotion>
+            </circle>
+          </svg>
+        </div>
+
+        <div className="container-content relative z-10 grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* TEXT */}
+          <div className="mv-up order-2 lg:order-1">
+            <p className="text-xs font-semibold uppercase tracking-widest text-crimson">
+              Our Vision
+            </p>
+            <span className="mv-grow mt-3 block h-1 w-16 rounded-full bg-crimson" />
+            <h2 className="mt-4 max-w-xl text-3xl font-bold text-navy-900 sm:text-4xl">
+              Connecting businesses to global opportunities.
+            </h2>
+            <p className="mt-4 max-w-xl leading-relaxed text-navy-700">
+              To connect businesses to global opportunities by becoming a
+              trusted, technology-enabled leader in international logistics and
+              supply chain solutions.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {["Trusted", "Technology-Enabled", "Global Reach"].map((word) => (
+                <span
+                  key={word}
+                  className="rounded-full border border-navy-900/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-navy-900 transition hover:bg-navy-900 hover:text-white"
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* IMAGE */}
+          <div className="mv-inR order-1 lg:order-2">
+            <div className="mv-bob relative" style={{ animationDelay: "1.5s" }}>
+              <div className="absolute -bottom-4 -right-4 h-full w-full rounded-lg border-2 border-crimson" />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-2xl">
+                <Image
+                  src="/assets/About/vision.jpg"
+                  alt="Global shipping network and cargo vessel"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="mv-zoom object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/50 via-transparent to-transparent" />
+              </div>
+              <span className="absolute -left-2 -top-2 flex h-5 w-5 items-center justify-center">
+                <span className="mv-ping absolute h-5 w-5 rounded-full bg-crimson" />
+                <span className="relative h-3 w-3 rounded-full bg-crimson" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CAREERS */}
       <section id="careers" className="bg-navy-900 py-16 text-white sm:py-20">

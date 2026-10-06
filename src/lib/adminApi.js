@@ -44,6 +44,19 @@ export const updateQuote = (id, body) => adminRequest(`/quotes/${id}`, { method:
 export const listEnquiries = (query = '') => adminRequest(`/enquiries${query}`);
 export const updateEnquiry = (id, body) => adminRequest(`/enquiries/${id}`, { method: 'PATCH', body });
 
+// ---- Users & roles (admin only, except changeMyPassword) ----
+export const listUsers = () => adminRequest('/users');
+export const createUser = (body) => adminRequest('/users', { method: 'POST', body });
+export const updateUser = (id, body) => adminRequest(`/users/${id}`, { method: 'PATCH', body });
+export const resetUserPassword = (id, newPassword) =>
+  adminRequest(`/users/${id}/password`, { method: 'PATCH', body: { newPassword } });
+export const deleteUser = (id) => adminRequest(`/users/${id}`, { method: 'DELETE' });
+export const changeMyPassword = (currentPassword, newPassword) =>
+  adminRequest('/auth/change-password', {
+    method: 'PATCH',
+    body: { currentPassword, newPassword },
+  });
+
 // ---- Generic CMS resource CRUD ----
 // resource: 'services' | 'industries' | 'locations' | 'case-studies' | 'insights' | 'jobs' | 'pages'
 export const listResource = (resource, query = '') => adminRequest(`/cms/${resource}${query}`);

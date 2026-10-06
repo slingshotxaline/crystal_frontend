@@ -149,7 +149,7 @@ export const ENQUIRY = {
 export const PO_IMAGES = {
   hero: { src: "/assets/Digital/pobanner2.jpg", width: 2400, height: 1029 },
    overview: {
-    src: "/assets/Digital/posec1.jpg",   // file goes in /public/images/
+    src: "/assets/Digital/poBanner3.webp",   // file goes in /public/images/
     alt: "Purchase order documents and a buyer reviewing orders",
     width: 1600,
     height: 686,
