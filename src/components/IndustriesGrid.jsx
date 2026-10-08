@@ -77,7 +77,7 @@ const IMAGES = [
     position: "object-center",
   },
   {
-    src: "/assets/Home/Industries/industry51.png",
+    src: "/assets/Home/Industries/homeHealthCare.jpg",
     alt: "Doctor in a white coat holding a stethoscope",
     position: "object-[50%_30%]",
   },
