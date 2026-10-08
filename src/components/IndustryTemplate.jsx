@@ -21,7 +21,7 @@ const INDUSTRY_HEROES = {
   fmcg: "/assets/Industries/fmcg21.jpg",
   industrial: "/assets/Industries/industry3.webp",
   automotive: "/assets/Industries/automotive.jpg",
-  healthcare: "/assets/Industries/healthcare11.jpg",
+  healthcare: "/assets/Industries/heaalthcarebanner2.png",
   "high-tech": "/assets/Industries/hightechbanner.jpg",
 };
 
