@@ -2,7 +2,11 @@
 
 import { getToken, clearToken } from './auth';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  'https://api.crystalltd.com/api';
+
 
 /**
  * Authenticated fetch wrapper for the admin dashboard. Attaches the

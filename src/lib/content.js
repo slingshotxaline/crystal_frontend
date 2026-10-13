@@ -7,8 +7,13 @@ import {
   getIndustryBySlug as getStaticIndustryBySlug,
 } from "@/data/industries";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-const REVALIDATE_SECONDS = 3600; // ISR: re-check the CMS at most once an hour
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  'https://api.crystalltd.com/api';
+
+const REVALIDATE_SECONDS = 3600;
+
 
 /**
  * Server-only fetch helpers for public content. Cached with Next's
