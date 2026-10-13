@@ -99,14 +99,25 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-content flex flex-col gap-2 py-5 text-xs text-navy-100/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="container-content flex flex-col gap-3 py-5 text-xs text-navy-100/60 lg:flex-row lg:items-center lg:justify-between">
           <p>
-            &copy; {new Date().getFullYear()} Crystal Express Limited. Prototype
-            build for internal design review — not for public deployment.
+            &copy; {new Date().getFullYear()} Crystal Express Ltd. All rights
+            reserved.
           </p>
-          <p>
+          <p className="lg:text-center">
             Rangs Paramount Square, Level 6, House 11, Road 17, Banani C/A,
             Dhaka 1213, Bangladesh <span className="italic">[VALIDATE]</span>
+          </p>
+          <p>
+            Designed &amp; developed by{" "}
+            <a
+              href="https://www.a-linebrands.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring rounded font-medium text-white/90 underline-offset-4 transition-colors hover:text-white hover:underline"
+            >
+              A-Line Limited
+            </a>
           </p>
         </div>
       </div>
