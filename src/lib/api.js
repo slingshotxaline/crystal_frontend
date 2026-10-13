@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'https://api.crystalltd.com/api';
 
 /**
  * Thin fetch wrapper for the Express/MongoDB backend. Every form on the
