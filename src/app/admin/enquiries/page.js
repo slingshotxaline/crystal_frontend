@@ -1,29 +1,101 @@
 'use client';
 
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useMemo, useState, Fragment } from 'react';
 import { listEnquiries, updateEnquiry } from '@/lib/adminApi';
+import {
+  PageHeader,
+  SearchInput,
+  FilterChips,
+  ErrorBanner,
+  EmptyState,
+  SkeletonRows,
+  SkeletonCards,
+  MobileCard,
+  StatusSelect,
+  TypeBadge,
+  Avatar,
+  ExpandButton,
+  Field,
+  DetailCard,
+  TextCard,
+  ActionLink,
+  icons,
+  formatDate,
+} from '@/app/admin/AdminUI';
 
 const TYPES = ['general', 'partnership', 'careers'];
 const STATUSES = ['new', 'in_review', 'responded', 'closed', 'spam'];
+const COLS = 6;
+
+/* Expanded content. `stacked` = single column (phone / tablet cards). */
+function EnquiryDetails({ enq, stacked }) {
+  return (
+    <div className={stacked ? 'space-y-4' : 'grid gap-4 lg:grid-cols-5'}>
+      <div className={stacked ? '' : 'lg:col-span-2'}>
+        <DetailCard title="Contact">
+          <Field label="Email" value={enq.email} href={`mailto:${enq.email}`} wide />
+          <Field label="Phone" value={enq.phone || '—'} href={enq.phone ? `tel:${enq.phone}` : undefined} wide />
+          <Field label="Subject" value={enq.subject || '—'} wide />
+          {enq.partnershipRegion && <Field label="Region" value={enq.partnershipRegion} />}
+          {enq.partnershipType && <Field label="Partnership type" value={enq.partnershipType} />}
+          {enq.resumeUrl && <Field label="Resume" value="Open resume" href={enq.resumeUrl} wide />}
+        </DetailCard>
+      </div>
+
+      <div className={stacked ? 'space-y-4' : 'space-y-4 lg:col-span-3'}>
+        <TextCard title="Message">{enq.message}</TextCard>
+
+        <div className="flex flex-wrap gap-2">
+          <ActionLink
+            primary
+            icon={icons.mail}
+            href={`mailto:${enq.email}?subject=${encodeURIComponent(
+              `Re: ${enq.subject || `Enquiry ${enq.referenceCode}`}`
+            )}`}
+          >
+            Reply by email
+          </ActionLink>
+          {enq.phone && (
+            <ActionLink icon={icons.phone} href={`tel:${enq.phone}`}>
+              Call
+            </ActionLink>
+          )}
+          {enq.resumeUrl && (
+            <ActionLink icon={icons.file} href={enq.resumeUrl}>
+              View resume
+            </ActionLink>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminEnquiriesPage() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+  const [ready, setReady] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
+  // Read initial ?status= / ?type= filters, then allow the first fetch.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const initialStatus = params.get('status');
     const initialType = params.get('type');
     if (initialStatus) setStatusFilter(initialStatus);
     if (initialType) setTypeFilter(initialType);
+    setReady(true);
   }, []);
 
-  const load = () => {
+  useEffect(() => {
+    if (!ready) return;
+    let active = true;
     setLoading(true);
     setError(null);
     const params = new URLSearchParams({ limit: '100' });
@@ -31,130 +103,227 @@ export default function AdminEnquiriesPage() {
     if (statusFilter) params.set('status', statusFilter);
     listEnquiries(`?${params.toString()}`)
       .then((res) => {
+        if (!active) return;
         setItems(res.items);
         setTotal(res.total);
       })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  };
+      .catch((err) => active && setError(err.message))
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [ready, typeFilter, statusFilter, reloadKey]);
 
-  useEffect(load, [typeFilter, statusFilter]);
+  const reload = () => setReloadKey((k) => k + 1);
 
   const handleStatusChange = async (id, status) => {
-    setItems((prev) => prev.map((e) => (e._id === id ? { ...e, status } : e)));
+    setItems((prev) => prev.map((enq) => (enq._id === id ? { ...enq, status } : enq)));
     try {
       await updateEnquiry(id, { status });
     } catch (err) {
       setError(err.message);
-      load();
+      reload();
     }
   };
 
+  // Client-side search across the loaded rows (up to 100).
+  const visible = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return items;
+    return items.filter((enq) =>
+      [enq.referenceCode, enq.fullName, enq.company, enq.email, enq.subject, enq.message]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(term))
+    );
+  }, [items, query]);
+
+  const hasFilters = Boolean(typeFilter || statusFilter || query);
+  const clearFilters = () => {
+    setTypeFilter('');
+    setStatusFilter('');
+    setQuery('');
+  };
+
+  const subtitle = loading
+    ? 'Loading enquiries…'
+    : `${total} total${hasFilters ? ` · ${visible.length} shown` : ''}${
+        total > items.length ? ` · showing the latest ${items.length}` : ''
+      }`;
+
+  const showEmpty = !loading && visible.length === 0;
+
   return (
-    <div>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-navy-900">Enquiries</h1>
-          <p className="mt-1 text-sm text-navy-400">{total} total</p>
-        </div>
-        <div className="flex gap-3">
-          <select
+    <div className="mx-auto w-full min-w-0 container">
+      <PageHeader title="Enquiries" subtitle={subtitle} onRefresh={reload} loading={loading} />
+
+      {/* Toolbar: search first on phones; type chips + search on one row on desktop */}
+      <div className="mt-6 space-y-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="Search name, company, email…"
+            className="lg:order-last"
+          />
+          <FilterChips
+            label="Filter by type"
+            options={TYPES}
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-md border border-navy-200 px-4 py-2 text-sm focus:border-crimson focus:outline-none"
-          >
-            <option value="">All types</option>
-            {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-md border border-navy-200 px-4 py-2 text-sm focus:border-crimson focus:outline-none"
-          >
-            <option value="">All statuses</option>
-            {STATUSES.map((s) => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
-          </select>
+            onChange={setTypeFilter}
+            allLabel="All types"
+          />
         </div>
+        <FilterChips
+          label="Filter by status"
+          options={STATUSES}
+          value={statusFilter}
+          onChange={setStatusFilter}
+          allLabel="All statuses"
+        />
       </div>
 
-      {error && <p className="mt-4 rounded-md border border-crimson/30 bg-crimson/5 p-4 text-sm text-crimson-700">{error}</p>}
+      <ErrorBanner message={error} onRetry={reload} />
 
-      <div className="mt-6 overflow-hidden rounded-lg border border-navy-100 bg-white">
-        {loading ? (
-          <p className="p-6 text-sm text-navy-400">Loading…</p>
-        ) : items.length === 0 ? (
-          <p className="p-6 text-sm text-navy-400">No enquiries match this filter.</p>
-        ) : (
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-navy-100 bg-cream-100 text-xs uppercase tracking-wide text-navy-400">
-              <tr>
-                <th className="px-4 py-3">Reference</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Name / Company</th>
-                <th className="px-4 py-3">Received</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((e) => (
-                <Fragment key={e._id}>
-                  <tr className="border-b border-navy-100 last:border-0">
-                    <td className="px-4 py-3 font-mono text-xs text-navy-500">{e.referenceCode}</td>
-                    <td className="px-4 py-3 capitalize text-navy-800">{e.type}</td>
-                    <td className="px-4 py-3 text-navy-800">{e.fullName}{e.company ? ` · ${e.company}` : ''}</td>
-                    <td className="px-4 py-3 text-navy-400">{new Date(e.createdAt).toLocaleDateString()}</td>
-                    <td className="px-4 py-3">
-                      <select
-                        value={e.status}
-                        onChange={(ev) => handleStatusChange(e._id, ev.target.value)}
-                        className="rounded-md border border-navy-200 bg-white px-2 py-1 text-xs focus:border-crimson focus:outline-none"
-                      >
-                        {STATUSES.map((s) => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
-                      </select>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => setExpandedId(expandedId === e._id ? null : e._id)}
-                        className="focus-ring rounded-md border border-navy-200 px-3 py-1 text-xs font-semibold text-navy-700 hover:border-crimson hover:text-crimson"
-                      >
-                        {expandedId === e._id ? 'Hide' : 'Details'}
-                      </button>
-                    </td>
+      {showEmpty ? (
+        <div className="mt-6 overflow-hidden rounded-2xl border border-navy-100 bg-white shadow-sm">
+          <EmptyState
+            title="No enquiries found"
+            text={
+              hasFilters
+                ? 'Nothing matches your current filters. Try a different type or status, or clear the search.'
+                : 'New enquiries from your website will show up here.'
+            }
+            actionLabel={hasFilters ? 'Clear filters' : undefined}
+            onAction={clearFilters}
+          />
+        </div>
+      ) : (
+        <>
+          {/* ============ Phones & tablets: cards (1 column, 2 on sm+) ============ */}
+          <div className="mt-6 grid grid-cols-1 items-start gap-4 sm:grid-cols-2 xl:hidden">
+            {loading ? (
+              <SkeletonCards />
+            ) : (
+              visible.map((enq) => {
+                const open = expandedId === enq._id;
+                return (
+                  <MobileCard key={enq._id} open={open}>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate rounded-md bg-navy-100/60 px-2 py-1 font-mono text-xs text-navy-700">
+                        {enq.referenceCode}
+                      </span>
+                      <span className="shrink-0 text-xs text-navy-400">{formatDate(enq.createdAt)}</span>
+                    </div>
+
+                    <div className="mt-3 flex items-center gap-3">
+                      <Avatar name={enq.fullName} />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-navy-900">{enq.fullName}</p>
+                        {enq.company && <p className="truncate text-xs text-navy-400">{enq.company}</p>}
+                      </div>
+                      <TypeBadge type={enq.type} />
+                    </div>
+
+                    {enq.subject && (
+                      <p className="mt-3 line-clamp-2 break-words text-sm text-navy-700">{enq.subject}</p>
+                    )}
+
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-navy-100 pt-4">
+                      <StatusSelect
+                        label={`Status for ${enq.referenceCode}`}
+                        value={enq.status}
+                        options={STATUSES}
+                        onChange={(s) => handleStatusChange(enq._id, s)}
+                      />
+                      <ExpandButton open={open} onClick={() => setExpandedId(open ? null : enq._id)} />
+                    </div>
+
+                    {open && (
+                      <div className="mt-4 rounded-xl bg-navy-100/30 p-3 sm:p-4">
+                        <EnquiryDetails enq={enq} stacked />
+                      </div>
+                    )}
+                  </MobileCard>
+                );
+              })
+            )}
+          </div>
+
+          {/* ============ Desktop (xl+): table ============ */}
+          <div className="mt-6 hidden overflow-hidden rounded-2xl border border-navy-100 bg-white shadow-sm xl:block">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-navy-100 bg-navy-100/30 text-[11px] uppercase tracking-wider text-navy-400">
+                  <tr>
+                    <th className="px-5 py-3.5 font-semibold">Reference</th>
+                    <th className="px-5 py-3.5 font-semibold">Type</th>
+                    <th className="px-5 py-3.5 font-semibold">Name / Company</th>
+                    <th className="px-5 py-3.5 font-semibold">Received</th>
+                    <th className="px-5 py-3.5 font-semibold">Status</th>
+                    <th className="px-5 py-3.5" />
                   </tr>
-                  {expandedId === e._id && (
-                    <tr className="border-b border-navy-100 bg-cream-100/60 last:border-0">
-                      <td colSpan={6} className="px-4 py-4">
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                          <Field label="Email" value={e.email} />
-                          <Field label="Phone" value={e.phone || '—'} />
-                          <Field label="Subject" value={e.subject || '—'} />
-                          {e.partnershipRegion && <Field label="Region" value={e.partnershipRegion} />}
-                          {e.partnershipType && <Field label="Partnership Type" value={e.partnershipType} />}
-                          {e.resumeUrl && <Field label="Resume" value={e.resumeUrl} />}
-                        </div>
-                        <div className="mt-3">
-                          <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">Message</p>
-                          <p className="mt-1 text-sm text-navy-700">{e.message}</p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
-  );
-}
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <SkeletonRows cols={COLS} />
+                  ) : (
+                    visible.map((enq) => {
+                      const open = expandedId === enq._id;
+                      return (
+                        <Fragment key={enq._id}>
+                          <tr
+                            className={`border-b border-navy-100 transition-colors last:border-0 ${
+                              open ? 'bg-navy-100/30' : 'hover:bg-navy-100/20'
+                            }`}
+                          >
+                            <td className="px-5 py-4">
+                              <span className="rounded-md bg-navy-100/60 px-2 py-1 font-mono text-xs text-navy-700">
+                                {enq.referenceCode}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4">
+                              <TypeBadge type={enq.type} />
+                            </td>
+                            <td className="max-w-[18rem] px-5 py-4">
+                              <div className="flex items-center gap-3">
+                                <Avatar name={enq.fullName} />
+                                <div className="min-w-0">
+                                  <p className="truncate font-semibold text-navy-900">{enq.fullName}</p>
+                                  {enq.company && <p className="truncate text-xs text-navy-400">{enq.company}</p>}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="whitespace-nowrap px-5 py-4 text-navy-500">{formatDate(enq.createdAt)}</td>
+                            <td className="px-5 py-4">
+                              <StatusSelect
+                                label={`Status for ${enq.referenceCode}`}
+                                value={enq.status}
+                                options={STATUSES}
+                                onChange={(s) => handleStatusChange(enq._id, s)}
+                              />
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <ExpandButton open={open} onClick={() => setExpandedId(open ? null : enq._id)} />
+                            </td>
+                          </tr>
 
-function Field({ label, value }) {
-  return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">{label}</p>
-      <p className="mt-0.5 break-words text-sm text-navy-800">{value}</p>
+                          {open && (
+                            <tr className="border-b border-navy-100 bg-navy-100/30 last:border-0">
+                              <td colSpan={COLS} className="px-5 pb-6 pt-2">
+                                <EnquiryDetails enq={enq} />
+                              </td>
+                            </tr>
+                          )}
+                        </Fragment>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
