@@ -1,0 +1,132 @@
+/* components/insights/insights.css
+   Continuous animations for the Insights page (plain CSS, works with Tailwind v3 and v4). */
+
+   @keyframes ix-float-a {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(40px, -50px, 0) scale(1.18); }
+  }
+  @keyframes ix-float-b {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(-50px, 40px, 0) scale(1.12); }
+  }
+  @keyframes ix-grid-pan {
+    to { background-position: 48px 48px; }
+  }
+  @keyframes ix-dash {
+    to { stroke-dashoffset: -64; }
+  }
+  @keyframes ix-ring {
+    0% { transform: scale(0.6); opacity: 0.85; }
+    100% { transform: scale(2.8); opacity: 0; }
+  }
+  @keyframes ix-word {
+    from { opacity: 0; transform: translateY(0.45em); filter: blur(8px); }
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes ix-shine {
+    to { background-position: 200% center; }
+  }
+  @keyframes ix-marquee {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes ix-kenburns {
+    from { transform: scale(1) translate(0, 0); }
+    to { transform: scale(1.14) translate(-1.5%, -1%); }
+  }
+  @keyframes ix-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes ix-fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes ix-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  .ix-blob-a { animation: ix-float-a 14s ease-in-out infinite; }
+  .ix-blob-b { animation: ix-float-b 18s ease-in-out infinite; }
+  
+  .ix-grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: ix-grid-pan 6s linear infinite;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+  
+  .ix-route-dash {
+    stroke-dasharray: 8 12;
+    animation: ix-dash 2.5s linear infinite;
+  }
+  .ix-ring {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: ix-ring 2.4s ease-out infinite;
+  }
+  .ix-ring-html {
+    animation: ix-ring 2.4s ease-out infinite;
+  }
+  
+  .ix-word { animation: ix-word 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  
+  .ix-gradient-text {
+    background-image: linear-gradient(90deg, #38bdf8, #22d3ee, #a5f3fc, #38bdf8);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: ix-shine 5s linear infinite;
+  }
+  
+  .ix-fade-up { animation: ix-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .ix-bob { animation: ix-bob 4s ease-in-out infinite; }
+  
+  /* Marquee */
+  .ix-marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  .ix-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: ix-marquee 55s linear infinite;
+  }
+  .ix-marquee:hover .ix-marquee-track { animation-play-state: paused; }
+  
+  /* Slider */
+  .ix-kenburns { animation: ix-kenburns 16s ease-in-out infinite alternate; }
+  .ix-progress {
+    transform-origin: left;
+    animation: ix-progress var(--ix-dur, 6000ms) linear forwards;
+  }
+  .ix-paused { animation-play-state: paused; }
+  
+  /* Scroll reveal */
+  .ix-reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ix-reveal.ix-in { opacity: 1; transform: none; }
+  
+  /* Card */
+  .ix-card {
+    transition: transform 0.25s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+    will-change: transform;
+  }
+  .ix-spot {
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(56, 189, 248, 0.2), transparent 60%);
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .ix-blob-a, .ix-blob-b, .ix-grid-bg, .ix-route-dash, .ix-ring, .ix-ring-html,
+    .ix-word, .ix-gradient-text, .ix-fade-up, .ix-bob, .ix-marquee-track,
+    .ix-kenburns, .ix-progress { animation: none !important; }
+    .ix-reveal { opacity: 1; transform: none; transition: none; }
+    .ix-card { transition: none; }
+  }
