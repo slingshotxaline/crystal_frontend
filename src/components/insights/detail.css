@@ -1,0 +1,70 @@
+/* components/insights/detail.css
+   Extra animations for the article (detail) page. Used together with insights.css */
+
+   @keyframes ix-rise {
+    from { transform: translateY(110%); }
+    to { transform: none; }
+  }
+  @keyframes ix-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes ix-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.55); }
+    50% { box-shadow: 0 0 0 14px rgba(56, 189, 248, 0); }
+  }
+  @keyframes ix-nudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+  }
+  @keyframes ix-shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+  @keyframes ix-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  .ix-rise { animation: ix-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .ix-glow { animation: ix-glow 2.4s ease-out infinite; }
+  .ix-nudge { animation: ix-nudge 1.6s ease-in-out infinite; }
+  .ix-pop { animation: ix-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  
+  .ix-shimmer {
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: ix-shimmer 2s linear infinite;
+  }
+  
+  /* Rotating gradient border (example cards) */
+  .ix-spin-border {
+    background: conic-gradient(from 0deg, transparent 0 55%, #f59e0b 78%, #fcd34d 90%, transparent 100%);
+    animation: ix-spin 6s linear infinite;
+  }
+  
+  /* Staggered paragraph reveal (inside a .ix-reveal that gets .ix-in) */
+  .ix-stagger > * {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ix-in .ix-stagger > * { opacity: 1; transform: none; }
+  .ix-in .ix-stagger > *:nth-child(1) { transition-delay: 0.15s; }
+  .ix-in .ix-stagger > *:nth-child(2) { transition-delay: 0.3s; }
+  .ix-in .ix-stagger > *:nth-child(3) { transition-delay: 0.45s; }
+  .ix-in .ix-stagger > *:nth-child(4) { transition-delay: 0.6s; }
+  
+  /* Heading accent bar grows in */
+  .ix-bar {
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+  }
+  .ix-in .ix-bar { transform: scaleY(1); }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .ix-rise, .ix-glow, .ix-nudge, .ix-pop, .ix-shimmer, .ix-spin-border { animation: none !important; }
+    .ix-stagger > * { opacity: 1; transform: none; transition: none; }
+    .ix-bar { transform: none; transition: none; }
+  }

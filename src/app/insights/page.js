@@ -38,27 +38,52 @@
 //     </section>
 //   );
 // }
-import Link from 'next/link';
+import "@/components/insights/insights.css";
+import FeaturedSlider from "@/components/insights/FeaturedSlider";
+import InsightsGrid from "@/components/insights/InsightsGrid";
+import InsightsHero from "@/components/insights/InsightsHero";
+import InsightsMarquee from "@/components/insights/InsightsMarquee";
+import Reveal from "@/components/insights/Reveal";
+import { insights, readingTime } from "@/data/insight";
 
-export default function InsightComingSoonPage() {
+export const metadata = {
+  title: "Insights | Crystal Express Limited",
+  description:
+    "Practical logistics insights from Crystal Express Limited: multimodal routing, air freight preparation, consolidation, shipment visibility, Bangladesh imports and fashion launch planning.",
+};
+
+export default function InsightsPage() {
+  const totalWords = insights.reduce((sum, i) => sum + i.words, 0);
+  const totalMinutes = insights.reduce((sum, i) => sum + readingTime(i.words), 0);
+
   return (
-    <section className="flex min-h-[80vh] flex-col items-center justify-center bg-navy-900 px-6 text-center text-white">
-      <p className="text-xs font-semibold uppercase tracking-widest text-crimson">Insight</p>
+    <main className="bg-slate-50">
+      <InsightsHero articles={insights.length} words={totalWords} minutes={totalMinutes} />
+      <InsightsMarquee items={insights} />
 
-      <h1 className="mt-4 max-w-xl text-4xl font-bold leading-tight sm:text-5xl">
-        Coming soon.
-      </h1>
+      {/* Featured auto-playing slider */}
+      <section id="featured" className="mx-auto max-w-7xl scroll-mt-8 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <Reveal>
+          <p className="text-xs font-bold uppercase tracking-widest text-sky-600">Featured reads</p>
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            Start with what matters now
+          </h2>
+        </Reveal>
+        <div className="mt-8">
+          <FeaturedSlider items={insights} />
+        </div>
+      </section>
 
-      <p className="mt-4 max-w-md text-navy-100/80">
-        We&rsquo;re still writing this page. Check back shortly.
-      </p>
-
-      <Link
-        href="/"
-        className="focus-ring mt-8 rounded-md bg-crimson px-6 py-3 text-sm font-bold text-white hover:bg-crimson-700"
-      >
-        Back to home
-      </Link>
-    </section>
+      {/* All insights */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-24 lg:px-8">
+        <Reveal>
+          <p className="text-xs font-bold uppercase tracking-widest text-sky-600">Library</p>
+          <h2 className="mb-8 mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            All insights
+          </h2>
+        </Reveal>
+        <InsightsGrid items={insights} />
+      </section>
+    </main>
   );
 }
