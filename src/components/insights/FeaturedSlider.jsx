@@ -65,10 +65,10 @@ export default function FeaturedSlider({ items }) {
 
         {/* Content */}
         <div key={cur.slug} className="ix-fade-up absolute inset-x-0 bottom-0 p-6 pb-10 text-white sm:p-10 sm:pb-12">
-          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-widest text-sky-300">
+          {/* <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-widest text-sky-300">
             <span className="rounded-full bg-sky-500/20 px-3 py-1 backdrop-blur">Article {cur.id}</span>
             <span className="text-slate-300">{readingTime(cur.words)} min read</span>
-          </div>
+          </div> */}
           <h3 className="mt-4 max-w-2xl text-2xl font-extrabold leading-tight sm:text-3xl lg:text-4xl">
             {cur.title}
           </h3>

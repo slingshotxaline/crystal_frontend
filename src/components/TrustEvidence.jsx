@@ -14,7 +14,7 @@ import Icon from "./Icon";
 
 const STATS = [
   {
-    value: "1997",
+    value: "1998",
     label: "Established",
     description:
       "Independent freight forwarder with continuous Bangladesh operating history.",
@@ -221,7 +221,7 @@ function StatCard({ stat, i, prefersReducedMotion }) {
           {stat.description}
         </p>
 
-        <motion.button
+        {/* <motion.button
           type="button"
           whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
           whileTap={prefersReducedMotion ? undefined : { scale: 0.94 }}
@@ -235,7 +235,7 @@ function StatCard({ stat, i, prefersReducedMotion }) {
           </span>
           <Icon name="check" className="h-3 w-3" strokeWidth={2.4} />
           Validate
-        </motion.button>
+        </motion.button> */}
 
         {/* accent line that sweeps in on hover */}
         <span

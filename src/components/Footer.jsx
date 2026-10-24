@@ -37,9 +37,9 @@ const COLUMNS = [
     title: "Company",
     links: [
       { label: "About Crystal Express", href: "/about" },
-      { label: "Leadership", href: "/about#leadership" },
-      { label: "Group Ecosystem", href: "/about#group-ecosystem" },
-      { label: "Affiliations & Compliance", href: "/about#affiliations" },
+      { label: "Our Role", href: "/about#our-role" },
+      { label: "Our Story", href: "/about#our-story" },
+      { label: "Vision", href: "/about#vision" },
       { label: "Careers", href: "/careers" },
     ],
   },
@@ -106,7 +106,7 @@ export default function Footer() {
           </p>
           <p className="lg:text-center">
             Rangs Paramount Square, Level 6, House 11, Road 17, Banani C/A,
-            Dhaka 1213, Bangladesh <span className="italic">[VALIDATE]</span>
+            Dhaka 1213, Bangladesh
           </p>
           <p>
             Designed &amp; developed by{" "}

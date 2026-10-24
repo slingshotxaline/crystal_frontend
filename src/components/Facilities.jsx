@@ -321,7 +321,7 @@ export default function Facilities() {
               ))}
             </div>
 
-            <motion.button
+            {/* <motion.button
               type="button"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -338,7 +338,7 @@ export default function Facilities() {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
               </span>
               Validate all facility facts
-            </motion.button>
+            </motion.button> */}
           </div>
 
           {/* Right: image */}

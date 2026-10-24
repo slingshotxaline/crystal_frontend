@@ -18,17 +18,17 @@ export default function InsightCard({ insight, priority = false }) {
           className="object-cover transition duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent" />
-        <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold tracking-wide text-slate-800 backdrop-blur">
+        {/* <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold tracking-wide text-slate-800 backdrop-blur">
           Article {insight.id}
-        </span>
+        </span> */}
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <div className="mb-3 flex items-center gap-2 text-xs font-medium text-slate-500">
+        {/* <div className="mb-3 flex items-center gap-2 text-xs font-medium text-slate-500">
           <span>{insight.date}</span>
           <span className="h-1 w-1 rounded-full bg-slate-300" />
           <span>{readingTime(insight.words)} min read</span>
-        </div>
+        </div> */}
 
         <h2 className="text-xl font-bold leading-snug text-slate-900 transition group-hover:text-sky-700">
           {insight.title}

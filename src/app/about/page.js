@@ -35,11 +35,11 @@ const timeline = [
 ];
 
 const companyFacts = [
-  "Established in 1997 [VALIDATE]",
-  "Dhaka head office and Chattogram branch [VALIDATE names/addresses]",
-  "130+ professionals [VALIDATE headcount]",
-  "Regional presence across selected Asian markets [VALIDATE model by country]",
-  "T.O.P.S., JCtrans and WCA affiliations [VALIDATE status]",
+  "Established in 1997",
+  "Dhaka head office and Chattogram branch ",
+  "130+ professionals",
+  "Regional presence across selected Asian markets",
+  "T.O.P.S., JCtrans and WCA affiliations",
 ];
 
 const approach = [
@@ -55,7 +55,7 @@ const leadership = [
     initials: "MA",
     name: "MD Abrarul Alam",
     title: "Managing Director & Group CEO",
-    desc: "Sets strategic direction for Crystal Express Ltd. and the wider group. [VALIDATE title/scope]",
+    desc: "Sets strategic direction for Crystal Express Ltd. and the wider group.",
   },
   {
     initials: "MS",
@@ -104,22 +104,22 @@ const groupEntities = [
   {
     name: "EUR Logistics Services Ltd.",
     tag: "GROUP ENTITY — VALIDATE SCOPE",
-    desc: "Integrated logistics and supply-chain capability [VALIDATE exact name and scope].",
+    desc: "Integrated logistics and supply-chain capability",
   },
   {
     name: "PT EUR Logistiks Servises",
     tag: "GROUP ENTITY — VALIDATE SCOPE",
-    desc: "Indonesia country operation [VALIDATE spelling, legal name and scope].",
+    desc: "Indonesia country operation.",
   },
   {
     name: "EXG Project Logistics",
     tag: "GROUP ENTITY — VALIDATE SCOPE",
-    desc: "Project cargo and complex movements [VALIDATE legal name and relationship].",
+    desc: "Project cargo and complex movements",
   },
   {
     name: "Soul Aviation Limited",
     tag: "GROUP ENTITY — VALIDATE SCOPE",
-    desc: "Cargo charter and freighter solutions [VALIDATE scope and contracting model].",
+    desc: "Cargo charter and freighter solutions .",
   },
 ];
 
@@ -243,9 +243,9 @@ export default function AboutPage() {
               </p>
               <p className="mt-3 max-w-2xl text-navy-700">
                 Crystal Express began operations in Bangladesh in 2002
-                [VALIDATE]. Since then, the business has developed air, ocean,
+                . Since then, the business has developed air, ocean,
                 inland, fashion, project, warehousing and CFS capabilities
-                [VALIDATE scope], supported by international forwarding
+                , supported by international forwarding
                 relationships.
               </p>
 
