@@ -100,7 +100,7 @@ export default async function InsightDetailPage({ params }) {
             All insights
           </Link>
 
-          <p
+          {/* <p
             className="ix-fade-up mt-8 inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-widest text-sky-400"
             style={{ animationDelay: "0.1s" }}
           >
@@ -109,7 +109,7 @@ export default async function InsightDetailPage({ params }) {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-400" />
             </span>
             Article {insight.id} · Insights
-          </p>
+          </p> */}
 
           {/* Word-by-word title reveal */}
           <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
@@ -129,7 +129,7 @@ export default async function InsightDetailPage({ params }) {
             {insight.excerpt}
           </p>
 
-          <div
+          {/* <div
             className="ix-fade-up mt-7 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm text-slate-400"
             style={{ animationDelay: "0.85s" }}
           >
@@ -141,7 +141,7 @@ export default async function InsightDetailPage({ params }) {
             <span className="sm:ml-auto">
               <ShareButton title={insight.title} />
             </span>
-          </div>
+          </div> */}
         </div>
       </header>
 
@@ -151,7 +151,7 @@ export default async function InsightDetailPage({ params }) {
           src={insight.heroImage}
           alt={insight.heroAlt}
           caption={insight.heroCaption}
-          chips={[`Article ${insight.id}`, `${minutes} min read`]}
+          // chips={[`Article ${insight.id}`, `${minutes} min read`]}
         />
       </div>
 

@@ -94,7 +94,7 @@ export default function InsightsHero({ articles, words, minutes }) {
             <span className="ix-ring-html absolute inline-flex h-full w-full rounded-full bg-sky-400" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-400" />
           </span>
-          Crystal Express Insights
+          Insights
         </span>
 
         <h1

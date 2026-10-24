@@ -40,36 +40,14 @@ const COMBOS = [
       "Considered when the nearest gateway does not have the required schedule or capacity.",
   },
   {
-    id: "sea-sea",
-    label: "Sea → Sea",
-    modes: ["sea", "sea"],
-    stages: [
-      "Origin",
-      "Ocean Leg 1",
-      "Transshipment",
-      "Ocean Leg 2",
-      "Destination",
-    ],
+    id: "air-sea",
+    label: "Air → Sea",
+    modes: ["air", "sea"],
+    stages: ["Origin", "Air Leg", "Transfer", "Ocean Leg", "Destination"],
     description:
-      "Transshipment routing where a direct ocean service is not available.",
+      "Air uplift to a regional hub, followed by ocean movement for the final leg.",
     detail:
-      "Common for destinations without a direct vessel call from the Bangladesh gateway.",
-  },
-  {
-    id: "sea-land",
-    label: "Sea → Land",
-    modes: ["sea", "land"],
-    stages: [
-      "Origin",
-      "Ocean Leg",
-      "Discharge Port",
-      "Inland Leg",
-      "Destination",
-    ],
-    description:
-      "Ocean movement followed by inland delivery beyond the discharge port.",
-    detail:
-      "Standard for destinations requiring final delivery inland from the arrival port.",
+      "Considered when the first leg is time-sensitive but the onward leg suits ocean schedules and cost.",
   },
 ];
 
