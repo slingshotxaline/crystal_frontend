@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 
+/* Set to false when the tracking page goes live */
+const COMING_SOON = true;
+
 /* ---------- DEMO DATA: replace lookupShipment() with your real API call ---------- */
 const DEMO = {
   ref: "CEL-000000",
@@ -66,6 +69,7 @@ async function lookupShipment(ref) {
 }
 
 const ROUTE = "M610 70 C 470 -10, 330 190, 70 130";
+const SOON_ROUTE = "M30 62 C 200 -10, 480 110, 650 18";
 
 export default function TrackingClient() {
   const [ref, setRef] = useState("");
@@ -88,15 +92,160 @@ export default function TrackingClient() {
         @keyframes sweep { 0% { transform: translateX(-100%) } 100% { transform: translateX(100%) } }
         @keyframes blink { 50% { opacity: .35 } }
         @keyframes rise { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+        @keyframes soonPulse { 0% { transform: scale(1); opacity: .6 } 100% { transform: scale(2.4); opacity: 0 } }
+        @keyframes shine { 0% { transform: translateX(-120%) } 100% { transform: translateX(120%) } }
+        @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+        @keyframes dotBounce { 0%, 80%, 100% { opacity: .25; transform: translateY(0) } 40% { opacity: 1; transform: translateY(-5px) } }
+        @keyframes floatA { 0%, 100% { transform: translate(0, 0) scale(1) } 50% { transform: translate(24px, -18px) scale(1.12) } }
+        @keyframes floatB { 0%, 100% { transform: translate(0, 0) scale(1) } 50% { transform: translate(-28px, 16px) scale(1.18) } }
+        @keyframes loadBar { 0% { transform: translateX(-100%) } 100% { transform: translateX(300%) } }
+        @keyframes gradientShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+        @keyframes ringOut { 0% { r: 5; opacity: .8 } 100% { r: 22; opacity: 0 } }
         .flow { animation: flow 1.2s linear infinite; }
         .ping { animation: ping 2s ease-out infinite; }
         .blink { animation: blink 1.6s ease-in-out infinite; }
         .sweep::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent); animation: sweep 1.6s linear infinite; }
         .rise { animation: rise .5s ease-out both; }
-        @media (prefers-reduced-motion: reduce) { .flow,.ping,.blink,.sweep::after,.rise { animation: none !important; } }
+        .soon-pulse { animation: soonPulse 1.8s ease-out infinite; }
+        .shine::after { content:''; position:absolute; inset:0; background:linear-gradient(100deg,transparent,rgba(255,255,255,.12),transparent); animation: shine 3.2s ease-in-out infinite; }
+        .marquee { animation: marquee 22s linear infinite; }
+        .dot { display:inline-block; animation: dotBounce 1.4s ease-in-out infinite; }
+        .dot:nth-child(2) { animation-delay: .18s; }
+        .dot:nth-child(3) { animation-delay: .36s; }
+        .float-a { animation: floatA 7s ease-in-out infinite; }
+        .float-b { animation: floatB 9s ease-in-out infinite; }
+        .load-bar { animation: loadBar 1.8s cubic-bezier(.4,0,.2,1) infinite; }
+        .grad-text { background-size: 200% 200%; animation: gradientShift 4s ease-in-out infinite; }
+        .ring-out { animation: ringOut 2.2s ease-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .flow,.ping,.blink,.sweep::after,.rise,.soon-pulse,.shine::after,.marquee,.dot,.float-a,.float-b,.load-bar,.grad-text,.ring-out { animation: none !important; } }
       `}</style>
 
       <div className="mx-auto max-w-5xl px-5">
+        {/* Coming soon banner */}
+        {COMING_SOON && (
+          <div
+            className="rise shine relative mb-10 overflow-hidden rounded-2xl bg-[#0f2a52] px-6 pb-8 pt-8 text-white shadow-xl sm:px-10 sm:pb-10 sm:pt-10"
+            role="status"
+          >
+            {/* floating glow orbs */}
+            <div className="float-a pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full bg-[#e3202d]/25 blur-3xl" />
+            <div className="float-b pointer-events-none absolute -bottom-16 -left-10 h-64 w-64 rounded-full bg-[#3b82f6]/20 blur-3xl" />
+
+            {/* scrolling ticker */}
+            <div
+              className="relative z-10 -mx-6 -mt-8 mb-7 overflow-hidden border-b border-white/10 bg-white/5 py-2 sm:-mx-10 sm:-mt-10"
+              aria-hidden="true"
+            >
+              <div className="marquee flex w-max whitespace-nowrap">
+                {[0, 1].map((k) => (
+                  <div key={k} className="flex shrink-0 items-center">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className="flex items-center gap-6 pr-6 text-xs font-semibold uppercase tracking-[0.25em] text-white/70"
+                      >
+                        Coming soon
+                        <span className="text-[#e3202d]">●</span>
+                        Live shipment tracking
+                        <span className="text-[#e3202d]">●</span>
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest">
+                  <span className="relative flex h-2 w-2">
+                    <span className="soon-pulse absolute inline-flex h-full w-full rounded-full bg-[#e3202d]" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#e3202d]" />
+                  </span>
+                  Coming soon
+                  <span className="ml-0.5" aria-hidden="true">
+                    <span className="dot">.</span>
+                    <span className="dot">.</span>
+                    <span className="dot">.</span>
+                  </span>
+                </span>
+                <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl">
+                  Live shipment tracking is{" "}
+                  <span className="grad-text bg-gradient-to-r from-white via-[#ff7a84] to-white bg-clip-text text-transparent">
+                    coming soon
+                  </span>
+                </h2>
+                <p className="mt-3 max-w-xl text-white/70">
+                  We are getting live tracking ready. Until it launches, the
+                  preview below shows how it will look using sample data. For
+                  the real status of your cargo, contact your coordinator.
+                </p>
+              </div>
+              <a
+                href="/contact"
+                className="shrink-0 rounded-lg bg-[#e3202d] px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#c81a26]"
+              >
+                Contact an office
+              </a>
+            </div>
+
+            {/* looping route animation */}
+            <svg
+              viewBox="0 0 680 90"
+              className="relative z-10 mt-6 w-full"
+              aria-hidden="true"
+            >
+              <path
+                d={SOON_ROUTE}
+                fill="none"
+                stroke="#ffffff"
+                strokeOpacity=".18"
+                strokeWidth="2"
+                strokeDasharray="4 8"
+              />
+              <path
+                d={SOON_ROUTE}
+                fill="none"
+                stroke="#e3202d"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeDasharray="6 10"
+                className="flow"
+              />
+              <circle cx="30" cy="62" r="5" fill="#fff" />
+              <circle cx="650" cy="18" r="5" fill="#fff" />
+              <circle
+                cx="650"
+                cy="18"
+                r="5"
+                fill="none"
+                stroke="#fff"
+                className="ring-out"
+              />
+              <g>
+                <animateMotion
+                  dur="6s"
+                  repeatCount="indefinite"
+                  rotate="auto"
+                  path={SOON_ROUTE}
+                />
+                <circle r="14" fill="#e3202d" opacity=".25" className="blink" />
+                <path d="M-9 -5 L9 0 L-9 5 L-5 0 Z" fill="#fff" />
+              </g>
+            </svg>
+
+            {/* indeterminate loading bar */}
+            <div className="relative z-10 mt-4">
+              <div className="relative h-1.5 overflow-hidden rounded-full bg-white/15">
+                <span className="load-bar absolute inset-y-0 left-0 w-1/3 rounded-full bg-gradient-to-r from-[#e3202d] to-[#ff7a84]" />
+              </div>
+              <p className="mt-2 text-xs uppercase tracking-widest text-white/60">
+                Getting ready to launch
+              </p>
+            </div>
+          </div>
+        )}
+
         <h1 className="text-3xl font-bold tracking-tight text-[#0f2a52] sm:text-5xl">
           Where is your cargo right now?
         </h1>
@@ -251,6 +400,13 @@ function Result({ d }) {
 
   return (
     <div className="rise mt-8 overflow-hidden rounded-2xl bg-[#0f2a52] text-white shadow-xl">
+      {/* Preview label */}
+      {COMING_SOON && (
+        <div className="bg-[#e3202d] px-6 py-2 text-center text-xs font-semibold uppercase tracking-widest">
+          Coming soon · Preview with sample data
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5">
         <div>
