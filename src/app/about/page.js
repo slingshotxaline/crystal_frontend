@@ -1,10 +1,7 @@
-import Image from "next/image";
+"use client";
 
-export const metadata = {
-  title: "About Crystal Express",
-  description:
-    "Founding story, operating model, leadership, group ecosystem, affiliations and careers at Crystal Express Limited.",
-};
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 const timeline = [
   {
@@ -34,20 +31,20 @@ const timeline = [
   },
 ];
 
-const companyFacts = [
-  "Established in 1997",
-  "Dhaka head office and Chattogram branch ",
-  "130+ professionals",
-  "Regional presence across selected Asian markets",
-  "T.O.P.S., JCtrans and WCA affiliations",
-];
-
 const approach = [
   "Understand the cargo and delivery requirement before proposing a route.",
   "Confirm responsibility at each handover.",
   "Communicate changes while there is still time to act.",
   "Use facilities and specialist handling where they add control.",
   "Keep operating claims accurate by location.",
+];
+
+const companyFacts = [
+  "Established in 1997",
+  "Dhaka head office and Chattogram branch ",
+  "130+ professionals",
+  "Regional presence across selected Asian markets",
+  "T.O.P.S., JCtrans and WCA affiliations",
 ];
 
 const leadership = [
@@ -165,11 +162,242 @@ const careerValues = [
 const sectionNav = [
   { href: "#our-role", label: "Our Role" },
   { href: "#our-story", label: "Our Story" },
+  { href: "#our-approach", label: "Our Approach" },
   { href: "#vision", label: "Vision" },
   // { href: "#group-ecosystem", label: "Group Ecosystem" },
   // { href: "#affiliations", label: "Affiliations" },
   { href: "#careers", label: "Careers" },
 ];
+
+/* ------------------------------------------------------------------ */
+/* HELPERS + INTERACTIVE "OUR STORY" (auto-play timeline)             */
+/* ------------------------------------------------------------------ */
+
+function useInView(threshold = 0.2) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [threshold]);
+
+  return { ref, inView };
+}
+
+function Reveal({ children, delay = 0, className = "", from = "up" }) {
+  const { ref, inView } = useInView(0.15);
+  const hidden =
+    from === "left"
+      ? "-translate-x-10"
+      : from === "right"
+        ? "translate-x-10"
+        : "translate-y-8";
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ease-out motion-reduce:transition-none ${
+        inView
+          ? "translate-x-0 translate-y-0 opacity-100"
+          : `${hidden} opacity-0`
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Counts a number up when it scrolls into view */
+function CountUp({ from, to, duration = 1600 }) {
+  const { ref, inView } = useInView(0.4);
+  const [value, setValue] = useState(from);
+
+  useEffect(() => {
+    if (!inView) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setValue(Math.round(from + (to - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, from, to, duration]);
+
+  return <span ref={ref}>{value}</span>;
+}
+
+function StoryBlock() {
+  const { ref, inView } = useInView(0.25);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const last = timeline.length - 1;
+
+  // auto-play once visible; pauses on hover / focus / click
+  useEffect(() => {
+    if (!inView || paused) return;
+    const id = setInterval(() => {
+      setActive((a) => (a >= last ? 0 : a + 1));
+    }, 3800);
+    return () => clearInterval(id);
+  }, [inView, paused, last]);
+
+  const select = useCallback((i) => {
+    setActive(i);
+    setPaused(true);
+  }, []);
+
+  const progress = (active / last) * 100;
+
+  return (
+    <div id="our-story" ref={ref} className="mt-20 scroll-mt-20">
+      <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+        <div>
+          <Reveal>
+            <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-navy-400">
+              <span className="sx-grow-line inline-block h-px w-10 bg-crimson" />
+              Our Story
+            </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="mt-5 max-w-2xl text-navy-700">
+              Crystal Express began operations in Bangladesh in 2002. Since
+              then, the business has developed air, ocean, inland, fashion,
+              project, warehousing and CFS capabilities, supported by
+              international forwarding relationships.
+            </p>
+          </Reveal>
+        </div>
+
+        <Reveal from="right" delay={200}>
+          <div className="flex items-baseline gap-3 lg:text-right">
+            <span className="text-6xl font-bold tabular-nums text-navy-900 sm:text-7xl">
+              <CountUp from={1980} to={2002} />
+            </span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-crimson">
+              Est.
+            </span>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* TIMELINE */}
+      <div
+        className="mt-14"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        {/* track (desktop) */}
+        <div className="relative hidden lg:block">
+          <div className="absolute left-0 right-0 top-1/2 h-0.5 -translate-y-1/2 bg-navy-100" />
+          <div
+            className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-crimson transition-all duration-700 ease-in-out"
+            style={{ width: `${progress}%` }}
+          />
+          <div className="relative grid grid-cols-5">
+            {timeline.map((step, i) => {
+              const done = i <= active;
+              const isActive = i === active;
+              return (
+                <button
+                  key={step.label}
+                  type="button"
+                  onClick={() => select(i)}
+                  aria-label={`Show ${step.label}`}
+                  className="group flex justify-start py-3 focus:outline-none"
+                >
+                  <span className="relative flex h-6 w-6 items-center justify-center">
+                    {isActive && (
+                      <span className="sx-ping absolute h-6 w-6 rounded-full bg-crimson/40" />
+                    )}
+                    <span
+                      className={`relative h-4 w-4 rounded-full border-2 transition-all duration-500 group-hover:scale-125 group-focus-visible:ring-2 group-focus-visible:ring-crimson ${
+                        done
+                          ? "border-crimson bg-crimson"
+                          : "border-navy-900 bg-cream"
+                      } ${isActive ? "scale-125" : ""}`}
+                    />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* cards */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {timeline.map((step, i) => {
+            const isActive = i === active;
+            return (
+              <Reveal key={step.label} delay={i * 110}>
+                <button
+                  type="button"
+                  onClick={() => select(i)}
+                  onFocus={() => setPaused(true)}
+                  className={`relative h-full w-full overflow-hidden rounded-lg border p-5 text-left transition-all duration-500 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson motion-reduce:transition-none ${
+                    isActive
+                      ? "-translate-y-2 border-navy-900 bg-navy-900 text-white shadow-xl"
+                      : "border-navy-100 bg-white text-navy-900 hover:-translate-y-1 hover:border-navy-400 hover:shadow-md"
+                  }`}
+                >
+                  <p className="text-xs font-semibold uppercase tracking-widest text-crimson">
+                    {step.label}
+                  </p>
+                  <h3 className="mt-3 font-bold">{step.title}</h3>
+                  <p
+                    className={`mt-2 text-sm transition-colors duration-500 ${
+                      isActive ? "text-navy-100/80" : "text-navy-400"
+                    }`}
+                  >
+                    {step.desc}
+                  </p>
+
+                  {/* auto-play progress bar on the active card */}
+                  <span className="absolute inset-x-0 bottom-0 h-1 bg-white/10">
+                    {isActive && (
+                      <span
+                        key={`${active}-${paused}`}
+                        className={`block h-full bg-crimson ${
+                          paused ? "w-full" : "sx-fill"
+                        }`}
+                      />
+                    )}
+                  </span>
+                </button>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        {/* controls */}
+        <div className="mt-6 flex items-center gap-3 text-xs text-navy-400">
+          <button
+            type="button"
+            onClick={() => setPaused((p) => !p)}
+            className="rounded-full border border-navy-100 bg-white px-3 py-1 font-semibold uppercase tracking-wide transition hover:border-navy-900 hover:text-navy-900"
+          >
+            {paused ? "▶ Auto-play" : "❚❚ Pause"}
+          </button>
+          <span>Click a milestone to explore</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function AboutPage() {
   return (
@@ -221,93 +449,136 @@ export default function AboutPage() {
         </div>
       </nav>
 
-      {/* OUR ROLE / OUR STORY + TIMELINE + SIDEBAR FACTS */}
-      <section className="bg-cream py-16 sm:py-20">
-        <div className="container-content grid gap-10 lg:grid-cols-1">
-          <div>
-            <div id="our-role">
-              <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
-                Our Role
-              </p>
-              <p className="mt-3 max-w-2xl text-navy-700">
-                We bring the shipment requirement, origin activity, route
-                decision and partner coordination into one operating
-                conversation. Customers know who is managing the next action and
-                what information is needed.
-              </p>
-            </div>
+      {/* OUR ROLE / OUR STORY (auto-play timeline) / OUR APPROACH */}
+      <section className="relative overflow-hidden bg-cream py-16 sm:py-24">
+        <style>{`
+          @keyframes sxFill { from { width: 0%; } to { width: 100%; } }
+          @keyframes sxGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+          .sx-fill { animation: sxFill 3.8s linear forwards; }
+          .sx-grow-line { transform-origin: left; animation: sxGrow 900ms ease-out both; }
+          @keyframes sxFadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+          @keyframes sxSlideL { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: none; } }
+          @keyframes sxSlideR { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: none; } }
+          @keyframes sxScaleX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+          @keyframes sxScaleY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+          @keyframes sxPing { 0% { transform: scale(.7); opacity: .8; } 100% { transform: scale(2.2); opacity: 0; } }
+          @keyframes sxDrift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(24px,-30px); } }
 
-            <div id="our-story" className="mt-12">
-              <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
-                Our Story
-              </p>
-              <p className="mt-3 max-w-2xl text-navy-700">
-                Crystal Express began operations in Bangladesh in 2002
-                . Since then, the business has developed air, ocean,
-                inland, fashion, project, warehousing and CFS capabilities
-                , supported by international forwarding
-                relationships.
-              </p>
 
-              <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-                {timeline.map((step) => (
-                  <div
-                    key={step.label}
-                    className="border-t border-navy-100 pt-4"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-widest text-crimson">
-                      {step.label}
-                    </p>
-                    <span className="mt-2 block h-3 w-3 rounded-full border-2 border-navy-900" />
-                    <h3 className="mt-3 font-bold text-navy-900">
-                      {step.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-navy-400">{step.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          .sx-orb  { animation: sxDrift 14s ease-in-out infinite; }
+          .sx-ping { animation: sxPing 1.8s ease-out infinite; }
 
-            <div id="our-approach" className="mt-12">
-              <p className="text-xs font-semibold uppercase tracking-widest text-navy-400">
-                Our Approach
-              </p>
-              <div className="mt-4 divide-y divide-navy-100">
-                {approach.map((line) => (
-                  <p key={line} className="py-4 text-navy-700">
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </div>
+
+          @supports (animation-timeline: view()) {
+            .sx-up    { animation: sxFadeUp linear both; animation-timeline: view(); animation-range: entry 0% entry 55%; }
+            .sx-inL   { animation: sxSlideL linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+            .sx-inR   { animation: sxSlideR linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+            .sx-line  { transform-origin: left; animation: sxScaleX linear both; animation-timeline: view(); animation-range: entry 10% entry 70%; }
+            .sx-mark  { transform-origin: left; animation: sxScaleX linear both; animation-timeline: view(); animation-range: entry 30% cover 40%; }
+            .sx-vline { transform-origin: top; animation: sxScaleY linear both; animation-timeline: view(); animation-range: entry 0% cover 60%; }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .sx-orb, .sx-ping, .sx-up, .sx-inL, .sx-inR, .sx-line, .sx-mark, .sx-vline,
+            .sx-fill, .sx-grow-line { animation: none !important; }
+          }
+        `}</style>
+
+        {/* soft ambient background */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="sx-orb absolute -right-24 top-20 h-72 w-72 rounded-full bg-crimson/10 blur-3xl" />
+          <div className="sx-orb absolute -left-24 bottom-10 h-80 w-80 rounded-full bg-navy-900/5 blur-3xl [animation-delay:-6s]" />
+        </div>
+
+        <div className="container-content relative z-10">
+          {/* ---------------- OUR ROLE ---------------- */}
+          <div id="our-role" className="scroll-mt-20">
+            <p className="sx-up flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-navy-400">
+              <span className="sx-line inline-block h-px w-10 bg-crimson" />
+              Our Role
+            </p>
+
+            <p className="sx-up mt-5 max-w-3xl text-2xl font-semibold leading-snug text-navy-900 sm:text-3xl">
+              We bring the{" "}
+              {[
+                "shipment requirement",
+                "origin activity",
+                "route decision",
+              ].map((t) => (
+                <span key={t}>
+                  <span className="relative inline-block whitespace-nowrap">
+                    <span className="relative z-10">{t}</span>
+                    <span className="sx-mark absolute inset-x-0 bottom-0.5 z-0 h-2.5 bg-crimson/25" />
+                  </span>
+                  {", "}
+                </span>
+              ))}
+              and{" "}
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10">partner coordination</span>
+                <span className="sx-mark absolute inset-x-0 bottom-0.5 z-0 h-2.5 bg-crimson/25" />
+              </span>{" "}
+              into one operating conversation.
+            </p>
+
+            <p className="sx-up mt-4 max-w-2xl text-navy-700">
+              Customers know who is managing the next action and what
+              information is needed.
+            </p>
           </div>
 
-          {/* SIDEBAR */}
-          {/* <aside className="h-fit rounded-lg border border-navy-100 bg-white p-6 lg:sticky lg:top-20">
-            <h2 className="font-bold text-navy-900">Company facts</h2>
-            <ul className="mt-4 space-y-3 text-sm">
-              {companyFacts.map((fact) => (
-                <li key={fact} className="flex gap-2 text-navy-400">
-                  <span className="text-crimson">✓</span>
-                  <span>{fact}</span>
+          {/* ---------------- OUR STORY ---------------- */}
+          <StoryBlock />
+
+          {/* ---------------- OUR APPROACH ---------------- */}
+          <div id="our-approach" className="mt-20 scroll-mt-20">
+            <p className="sx-up flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-navy-400">
+              <span className="sx-line inline-block h-px w-10 bg-crimson" />
+              Our Approach
+            </p>
+
+            <ol className="relative mt-6">
+              {/* vertical line that draws itself on scroll */}
+              <span className="sx-vline absolute bottom-6 left-[22px] top-6 w-px bg-navy-100" />
+
+              {approach.map((line, i) => (
+                <li key={line} className="sx-inL">
+                  <input
+                    type="checkbox"
+                    id={`sx-a${i}`}
+                    className="peer sr-only"
+                  />
+                  <label
+                    htmlFor={`sx-a${i}`}
+                    className="group relative flex w-full cursor-pointer items-center gap-5 overflow-hidden rounded-lg py-4 pl-1 pr-4 text-left peer-focus-visible:ring-2 peer-focus-visible:ring-crimson peer-checked:[&_.sx-bub]:border-crimson peer-checked:[&_.sx-bub]:bg-crimson peer-checked:[&_.sx-bub]:text-white peer-checked:[&_.sx-txt]:text-navy-400 peer-checked:[&_.sx-txt]:line-through peer-checked:[&_.sx-num]:hidden peer-checked:[&_.sx-tick]:inline"
+                  >
+                    {/* hover sweep */}
+                    <span className="absolute inset-0 origin-left scale-x-0 bg-white transition-transform duration-500 ease-out group-hover:scale-x-100" />
+
+                    {/* number / tick bubble */}
+                    <span className="sx-bub relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-navy-900 bg-cream text-sm font-bold text-navy-900 transition-all duration-500 group-hover:scale-110 group-hover:border-crimson group-hover:text-crimson">
+                      <span className="sx-num">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="sx-tick hidden">✓</span>
+                    </span>
+
+                    <span className="sx-txt relative z-10 flex-1 text-navy-700 transition-all duration-300 group-hover:translate-x-2">
+                      {line}
+                    </span>
+
+                    <span className="relative z-10 -translate-x-3 text-crimson opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                      →
+                    </span>
+
+                    {/* bottom divider that fills on hover */}
+                    <span className="absolute bottom-0 left-0 h-px w-full bg-navy-100" />
+                    <span className="absolute bottom-0 left-0 h-px w-0 bg-crimson transition-all duration-500 group-hover:w-full" />
+                  </label>
                 </li>
               ))}
-            </ul>
-            <div className="mt-6 space-y-3">
-              <a
-                href="#leadership"
-                className="block rounded-md border border-navy-900 py-3 text-center text-sm font-semibold text-navy-900 hover:bg-navy-900 hover:text-white"
-              >
-                Meet Leadership
-              </a>
-              <a
-                href="#group-ecosystem"
-                className="block rounded-md border border-navy-900 py-3 text-center text-sm font-semibold text-navy-900 hover:bg-navy-900 hover:text-white"
-              >
-                Group Ecosystem
-              </a>
-            </div>
-          </aside> */}
+            </ol>
+          </div>
         </div>
       </section>
 

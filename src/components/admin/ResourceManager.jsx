@@ -10,14 +10,29 @@ import {
 import { ADMIN_RESOURCES } from '@/data/adminResources';
 import ResourceForm from './ResourceForm';
 import StatusBadge from './StatusBadge';
+import ServiceImageFields, { buildServiceFormData } from './ServiceImageFields';
+import IndustryImageFields, { buildIndustryFormData } from './IndustryImageFields';
+
+// Which uploader + multipart builder each image-enabled resource uses.
+// A resource gets one by having `hasImages: true` in adminResources.js
+// and an entry here. `prop` is the prop name the uploader reads the
+// current item from.
+const IMAGE_EDITORS = {
+  services: { Fields: ServiceImageFields, build: buildServiceFormData, prop: 'service' },
+  industries: { Fields: IndustryImageFields, build: buildIndustryFormData, prop: 'industry' },
+};
 
 export default function ResourceManager({ resourceKey }) {
   const config = ADMIN_RESOURCES[resourceKey];
+  const editor = config.hasImages ? IMAGE_EDITORS[resourceKey] : null;
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingItem, setEditingItem] = useState(null); // object | 'new' | null
   const [submitting, setSubmitting] = useState(false);
+  // Emitted by the image uploader: { files, removeImages, ...captions }
+  const [images, setImages] = useState({});
 
   const load = () => {
     setLoading(true);
@@ -30,15 +45,23 @@ export default function ResourceManager({ resourceKey }) {
 
   useEffect(load, [resourceKey]);
 
+  const closeForm = () => {
+    setEditingItem(null);
+    setImages({});
+  };
+
   const handleSubmit = async (payload) => {
     setSubmitting(true);
     try {
+      // Resources with images go out as multipart; everything else stays JSON
+      const body = editor ? editor.build(payload, images) : payload;
+
       if (editingItem && editingItem !== 'new') {
-        await updateResourceItem(config.apiPath, editingItem._id, payload);
+        await updateResourceItem(config.apiPath, editingItem._id, body);
       } else {
-        await createResourceItem(config.apiPath, payload);
+        await createResourceItem(config.apiPath, body);
       }
-      setEditingItem(null);
+      closeForm();
       load();
     } catch (err) {
       setError(err.message);
@@ -57,6 +80,8 @@ export default function ResourceManager({ resourceKey }) {
     }
   };
 
+  const currentItem = editingItem === 'new' ? null : editingItem;
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -68,7 +93,7 @@ export default function ResourceManager({ resourceKey }) {
           onClick={() => setEditingItem('new')}
           className="focus-ring rounded-md bg-crimson px-5 py-2.5 text-sm font-bold text-white hover:bg-crimson-700"
         >
-          + New {config.label.replace(/s$/, '')}
+          + New {config.label}
         </button>
       </div>
 
@@ -127,10 +152,19 @@ export default function ResourceManager({ resourceKey }) {
       {editingItem && (
         <ResourceForm
           config={config}
-          item={editingItem === 'new' ? null : editingItem}
-          onCancel={() => setEditingItem(null)}
+          item={currentItem}
+          onCancel={closeForm}
           onSubmit={handleSubmit}
           submitting={submitting}
+          extraFields={
+            editor ? (
+              <editor.Fields
+                key={currentItem?._id || 'new'}
+                {...{ [editor.prop]: currentItem }}
+                onChange={setImages}
+              />
+            ) : null
+          }
         />
       )}
     </div>

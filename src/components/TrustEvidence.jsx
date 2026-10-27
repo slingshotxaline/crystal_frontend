@@ -45,7 +45,7 @@ const STATS = [
     icon: "warehouse",
   },
   {
-    value: "5",
+    value: "4",
     label: "Regional Markets",
     description:
       "Bangladesh plus approved regional operations at differing ownership models.",

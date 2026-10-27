@@ -12,16 +12,22 @@ const API_URL =
  * Authenticated fetch wrapper for the admin dashboard. Attaches the
  * stored JWT, and clears it on a 401 so the next protected page load
  * redirects back to /admin/login instead of looping on a dead token.
+ *
+ * `body` can be a plain object (sent as JSON) or a FormData (sent as
+ * multipart, used for image uploads). For FormData we must NOT set
+ * Content-Type ourselves: the browser adds it with the boundary.
  */
 async function adminRequest(path, { method = 'GET', body } = {}) {
   const token = getToken();
+  const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
+
   const res = await fetch(`${API_URL}${path}`, {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      ...(isForm ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
     cache: 'no-store',
   });
 
@@ -63,6 +69,7 @@ export const changeMyPassword = (currentPassword, newPassword) =>
 
 // ---- Generic CMS resource CRUD ----
 // resource: 'services' | 'industries' | 'locations' | 'case-studies' | 'insights' | 'jobs' | 'pages'
+// create/update accept a plain object (JSON) or FormData (multipart, services with images)
 export const listResource = (resource, query = '') => adminRequest(`/cms/${resource}${query}`);
 export const getResourceItem = (resource, id) => adminRequest(`/cms/${resource}/${id}`);
 export const createResourceItem = (resource, body) => adminRequest(`/cms/${resource}`, { method: 'POST', body });

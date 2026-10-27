@@ -5,6 +5,10 @@ import { services } from "@/data/services";
 import { getServiceBySlug } from "@/lib/content";
 import ServiceTemplate from "@/components/ServiceTemplate";
 
+// Re-generate the static page at most once a minute, so content and
+// images changed in the dashboard show up without a new build.
+export const revalidate = 60;
+
 // Supported hero image formats, tried in this order.
 const EXTS = ["jpg", "jpeg", "png", "webp", "avif"];
 const DEFAULT_BASE = "/images/services/default-hero";
@@ -26,6 +30,9 @@ function fileExists(src) {
  * If the server can see the public folder, only files that really
  * exist are returned. Otherwise every candidate is returned and the
  * browser tries them one by one.
+ *
+ * An image uploaded in the dashboard (service.heroImage) is not handled
+ * here: ServiceTemplate puts it first, ahead of these static candidates.
  */
 function getHeroSources(slug) {
   const staticService = services.find((s) => s.slug === slug);
@@ -46,6 +53,8 @@ function getHeroSources(slug) {
 // static file (not the API) so the build doesn't depend on the
 // backend being reachable; the actual content per page still comes
 // from the CMS when available (see lib/content.js).
+// Services created later in the dashboard aren't in this list; they are
+// rendered on first visit and then cached.
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
 }

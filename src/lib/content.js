@@ -7,13 +7,15 @@ import {
   getIndustryBySlug as getStaticIndustryBySlug,
 } from "@/data/industries";
 
-
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  'https://api.crystalltd.com/api';
+  process.env.NEXT_PUBLIC_API_URL || "https://api.crystalltd.com/api";
 
-const REVALIDATE_SECONDS = 3600;
-
+// Keep this equal to (or lower than) `export const revalidate` in the
+// pages that call these helpers (e.g. app/services/[slug]/page.js).
+// A larger value here would keep serving cached API data after the page
+// itself has regenerated, so dashboard changes (images, text) would
+// show up late.
+const REVALIDATE_SECONDS = 60;
 
 /**
  * Server-only fetch helpers for public content. Cached with Next's

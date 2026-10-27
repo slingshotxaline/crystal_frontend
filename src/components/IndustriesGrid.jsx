@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { industries as staticIndustries } from "@/data/industries";
+import { mediaUrl } from "@/lib/media";
 
 // Cycled by index so the list stays colorful regardless of how many industries
 // the data file defines, without hardcoding per-slug themes.
@@ -52,41 +54,77 @@ const THEMES = [
   },
 ];
 
-// Matched to the industries by position (same order as the data file):
-// Fashion & Retail, FMCG, Industrial & Manufacturing, Automotive,
-// Healthcare, High Tech. Rows beyond this list fall back to the monogram badge.
-const IMAGES = [
-  {
+// Default row photos, keyed by industry slug (same files as before; they
+// used to be matched by position). An image uploaded in the dashboard
+// (industry.listImage) wins over these. Industries with neither fall back
+// to the monogram badge.
+const STATIC_IMAGES = {
+  "fashion-retail": {
     src: "/assets/Home/Industries/industry1.webp",
     alt: "Coats and garments on a retail clothing rack",
     position: "object-center",
   },
-  {
+  fmcg: {
     src: "/assets/Home/Industries/industry2.jpg",
     alt: "Supermarket aisle stocked with fast-moving consumer goods",
     position: "object-center",
   },
-  {
+  industrial: {
     src: "/assets/Home/Industries/industry3.webp",
     alt: "Industrial plant with tall chimneys beside the coast",
     position: "object-center",
   },
-  {
+  automotive: {
     src: "/assets/Home/Industries/industry4.webp",
     alt: "Vehicles parked inside an automotive showroom",
     position: "object-center",
   },
-  {
+  healthcare: {
     src: "/assets/Home/Industries/homeHealthCare.jpg",
     alt: "Doctor in a white coat holding a stethoscope",
     position: "object-[50%_30%]",
   },
-  {
+  "high-tech": {
     src: "/assets/Home/Industries/industry6.jpg",
     alt: "Precision laser machine in a high-tech manufacturing hall",
     position: "object-center",
   },
-];
+};
+
+/* ------------------------------------------------------------------
+ * Row photo: uploaded list image (Cloudinary) first; if there is none,
+ * or it fails to load, the static default for that slug.
+ * ---------------------------------------------------------------- */
+function IndustryThumb({ industry, fallback }) {
+  const [useStatic, setUseStatic] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  const uploaded = industry.listImage ? mediaUrl(industry.listImage) : null;
+  const showingStatic = useStatic || !uploaded;
+  const src = showingStatic ? fallback?.src : uploaded;
+
+  if (!src || failed) {
+    return <span className="absolute inset-0 bg-navy-100" />;
+  }
+
+  return (
+    <Image
+      key={src}
+      src={src}
+      alt={showingStatic ? fallback?.alt || "" : `${industry.title} industry`}
+      fill
+      sizes="w-full h-full"
+      onError={() => {
+        // uploaded file missing -> try the static one before giving up
+        if (!useStatic && uploaded && fallback?.src) setUseStatic(true);
+        else setFailed(true);
+      }}
+      className={`object-cover transition-transform duration-500 group-hover:scale-110 ${
+        showingStatic ? fallback?.position || "object-center" : "object-center"
+      }`}
+    />
+  );
+}
 
 /* ------------------------------------------------------------------
  * Continuous background: kept low-contrast on the light cream so the
@@ -254,7 +292,8 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
         <div className="mt-10 divide-y divide-navy-100 border-y border-navy-100">
           {industries.map((industry, i) => {
             const theme = THEMES[i % THEMES.length];
-            const image = IMAGES[i];
+            const staticImage = STATIC_IMAGES[industry.slug];
+            const hasImage = !!(industry.listImage || staticImage);
             const number = String(i + 1).padStart(2, "0");
             const initial = industry.title.trim().charAt(0).toUpperCase();
             // Rows 2, 4, 6 (index 1, 3, 5) zigzag: image on the right,
@@ -306,18 +345,16 @@ export default function IndustriesGrid({ industries: industriesProp } = {}) {
                     {number}
                   </span>
 
-                  {image ? (
+                  {hasImage ? (
                     /* Industry photo with monogram badge overlapping the corner */
                     <div className="relative z-10 shrink-0">
                       <div
                         className={`relative h-20 w-24 overflow-hidden rounded-lg ring-2 ring-transparent transition-all duration-300 sm:h-40 sm:w-72 ${theme.ring}`}
                       >
-                        <Image
-                          src={image.src}
-                          alt={image.alt}
-                          fill
-                          sizes="w-full h-full"
-                          className={`object-cover transition-transform duration-500 group-hover:scale-110 ${image.position}`}
+                        <IndustryThumb
+                          key={industry.listImage || "static"}
+                          industry={industry}
+                          fallback={staticImage}
                         />
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/25 via-transparent to-transparent" />
                       </div>

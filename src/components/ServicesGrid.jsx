@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import Icon from "./Icon";
 import { services as staticServices } from "@/data/services";
+import { mediaUrl } from "@/lib/media";
 
 // Cycled by index so the grid stays colorful regardless of how many
 // services the data file defines, without hardcoding per-slug themes.
@@ -81,14 +82,18 @@ const cardVariants = {
 // Uses the service's heroImage from /data/services.js.
 // The merged service (static data + CMS override) is checked first,
 // then the static file as a backup.
+// Uses the uploaded heroImage (Cloudinary) first; if there is none, or it
+// fails to load, falls back to the static heroImage from /data/services.js.
 function Photo({ service, sizes }) {
   const [failed, setFailed] = useState(false);
+  const [useStatic, setUseStatic] = useState(false);
 
   const staticHero = staticServices.find(
     (s) => s.slug === service.slug,
   )?.heroImage;
 
-  const src = service.heroImage || staticHero;
+  const uploaded = service.heroImage ? mediaUrl(service.heroImage) : null;
+  const src = useStatic || !uploaded ? staticHero : uploaded;
 
   // Nothing found or image failed to load: plain placeholder so the card doesn't break
   if (!src || failed) {
@@ -102,7 +107,11 @@ function Photo({ service, sizes }) {
       alt=""
       fill
       sizes={sizes}
-      onError={() => setFailed(true)}
+      onError={() => {
+        // uploaded file missing -> try the static one before giving up
+        if (!useStatic && uploaded && staticHero) setUseStatic(true);
+        else setFailed(true);
+      }}
       className="object-cover transition-transform duration-700 group-hover:scale-105"
     />
   );
