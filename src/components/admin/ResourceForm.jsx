@@ -70,7 +70,19 @@ function fieldHint(type) {
   return null;
 }
 
-export default function ResourceForm({ config, item, onCancel, onSubmit, submitting }) {
+/**
+ * extraFields (optional): any node rendered inside the form, below the
+ * regular fields and above Save/Cancel. Used for the service image
+ * uploader, so this form stays generic for every other resource.
+ */
+export default function ResourceForm({
+  config,
+  item,
+  onCancel,
+  onSubmit,
+  submitting,
+  extraFields,
+}) {
   const [state, setState] = useState(() => toFormState(config.fields, item));
 
   const handleChange = (key, value) => setState((prev) => ({ ...prev, [key]: value }));
@@ -85,7 +97,7 @@ export default function ResourceForm({ config, item, onCancel, onSubmit, submitt
       <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl sm:p-8">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-navy-900">
-            {item ? `Edit ${config.label.replace(/s$/, '')}` : `New ${config.label.replace(/s$/, '')}`}
+            {item ? `Edit ${config.label.replace(/s$/, '')}` : `New ${config.label}`}
           </h2>
           <button onClick={onCancel} className="focus-ring rounded p-1 text-navy-400 hover:text-navy-900" aria-label="Close">
             ✕
@@ -147,6 +159,10 @@ export default function ResourceForm({ config, item, onCancel, onSubmit, submitt
               )}
             </div>
           ))}
+
+          {extraFields && (
+            <div className="border-t border-navy-100 pt-6">{extraFields}</div>
+          )}
 
           <div className="flex justify-end gap-3 border-t border-navy-100 pt-5">
             <button

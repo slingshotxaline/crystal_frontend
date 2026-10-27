@@ -14,6 +14,7 @@ export const ADMIN_RESOURCES = {
   services: {
     label: "Services",
     apiPath: "services",
+    hasImages: true,
     columns: [
       { key: "title", label: "Title" },
       { key: "category", label: "Category" },
@@ -82,6 +83,7 @@ export const ADMIN_RESOURCES = {
   industries: {
     label: "Industries",
     apiPath: "industries",
+    hasImages: true,
     columns: [
       { key: "title", label: "Title" },
       { key: "isPublished", label: "Published" },

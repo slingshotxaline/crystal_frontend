@@ -1,6 +1,10 @@
 import IndustriesGrid from '@/components/IndustriesGrid';
 import { getIndustries } from '@/lib/content';
 
+// Re-generate at most once a minute, so content and images changed in
+// the dashboard show up without a new build.
+export const revalidate = 60;
+
 export const metadata = {
   title: 'Industries',
   description: 'Fashion & Retail, FMCG, Industrial, Automotive, Healthcare and High Tech logistics from Crystal Express.',

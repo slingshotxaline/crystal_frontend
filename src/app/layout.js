@@ -15,16 +15,28 @@ const manrope = Manrope({
   display: 'swap',
 });
 
+
 export const metadata = {
+  metadataBase: new URL('https://crystalltd.com'),
+
   title: {
     default: 'Crystal Express Limited | Bangladesh Freight Forwarding',
     template: '%s | Crystal Express Limited',
   },
+
   description:
     'The right route, managed from the first handover. Crystal Express coordinates air, ocean, inland and specialist logistics from Bangladesh origin onward.',
-  metadataBase: new URL('https://www.crystalexpress.example'),
-  robots: { index: false, follow: false }, // Flip to index/follow at launch
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
+
 
 export default function RootLayout({ children }) {
   return (

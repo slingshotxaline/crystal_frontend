@@ -13,6 +13,7 @@ import Icon from "./Icon";
 import QuoteForm from "./QuoteForm";
 import RouteChoice from "./RouteChoice";
 import { services as staticServices } from "@/data/services";
+import { mediaUrl } from "@/lib/media";
 
 /* ------------------------------------------------------------------
  * Only this service gets the RouteChoice section.
@@ -65,11 +66,11 @@ function HeroBackground({ sources }) {
 }
 
 /**
- * Left image of "How we support the shipment". Each service can set its
- * own `supportImage` in services.js. If it fails to load, the default
- * STEPS_IMAGE is shown instead.
+ * Left image of "How we support the shipment". Order of preference:
+ * uploaded image (Cloudinary) -> the service's static supportImage ->
+ * the default STEPS_IMAGE. If one fails to load, the next is used.
  */
-function SupportImage({ src, alt }) {
+function SupportImage({ src, fallback, alt }) {
   const [current, setCurrent] = useState(src);
 
   return (
@@ -79,7 +80,8 @@ function SupportImage({ src, alt }) {
       fill
       sizes="(min-width: 1024px) 50vw, 100vw"
       onError={() => {
-        if (current !== STEPS_IMAGE) setCurrent(STEPS_IMAGE);
+        if (fallback && current !== fallback) setCurrent(fallback);
+        else if (current !== STEPS_IMAGE) setCurrent(STEPS_IMAGE);
       }}
       className="object-cover transition-transform duration-700 group-hover:scale-105"
     />
@@ -92,11 +94,13 @@ function SupportImage({ src, alt }) {
  * service.capabilities can be plain strings (shown as the card title)
  * or objects: { title, description?, icon? }.
  *
- * Photos: set per service in services.js -> capabilityImages:
+ * Photos: uploaded in the dashboard (service.capabilityImages) win for
+ * each slot. Without an upload, the static capabilityImages from
+ * services.js are used:
  *   [{ src, caption }, { src, caption }]
- * The extension in src is ignored (webp/jpg/jpeg/png/avif all work).
- * Without an entry, /assets/Services/capabilities/{slug}-1 and -2 are used.
- * If a photo is missing, the service's hero image is shown instead.
+ * The extension in the static src is ignored (webp/jpg/jpeg/png/avif
+ * all work). Without an entry, /assets/Services/capabilities/{slug}-1
+ * and -2 are used. If a photo is missing, the hero image is shown.
  * ---------------------------------------------------------------- */
 const CAP_ICONS = ["route", "tag", "warehouse", "truck", "ship", "plane"];
 const PHOTO_EXTS = ["webp", "jpg", "jpeg", "png", "avif"];
@@ -437,22 +441,34 @@ function Capabilities({ service, heroSources = [] }) {
     typeof c === "string" ? { title: c } : c,
   );
 
-  // Read from the static file, so the backend can't override it
-  const staticImages = staticServices.find(
-    (s) => s.slug === service.slug,
-  )?.capabilityImages;
-  const configured = staticImages || service.capabilityImages || [];
+  // Static defaults from services.js, uploaded photos from the CMS
+  const staticImages =
+    staticServices.find((s) => s.slug === service.slug)?.capabilityImages || [];
+  const cmsImages = service.capabilityImages || [];
+
+  // URLs to try for a static path: same name, every supported extension
+  const staticSources = (src, n) => {
+    const base = src
+      ? src.replace(/\.[a-z0-9]+$/i, "")
+      : `/assets/Services/capabilities/${service.slug}-${n}`;
+    return PHOTO_EXTS.map((e) => `${base}.${e}`);
+  };
 
   const photos = [1, 2].map((n, i) => {
-    const entry = configured[i];
-    const cfg = typeof entry === "string" ? { src: entry } : entry || {};
-    // Path without extension: every supported format is tried
-    const base = cfg.src
-      ? cfg.src.replace(/\.[a-z0-9]+$/i, "")
-      : `/assets/Services/capabilities/${service.slug}-${n}`;
+    const cms = cmsImages[i];
+    const stat = staticImages[i];
+    const statCfg = typeof stat === "string" ? { src: stat } : stat || {};
+
+    // Uploaded file first (exact URL), then static (any extension), then hero
+    const sources = [
+      ...(cms?.src ? [mediaUrl(cms.src)] : []),
+      ...staticSources(statCfg.src, n),
+      ...heroSources,
+    ];
+
     return {
-      sources: [...PHOTO_EXTS.map((e) => `${base}.${e}`), ...heroSources],
-      caption: cfg.caption || service.controls?.[i],
+      sources,
+      caption: cms?.caption || statCfg.caption || service.controls?.[i],
     };
   });
 
@@ -587,15 +603,25 @@ function Sidebar({ service }) {
   );
 }
 
-export default function ServiceTemplate({ service, heroSources }) {
+export default function ServiceTemplate({
+  service,
+  heroSources: baseHeroSources,
+}) {
   const reduce = useReducedMotion();
 
-  // Per-service image for "How we support the shipment".
-  // Read from the static file (same as capabilityImages), then the service
-  // object, then the default image.
+  // Hero: uploaded image (Cloudinary) first, then whatever the page passes in
+  const heroSources = [
+    ...(service.heroImage ? [mediaUrl(service.heroImage)] : []),
+    ...(baseHeroSources || []),
+  ];
+
+  // "How we support the shipment": uploaded -> static supportImage -> default.
+  const staticSupport = staticServices.find(
+    (s) => s.slug === service.slug,
+  )?.supportImage;
   const supportImage =
-    staticServices.find((s) => s.slug === service.slug)?.supportImage ||
-    service.supportImage ||
+    (service.supportImage && mediaUrl(service.supportImage)) ||
+    staticSupport ||
     STEPS_IMAGE;
 
   return (
@@ -701,6 +727,7 @@ export default function ServiceTemplate({ service, heroSources }) {
                     <SupportImage
                       key={supportImage}
                       src={supportImage}
+                      fallback={staticSupport}
                       alt={`${service.title} shipment support`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent" />

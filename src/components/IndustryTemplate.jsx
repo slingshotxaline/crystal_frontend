@@ -12,10 +12,12 @@ import Icon from "./Icon";
 import QuoteForm from "./QuoteForm";
 import { getServiceBySlug } from "@/data/services";
 import { industries as staticIndustries } from "@/data/industries";
+import { mediaUrl } from "@/lib/media";
 
 // One banner per industry. Change the file name (and extension)
 // here if your image is named differently. Extension is ignored:
 // every supported format (webp/jpg/jpeg/png/avif) is tried too.
+// A hero uploaded in the dashboard (industry.heroImage) is tried first.
 const INDUSTRY_HEROES = {
   "fashion-retail": "/assets/Industries/fashion-retail.webp",
   fmcg: "/assets/Industries/fmcg21.jpg",
@@ -85,10 +87,12 @@ function FallbackImage({ sources, className, position = "center" }) {
  * industry.considerations: plain strings, or objects
  * { title, description?, icon? }.
  *
- * Photos: set per industry in industries.js -> sectionImages:
+ * Photos: uploaded in the dashboard (industry.sectionImages) win for
+ * each slot. Without an upload, the static sectionImages from
+ * industries.js are used:
  *   [{ src, caption }, { src, caption }]
- * Without an entry, /assets/Industries/considerations/{slug}-1 and -2
- * are used. If a photo is missing, the industry hero image is shown.
+ * Without an entry there either, /assets/Industries/considerations/{slug}-1
+ * and -2 are used. If a photo is missing, the industry hero image is shown.
  * ---------------------------------------------------------------- */
 const CARD_ICONS = ["check", "route", "tag", "truck", "warehouse", "ship"];
 
@@ -367,28 +371,32 @@ function SectionBackground({ reduce }) {
   );
 }
 
-function WhatShapesTheRoute({ industry, reduce }) {
+function WhatShapesTheRoute({ industry, reduce, heroSources }) {
   const items = (industry.considerations || []).map((c) =>
     typeof c === "string" ? { title: c } : c,
   );
   if (items.length === 0) return null;
 
-  const heroSources = heroSourcesFor(industry.slug);
-
-  // Read from the static file, so the backend can't override it
-  const staticImages = staticIndustries.find(
-    (i) => i.slug === industry.slug,
-  )?.sectionImages;
-  const configured = staticImages || industry.sectionImages || [];
+  // Static defaults from industries.js, uploaded photos from the CMS
+  const staticImages =
+    staticIndustries.find((i) => i.slug === industry.slug)?.sectionImages || [];
+  const cmsImages = industry.sectionImages || [];
   const photoBase = `/assets/Industries/considerations/${industry.slug}`;
 
   const photos = [1, 2].map((n, i) => {
-    const entry = configured[i];
-    const cfg = typeof entry === "string" ? { src: entry } : entry || {};
-    const base = cfg.src ? stripExt(cfg.src) : `${photoBase}-${n}`;
+    const cms = cmsImages[i];
+    const stat = staticImages[i];
+    const statCfg = typeof stat === "string" ? { src: stat } : stat || {};
+    const base = statCfg.src ? stripExt(statCfg.src) : `${photoBase}-${n}`;
+
+    // Uploaded file first (exact URL), then static (any extension), then hero
     return {
-      sources: [...PHOTO_EXTS.map((e) => `${base}.${e}`), ...heroSources],
-      caption: cfg.caption,
+      sources: [
+        ...(cms?.src ? [mediaUrl(cms.src)] : []),
+        ...PHOTO_EXTS.map((e) => `${base}.${e}`),
+        ...heroSources,
+      ],
+      caption: cms?.caption || statCfg.caption,
     };
   });
 
@@ -438,7 +446,13 @@ function WhatShapesTheRoute({ industry, reduce }) {
 
 export default function IndustryTemplate({ industry }) {
   const reduce = useReducedMotion();
-  const heroSources = heroSourcesFor(industry.slug);
+
+  // Hero: uploaded image (Cloudinary) first, then the static banner
+  const heroSources = [
+    ...(industry.heroImage ? [mediaUrl(industry.heroImage)] : []),
+    ...heroSourcesFor(industry.slug),
+  ];
+
   const relatedServices = (industry.relatedServices || [])
     .map((slug) => getServiceBySlug(slug))
     .filter(Boolean);
@@ -447,6 +461,7 @@ export default function IndustryTemplate({ industry }) {
     <>
       <section className="relative overflow-hidden bg-navy-900 py-16 text-white sm:py-40">
         <FallbackImage
+          key={heroSources[0]}
           sources={heroSources}
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -472,7 +487,11 @@ export default function IndustryTemplate({ industry }) {
 
       {/* What Shapes the Route: same card + photo + animated-background
           system as the Capabilities section on service detail pages */}
-      <WhatShapesTheRoute industry={industry} reduce={reduce} />
+      <WhatShapesTheRoute
+        industry={industry}
+        reduce={reduce}
+        heroSources={heroSources}
+      />
 
       {relatedServices.length > 0 && (
         <section className="bg-cream-100 py-14 sm:py-16">
