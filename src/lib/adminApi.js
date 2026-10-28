@@ -1,12 +1,9 @@
-'use client';
+"use client";
 
-import { getToken, clearToken } from './auth';
-
+import { getToken, clearToken } from "./auth";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  'https://api.crystalltd.com/api';
-
+  process.env.NEXT_PUBLIC_API_URL || "https://api.crystalltd.com/api";
 
 /**
  * Authenticated fetch wrapper for the admin dashboard. Attaches the
@@ -17,18 +14,18 @@ const API_URL =
  * multipart, used for image uploads). For FormData we must NOT set
  * Content-Type ourselves: the browser adds it with the boundary.
  */
-async function adminRequest(path, { method = 'GET', body } = {}) {
+async function adminRequest(path, { method = "GET", body } = {}) {
   const token = getToken();
-  const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
+  const isForm = typeof FormData !== "undefined" && body instanceof FormData;
 
   const res = await fetch(`${API_URL}${path}`, {
     method,
     headers: {
-      ...(isForm ? {} : { 'Content-Type': 'application/json' }),
+      ...(isForm ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
-    cache: 'no-store',
+    cache: "no-store",
   });
 
   if (res.status === 401) {
@@ -37,7 +34,7 @@ async function adminRequest(path, { method = 'GET', body } = {}) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const error = new Error(data.message || 'Request failed.');
+    const error = new Error(data.message || "Request failed.");
     error.status = res.status;
     error.details = data.errors;
     throw error;
@@ -46,32 +43,51 @@ async function adminRequest(path, { method = 'GET', body } = {}) {
 }
 
 // ---- Quotes ----
-export const listQuotes = (query = '') => adminRequest(`/quotes${query}`);
+export const listQuotes = (query = "") => adminRequest(`/quotes${query}`);
 export const getQuote = (id) => adminRequest(`/quotes/${id}`);
-export const updateQuote = (id, body) => adminRequest(`/quotes/${id}`, { method: 'PATCH', body });
+export const updateQuote = (id, body) =>
+  adminRequest(`/quotes/${id}`, { method: "PATCH", body });
+// Emails the sender of a quote request: body = { subject?, message }
+export const replyToQuote = (id, body) =>
+  adminRequest(`/quotes/${id}/reply`, { method: "POST", body });
 
 // ---- Enquiries ----
-export const listEnquiries = (query = '') => adminRequest(`/enquiries${query}`);
-export const updateEnquiry = (id, body) => adminRequest(`/enquiries/${id}`, { method: 'PATCH', body });
+export const listEnquiries = (query = "") => adminRequest(`/enquiries${query}`);
+export const updateEnquiry = (id, body) =>
+  adminRequest(`/enquiries/${id}`, { method: "PATCH", body });
+// Emails the sender of an enquiry: body = { subject?, message }
+export const replyToEnquiry = (id, body) =>
+  adminRequest(`/enquiries/${id}/reply`, { method: "POST", body });
 
 // ---- Users & roles (admin only, except changeMyPassword) ----
-export const listUsers = () => adminRequest('/users');
-export const createUser = (body) => adminRequest('/users', { method: 'POST', body });
-export const updateUser = (id, body) => adminRequest(`/users/${id}`, { method: 'PATCH', body });
+export const listUsers = () => adminRequest("/users");
+export const createUser = (body) =>
+  adminRequest("/users", { method: "POST", body });
+export const updateUser = (id, body) =>
+  adminRequest(`/users/${id}`, { method: "PATCH", body });
 export const resetUserPassword = (id, newPassword) =>
-  adminRequest(`/users/${id}/password`, { method: 'PATCH', body: { newPassword } });
-export const deleteUser = (id) => adminRequest(`/users/${id}`, { method: 'DELETE' });
+  adminRequest(`/users/${id}/password`, {
+    method: "PATCH",
+    body: { newPassword },
+  });
+export const deleteUser = (id) =>
+  adminRequest(`/users/${id}`, { method: "DELETE" });
 export const changeMyPassword = (currentPassword, newPassword) =>
-  adminRequest('/auth/change-password', {
-    method: 'PATCH',
+  adminRequest("/auth/change-password", {
+    method: "PATCH",
     body: { currentPassword, newPassword },
   });
 
 // ---- Generic CMS resource CRUD ----
 // resource: 'services' | 'industries' | 'locations' | 'case-studies' | 'insights' | 'jobs' | 'pages'
 // create/update accept a plain object (JSON) or FormData (multipart, services with images)
-export const listResource = (resource, query = '') => adminRequest(`/cms/${resource}${query}`);
-export const getResourceItem = (resource, id) => adminRequest(`/cms/${resource}/${id}`);
-export const createResourceItem = (resource, body) => adminRequest(`/cms/${resource}`, { method: 'POST', body });
-export const updateResourceItem = (resource, id, body) => adminRequest(`/cms/${resource}/${id}`, { method: 'PATCH', body });
-export const deleteResourceItem = (resource, id) => adminRequest(`/cms/${resource}/${id}`, { method: 'DELETE' });
+export const listResource = (resource, query = "") =>
+  adminRequest(`/cms/${resource}${query}`);
+export const getResourceItem = (resource, id) =>
+  adminRequest(`/cms/${resource}/${id}`);
+export const createResourceItem = (resource, body) =>
+  adminRequest(`/cms/${resource}`, { method: "POST", body });
+export const updateResourceItem = (resource, id, body) =>
+  adminRequest(`/cms/${resource}/${id}`, { method: "PATCH", body });
+export const deleteResourceItem = (resource, id) =>
+  adminRequest(`/cms/${resource}/${id}`, { method: "DELETE" });

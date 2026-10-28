@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState, Fragment } from 'react';
-import { listQuotes, updateQuote } from '@/lib/adminApi';
+import { useEffect, useMemo, useState, Fragment } from "react";
+import { listQuotes, updateQuote } from "@/lib/adminApi";
 import {
   PageHeader,
   SearchInput,
@@ -20,51 +20,72 @@ import {
   ActionLink,
   icons,
   formatDate,
-} from '@/app/admin/AdminUI';
+} from "@/app/admin/AdminUI";
+import ReplyBox from "@/app/admin/ReplyBox";
 
-const STATUSES = ['new', 'in_review', 'quoted', 'won', 'lost', 'spam'];
+const STATUSES = ["new", "in_review", "quoted", "won", "lost", "spam"];
 const COLS = 6;
 
 /* Expanded content. `stacked` = single column (phone / tablet cards). */
-function QuoteDetails({ q, stacked }) {
+function QuoteDetails({ q, stacked, onReplied }) {
   return (
     <>
-      <div className={stacked ? 'space-y-4' : 'grid gap-4 lg:grid-cols-5'}>
-        <div className={stacked ? '' : 'lg:col-span-3'}>
+      <div className={stacked ? "space-y-4" : "grid gap-4 lg:grid-cols-5"}>
+        <div className={stacked ? "" : "lg:col-span-3"}>
           <DetailCard title="Shipment">
             <Field label="Direction" value={q.direction} />
             <Field label="Pieces" value={q.pieces} />
             <Field label="Commodity" value={q.commodity} wide />
-            <Field label="Weight" value={q.weight?.value ? `${q.weight.value} ${q.weight.unit}` : '—'} />
-            <Field label="Volume" value={q.volume?.value ? `${q.volume.value} ${q.volume.unit}` : '—'} />
-            <Field label="Dimensions" value={q.dimensions || '—'} />
-            <Field label="Ready date" value={q.readyDate ? formatDate(q.readyDate) : '—'} />
-            <Field label="Delivery requirement" value={q.deliveryRequirement || '—'} wide />
+            <Field
+              label="Weight"
+              value={
+                q.weight?.value ? `${q.weight.value} ${q.weight.unit}` : "—"
+              }
+            />
+            <Field
+              label="Volume"
+              value={
+                q.volume?.value ? `${q.volume.value} ${q.volume.unit}` : "—"
+              }
+            />
+            <Field label="Dimensions" value={q.dimensions || "—"} />
+            <Field
+              label="Ready date"
+              value={q.readyDate ? formatDate(q.readyDate) : "—"}
+            />
+            <Field
+              label="Delivery requirement"
+              value={q.deliveryRequirement || "—"}
+              wide
+            />
           </DetailCard>
         </div>
 
-        <div className={stacked ? 'space-y-4' : 'space-y-4 lg:col-span-2'}>
+        <div className={stacked ? "space-y-4" : "space-y-4 lg:col-span-2"}>
           <DetailCard title="Contact">
             <Field label="Name" value={q.contactName} />
             <Field label="Source" value={q.source} />
-            <Field label="Email" value={q.email} href={`mailto:${q.email}`} wide />
-            <Field label="Phone" value={q.phone || '—'} href={q.phone ? `tel:${q.phone}` : undefined} wide />
+            <Field
+              label="Email"
+              value={q.email}
+              href={`mailto:${q.email}`}
+              wide
+            />
+            <Field
+              label="Phone"
+              value={q.phone || "—"}
+              href={q.phone ? `tel:${q.phone}` : undefined}
+              wide
+            />
           </DetailCard>
 
-          <div className="flex flex-wrap gap-2">
-            <ActionLink
-              primary
-              icon={icons.mail}
-              href={`mailto:${q.email}?subject=${encodeURIComponent(`Re: Quote request ${q.referenceCode}`)}`}
-            >
-              Reply by email
-            </ActionLink>
-            {q.phone && (
+          {q.phone && (
+            <div className="flex flex-wrap gap-2">
               <ActionLink icon={icons.phone} href={`tel:${q.phone}`}>
                 Call
               </ActionLink>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -73,6 +94,15 @@ function QuoteDetails({ q, stacked }) {
           <TextCard title="Notes">{q.notes}</TextCard>
         </div>
       )}
+
+      <div className="mt-4">
+        <ReplyBox
+          kind="quote"
+          item={q}
+          defaultSubject={`Re: Quote request ${q.referenceCode}`}
+          onReplied={onReplied}
+        />
+      </div>
     </>
   );
 }
@@ -80,8 +110,8 @@ function QuoteDetails({ q, stacked }) {
 export default function AdminQuotesPage() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState("");
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
@@ -93,7 +123,7 @@ export default function AdminQuotesPage() {
   // `ready` stops the first fetch from firing before the filter is known.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const initial = params.get('status');
+    const initial = params.get("status");
     if (initial) setStatusFilter(initial);
     setReady(true);
   }, []);
@@ -103,7 +133,7 @@ export default function AdminQuotesPage() {
     let active = true;
     setLoading(true);
     setError(null);
-    const q = statusFilter ? `?status=${statusFilter}&limit=100` : '?limit=100';
+    const q = statusFilter ? `?status=${statusFilter}&limit=100` : "?limit=100";
     listQuotes(q)
       .then((res) => {
         if (!active) return;
@@ -129,34 +159,52 @@ export default function AdminQuotesPage() {
     }
   };
 
+  // After a dashboard reply, swap in the saved record (new reply + status)
+  const handleReplied = (updated) =>
+    setItems((prev) => prev.map((q) => (q._id === updated._id ? updated : q)));
+
   // Client-side search across the loaded rows (up to 100).
   const visible = useMemo(() => {
     const term = query.trim().toLowerCase();
     if (!term) return items;
     return items.filter((q) =>
-      [q.referenceCode, q.company, q.contactName, q.email, q.origin, q.destination, q.mode, q.commodity]
+      [
+        q.referenceCode,
+        q.company,
+        q.contactName,
+        q.email,
+        q.origin,
+        q.destination,
+        q.mode,
+        q.commodity,
+      ]
         .filter(Boolean)
-        .some((v) => String(v).toLowerCase().includes(term))
+        .some((v) => String(v).toLowerCase().includes(term)),
     );
   }, [items, query]);
 
   const hasFilters = Boolean(statusFilter || query);
   const clearFilters = () => {
-    setStatusFilter('');
-    setQuery('');
+    setStatusFilter("");
+    setQuery("");
   };
 
   const subtitle = loading
-    ? 'Loading requests…'
-    : `${total} total${hasFilters ? ` · ${visible.length} shown` : ''}${
-        total > items.length ? ` · showing the latest ${items.length}` : ''
+    ? "Loading requests…"
+    : `${total} total${hasFilters ? ` · ${visible.length} shown` : ""}${
+        total > items.length ? ` · showing the latest ${items.length}` : ""
       }`;
 
   const showEmpty = !loading && visible.length === 0;
 
   return (
     <div className="mx-auto w-full min-w-0 container">
-      <PageHeader title="Quote Requests" subtitle={subtitle} onRefresh={reload} loading={loading} />
+      <PageHeader
+        title="Quote Requests"
+        subtitle={subtitle}
+        onRefresh={reload}
+        loading={loading}
+      />
 
       {/* Toolbar: search first on phones, chips first on desktop */}
       <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -183,10 +231,10 @@ export default function AdminQuotesPage() {
             title="No quote requests found"
             text={
               hasFilters
-                ? 'Nothing matches your current filters. Try a different status or clear the search.'
-                : 'New quote requests from your website will show up here.'
+                ? "Nothing matches your current filters. Try a different status or clear the search."
+                : "New quote requests from your website will show up here."
             }
-            actionLabel={hasFilters ? 'Clear filters' : undefined}
+            actionLabel={hasFilters ? "Clear filters" : undefined}
             onAction={clearFilters}
           />
         </div>
@@ -205,7 +253,9 @@ export default function AdminQuotesPage() {
                       <span className="truncate rounded-md bg-navy-100/60 px-2 py-1 font-mono text-xs text-navy-700">
                         {q.referenceCode}
                       </span>
-                      <span className="shrink-0 text-xs text-navy-400">{formatDate(q.createdAt)}</span>
+                      <span className="shrink-0 text-xs text-navy-400">
+                        {formatDate(q.createdAt)}
+                      </span>
                     </div>
 
                     <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
@@ -214,7 +264,9 @@ export default function AdminQuotesPage() {
                       </span>
                       <p className="flex min-w-0 flex-wrap items-center gap-x-1.5 break-words font-semibold text-navy-900">
                         {q.origin}
-                        <span className="text-navy-400">{icons.arrowRight}</span>
+                        <span className="text-navy-400">
+                          {icons.arrowRight}
+                        </span>
                         {q.destination}
                       </p>
                     </div>
@@ -222,8 +274,12 @@ export default function AdminQuotesPage() {
                     <div className="mt-3 flex items-center gap-3">
                       <Avatar name={q.company || q.contactName} />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-navy-900">{q.company}</p>
-                        <p className="truncate text-xs text-navy-400">{q.contactName}</p>
+                        <p className="truncate text-sm font-semibold text-navy-900">
+                          {q.company}
+                        </p>
+                        <p className="truncate text-xs text-navy-400">
+                          {q.contactName}
+                        </p>
                       </div>
                     </div>
 
@@ -234,12 +290,15 @@ export default function AdminQuotesPage() {
                         options={STATUSES}
                         onChange={(s) => handleStatusChange(q._id, s)}
                       />
-                      <ExpandButton open={open} onClick={() => setExpandedId(open ? null : q._id)} />
+                      <ExpandButton
+                        open={open}
+                        onClick={() => setExpandedId(open ? null : q._id)}
+                      />
                     </div>
 
                     {open && (
                       <div className="mt-4 rounded-xl bg-navy-100/30 p-3 sm:p-4">
-                        <QuoteDetails q={q} stacked />
+                        <QuoteDetails q={q} stacked onReplied={handleReplied} />
                       </div>
                     )}
                   </MobileCard>
@@ -272,7 +331,7 @@ export default function AdminQuotesPage() {
                         <Fragment key={q._id}>
                           <tr
                             className={`border-b border-navy-100 transition-colors last:border-0 ${
-                              open ? 'bg-navy-100/30' : 'hover:bg-navy-100/20'
+                              open ? "bg-navy-100/30" : "hover:bg-navy-100/20"
                             }`}
                           >
                             <td className="px-5 py-4">
@@ -286,7 +345,9 @@ export default function AdminQuotesPage() {
                               </span>
                               <p className="mt-1.5 flex items-center gap-1.5 font-medium text-navy-900">
                                 {q.origin}
-                                <span className="text-navy-400">{icons.arrowRight}</span>
+                                <span className="text-navy-400">
+                                  {icons.arrowRight}
+                                </span>
                                 {q.destination}
                               </p>
                             </td>
@@ -294,12 +355,18 @@ export default function AdminQuotesPage() {
                               <div className="flex items-center gap-3">
                                 <Avatar name={q.company || q.contactName} />
                                 <div className="min-w-0">
-                                  <p className="truncate font-semibold text-navy-900">{q.company}</p>
-                                  <p className="truncate text-xs text-navy-400">{q.contactName}</p>
+                                  <p className="truncate font-semibold text-navy-900">
+                                    {q.company}
+                                  </p>
+                                  <p className="truncate text-xs text-navy-400">
+                                    {q.contactName}
+                                  </p>
                                 </div>
                               </div>
                             </td>
-                            <td className="whitespace-nowrap px-5 py-4 text-navy-500">{formatDate(q.createdAt)}</td>
+                            <td className="whitespace-nowrap px-5 py-4 text-navy-500">
+                              {formatDate(q.createdAt)}
+                            </td>
                             <td className="px-5 py-4">
                               <StatusSelect
                                 label={`Status for ${q.referenceCode}`}
@@ -309,14 +376,19 @@ export default function AdminQuotesPage() {
                               />
                             </td>
                             <td className="px-5 py-4 text-right">
-                              <ExpandButton open={open} onClick={() => setExpandedId(open ? null : q._id)} />
+                              <ExpandButton
+                                open={open}
+                                onClick={() =>
+                                  setExpandedId(open ? null : q._id)
+                                }
+                              />
                             </td>
                           </tr>
 
                           {open && (
                             <tr className="border-b border-navy-100 bg-navy-100/30 last:border-0">
                               <td colSpan={COLS} className="px-5 pb-6 pt-2">
-                                <QuoteDetails q={q} />
+                                <QuoteDetails q={q} onReplied={handleReplied} />
                               </td>
                             </tr>
                           )}
