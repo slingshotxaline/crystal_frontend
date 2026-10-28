@@ -45,10 +45,10 @@ const STATS = [
     icon: "warehouse",
   },
   {
-    value: "4",
+    value: "Expertise",
     label: "Regional Markets",
     description:
-      "Bangladesh plus approved regional operations at differing ownership models.",
+      "A dedicated team of logistics professionals delivering efficient freight forwarding and supply chain support.",
     icon: "globe",
   },
 ];
