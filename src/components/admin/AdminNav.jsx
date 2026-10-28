@@ -134,9 +134,9 @@ export const NAV = [
     items: [
       { label: 'Services', href: '/admin/services', icon: navIcons.services },
       { label: 'Industries', href: '/admin/industries', icon: navIcons.industries },
-      { label: 'Case Studies', href: '/admin/case-studies', icon: navIcons.caseStudies },
-      { label: 'Insights', href: '/admin/insights', icon: navIcons.insights },
-      { label: 'Careers / Jobs', href: '/admin/jobs', icon: navIcons.jobs },
+      // { label: 'Case Studies', href: '/admin/case-studies', icon: navIcons.caseStudies },
+      // { label: 'Insights', href: '/admin/insights', icon: navIcons.insights },
+      // { label: 'Careers / Jobs', href: '/admin/jobs', icon: navIcons.jobs },
     ],
   },
   {
